@@ -1,0 +1,2054 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>XA • Magazzino PRO</title>
+
+  <!-- Scanner barcode -->
+  <script src="https://unpkg.com/html5-qrcode"></script>
+
+  <!-- Export Excel -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  <style>
+    :root{
+      --bg:#050505;
+      --panel:#101010;
+      --panel-2:#161616;
+      --card:#ffffff;
+      --line:#262626;
+      --muted:#8a8a8a;
+      --text:#111111;
+      --white:#ffffff;
+      --gold:#d4af37;
+      --green:#16a34a;
+      --red:#dc2626;
+      --blue:#2563eb;
+      --violet:#7c3aed;
+      --soft:#e5e7eb;
+      --shadow:0 18px 40px rgba(0,0,0,.18);
+      --radius:24px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      font-family:Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(212,175,55,.12), transparent 22%),
+        radial-gradient(circle at top right, rgba(255,255,255,.05), transparent 18%),
+        linear-gradient(180deg, #000 0%, #0a0a0a 34%, #f6f6f6 34%, #f6f6f6 100%);
+      color:#111;
+    }
+
+    .wrap{
+      max-width:1380px;
+      margin:0 auto;
+      padding:16px;
+    }
+
+    .hero{
+      border:1px solid rgba(255,255,255,.10);
+      background:linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      backdrop-filter:blur(12px);
+      color:#fff;
+      border-radius:34px;
+      padding:24px;
+      box-shadow:0 24px 70px rgba(0,0,0,.35);
+      margin-bottom:18px;
+    }
+
+    .brand-row{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      margin-bottom:10px;
+    }
+
+    .logo-xa{
+      width:74px;
+      height:74px;
+      border-radius:22px;
+      background:linear-gradient(135deg,#0b0b0b,#1a1a1a);
+      border:1px solid rgba(255,255,255,.08);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-size:34px;
+      font-weight:900;
+      letter-spacing:1px;
+      box-shadow:inset 0 0 0 1px rgba(212,175,55,.18);
+    }
+
+    .hero h1{
+      margin:0;
+      font-size:40px;
+      line-height:1;
+      font-weight:900;
+      letter-spacing:.4px;
+    }
+
+    .hero p{
+      margin:8px 0 0 0;
+      color:rgba(255,255,255,.78);
+      line-height:1.5;
+      max-width:1000px;
+    }
+
+    .top-badge{
+      display:inline-block;
+      padding:8px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(212,175,55,.18);
+      color:#f3e7b0;
+      font-size:12px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.8px;
+      margin-bottom:14px;
+    }
+
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:12px;
+      margin-top:18px;
+    }
+
+    .stat{
+      background:rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:20px;
+      padding:14px;
+    }
+
+    .stat .label{
+      font-size:12px;
+      text-transform:uppercase;
+      color:rgba(255,255,255,.68);
+      margin-bottom:6px;
+      font-weight:700;
+    }
+
+    .stat .value{
+      font-size:28px;
+      font-weight:900;
+      color:#fff;
+    }
+
+    .tabs{
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
+      gap:10px;
+      background:#fff;
+      padding:10px;
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      margin-bottom:18px;
+    }
+
+    .tab-btn{
+      border:none;
+      border-radius:18px;
+      padding:14px 12px;
+      background:#efefef;
+      color:#222;
+      font-size:14px;
+      font-weight:900;
+      cursor:pointer;
+    }
+
+    .tab-btn.active{
+      background:linear-gradient(135deg,#050505,#1a1a1a);
+      color:#fff;
+      box-shadow:inset 0 0 0 1px rgba(212,175,55,.28);
+    }
+
+    .tab{display:none}
+    .tab.active{display:block}
+
+    .grid-main{
+      display:grid;
+      grid-template-columns:1.35fr .65fr;
+      gap:18px;
+    }
+
+    .card{
+      background:#fff;
+      border-radius:28px;
+      padding:18px;
+      box-shadow:var(--shadow);
+      margin-bottom:18px;
+    }
+
+    .card.dark{
+      background:linear-gradient(135deg,#0c0c0c,#171717);
+      color:#fff;
+    }
+
+    .card h2{
+      margin:0 0 14px 0;
+      font-size:24px;
+      font-weight:900;
+    }
+
+    .filters{
+      display:grid;
+      grid-template-columns:1.5fr 1fr 1fr;
+      gap:10px;
+      margin-bottom:10px;
+    }
+
+    .filters-2{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:10px;
+      margin-bottom:16px;
+    }
+
+    input, select, textarea{
+      width:100%;
+      padding:13px 14px;
+      border:1px solid #d6d6d6;
+      border-radius:16px;
+      background:#fff;
+      font-size:14px;
+      color:#111;
+      font-family:Arial, Helvetica, sans-serif;
+    }
+
+    textarea{
+      min-height:92px;
+      resize:vertical;
+    }
+
+    button{
+      border:none;
+      border-radius:16px;
+      padding:12px 14px;
+      font-size:14px;
+      font-weight:900;
+      cursor:pointer;
+    }
+
+    .btn-dark{background:#111;color:#fff}
+    .btn-gold{background:var(--gold);color:#111}
+    .btn-green{background:var(--green);color:#fff}
+    .btn-red{background:var(--red);color:#fff}
+    .btn-blue{background:var(--blue);color:#fff}
+    .btn-violet{background:var(--violet);color:#fff}
+    .btn-soft{background:#ececec;color:#222}
+    .btn-full{width:100%}
+
+    .beer-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:14px;
+    }
+
+    .beer-card{
+      border:1px solid #e5e5e5;
+      border-radius:24px;
+      background:#fff;
+      overflow:hidden;
+      box-shadow:0 8px 18px rgba(0,0,0,.05);
+    }
+
+    .beer-topbar{
+      height:8px;
+      background:linear-gradient(90deg,#000,#d4af37,#fff,#9ca3af);
+    }
+
+    .beer-content{padding:14px}
+
+    .beer-image{
+      width:100%;
+      height:220px;
+      object-fit:cover;
+      border-radius:16px;
+      display:block;
+      margin-bottom:12px;
+      background:#f3f4f6;
+      border:1px solid #e5e7eb;
+    }
+
+    .beer-title{
+      font-size:21px;
+      line-height:1.08;
+      font-weight:900;
+      margin-bottom:4px;
+      color:#111;
+    }
+
+    .beer-sub{
+      color:#666;
+      font-size:14px;
+      margin-bottom:12px;
+    }
+
+    .row-badges{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-bottom:12px;
+    }
+
+    .badge{
+      display:inline-block;
+      padding:7px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:900;
+    }
+
+    .b-black{background:#111;color:#fff}
+    .b-gold{background:#f6e7a8;color:#6a5200}
+    .b-blue{background:#dbeafe;color:#1d4ed8}
+    .b-green{background:#dcfce7;color:#166534}
+    .b-red{background:#fee2e2;color:#b91c1c}
+    .b-amber{background:#fef3c7;color:#b45309}
+    .b-slate{background:#e5e7eb;color:#374151}
+    .b-violet{background:#ede9fe;color:#6d28d9}
+    .b-cyan{background:#cffafe;color:#0e7490}
+
+    .mini-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:8px;
+      margin-bottom:12px;
+    }
+
+    .mini{
+      background:#f7f7f7;
+      border-radius:16px;
+      padding:10px;
+      border:1px solid #ededed;
+    }
+
+    .mini .l{
+      font-size:11px;
+      text-transform:uppercase;
+      color:#777;
+      margin-bottom:4px;
+      font-weight:700;
+    }
+
+    .mini .v{
+      font-size:14px;
+      font-weight:800;
+      color:#111;
+      line-height:1.35;
+      word-break:break-word;
+    }
+
+    .full-info{
+      display:grid;
+      gap:8px;
+      margin-bottom:12px;
+    }
+
+    .progress-wrap{margin:8px 0 12px 0}
+
+    .progress-head{
+      display:flex;
+      justify-content:space-between;
+      font-size:12px;
+      color:#777;
+      margin-bottom:6px;
+      font-weight:700;
+    }
+
+    .progress{
+      height:10px;
+      background:#e5e7eb;
+      border-radius:999px;
+      overflow:hidden;
+    }
+
+    .progress > div{
+      height:100%;
+      background:linear-gradient(90deg,#111,#d4af37);
+      width:0%;
+    }
+
+    .beer-actions{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:8px;
+      margin-top:8px;
+    }
+
+    .movement-item{
+      padding:14px;
+      border:1px solid #e5e5e5;
+      border-radius:18px;
+      background:#fff;
+      margin-bottom:10px;
+    }
+
+    .movement-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      margin-bottom:8px;
+    }
+
+    .movement-title{
+      font-weight:900;
+      color:#111;
+      margin-bottom:4px;
+    }
+
+    .movement-sub{
+      font-size:13px;
+      color:#666;
+    }
+
+    .style-list{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+    }
+
+    .style-box{
+      background:#fff;
+      border-radius:24px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+    }
+
+    .style-bar{
+      height:10px;
+      background:linear-gradient(90deg,#000,#d4af37,#fff);
+    }
+
+    .style-in{padding:16px}
+
+    .style-in h3{
+      margin:0 0 8px 0;
+      font-size:18px;
+      font-weight:900;
+    }
+
+    .style-small{
+      color:#666;
+      font-size:13px;
+      margin-bottom:12px;
+    }
+
+    .style-stats{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:10px;
+    }
+
+    .style-stats .box{
+      background:#f7f7f7;
+      border-radius:16px;
+      padding:10px;
+      border:1px solid #ededed;
+    }
+
+    .style-stats .t{
+      font-size:11px;
+      text-transform:uppercase;
+      color:#777;
+      margin-bottom:4px;
+      font-weight:700;
+    }
+
+    .style-stats .n{
+      font-size:22px;
+      font-weight:900;
+      color:#111;
+    }
+
+    .form-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      margin-bottom:10px;
+    }
+
+    .form-grid-2{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+      margin-bottom:10px;
+    }
+
+    .label-file{
+      font-size:13px;
+      color:#555;
+      margin-bottom:6px;
+      font-weight:900;
+    }
+
+    .empty{
+      border:1px dashed #d4d4d4;
+      border-radius:20px;
+      padding:22px;
+      text-align:center;
+      background:#fafafa;
+      color:#666;
+    }
+
+    .detail-grid{
+      display:grid;
+      grid-template-columns:320px 1fr;
+      gap:18px;
+    }
+
+    .detail-image{
+      width:100%;
+      height:320px;
+      object-fit:cover;
+      border-radius:24px;
+      border:1px solid #e5e7eb;
+      background:#f8fafc;
+    }
+
+    .detail-title{
+      font-size:30px;
+      font-weight:900;
+      margin:0 0 6px 0;
+      line-height:1.05;
+    }
+
+    .detail-sub{
+      color:#666;
+      margin-bottom:12px;
+      font-size:15px;
+    }
+
+    .detail-sections{
+      display:grid;
+      gap:12px;
+    }
+
+    .section-box{
+      background:#f8f8f8;
+      border:1px solid #e5e7eb;
+      border-radius:20px;
+      padding:14px;
+    }
+
+    .section-box h4{
+      margin:0 0 10px 0;
+      font-size:16px;
+      font-weight:900;
+      color:#111;
+    }
+
+    .section-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+    }
+
+    .danger-zone{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:10px;
+      margin-top:12px;
+    }
+
+    .preview-wrap{
+      display:grid;
+      grid-template-columns:200px 1fr;
+      gap:12px;
+      align-items:start;
+    }
+
+    .preview-image{
+      width:100%;
+      height:180px;
+      object-fit:cover;
+      border-radius:18px;
+      border:1px solid #e2e8f0;
+      background:#f8fafc;
+    }
+
+    .tools-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .scanner-box{
+      border-radius:22px;
+      overflow:hidden;
+      border:1px solid #ddd;
+      background:#fff;
+    }
+
+    #reader{
+      width:100%;
+      min-height:280px;
+      background:#f5f5f5;
+    }
+
+    @media (max-width:1100px){
+      .stats{grid-template-columns:repeat(3,1fr)}
+      .grid-main{grid-template-columns:1fr}
+      .beer-grid{grid-template-columns:1fr}
+      .style-list{grid-template-columns:1fr 1fr}
+      .form-grid{grid-template-columns:repeat(2,1fr)}
+      .detail-grid{grid-template-columns:1fr}
+      .preview-wrap{grid-template-columns:1fr}
+    }
+
+    @media (max-width:760px){
+      .tabs{grid-template-columns:1fr 1fr}
+      .stats{grid-template-columns:1fr 1fr}
+      .filters,.filters-2,.form-grid,.form-grid-2,.style-list,.section-grid,.style-stats,.danger-zone,.beer-actions,.tools-grid{
+        grid-template-columns:1fr;
+      }
+      .hero h1{font-size:30px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <div class="top-badge">XA • MAGAZZINO PRO • BJCP • SCHEDE TECNICHE • CASSA • SCANNER</div>
+
+      <div class="brand-row">
+        <div class="logo-xa">XA</div>
+        <div>
+          <h1>XA Magazzino</h1>
+          <p>Sistema interno professionale per gestione etichette, schede tecniche, immagini, carico/scarico, scanner barcode, export Excel e modalità cassa veloce.</p>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="label">Etichette</div>
+          <div class="value" id="statLabels">0</div>
+        </div>
+        <div class="stat">
+          <div class="label">Unità totali</div>
+          <div class="value" id="statUnits">0</div>
+        </div>
+        <div class="stat">
+          <div class="label">Sotto scorta</div>
+          <div class="value" id="statLow">0</div>
+        </div>
+        <div class="stat">
+          <div class="label">Scadute</div>
+          <div class="value" id="statExpired">0</div>
+        </div>
+        <div class="stat">
+          <div class="label">Valore stock</div>
+          <div class="value" id="statValue">€0</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="openTab('tab-magazzino', this)">Magazzino</button>
+      <button class="tab-btn" onclick="openTab('tab-movimenti', this)">Movimenti</button>
+      <button class="tab-btn" onclick="openTab('tab-stili', this)">Stili BJCP</button>
+      <button class="tab-btn" onclick="openTab('tab-nuova', this)">Nuova Etichetta</button>
+      <button class="tab-btn" onclick="openTab('tab-dettaglio', this)">Scheda Birra</button>
+      <button class="tab-btn" onclick="openTab('tab-scanner', this)">Scanner</button>
+      <button class="tab-btn" onclick="openTab('tab-cassa', this)">Cassa</button>
+    </div>
+
+    <div id="tab-magazzino" class="tab active">
+      <div class="grid-main">
+        <div>
+          <div class="card">
+            <h2>Archivio Etichette</h2>
+
+            <div class="filters">
+              <input id="searchInput" placeholder="Cerca nome, birrificio, nazione, lotto, scaffale, barcode..." oninput="renderAll()" />
+              <select id="filterCategory" onchange="syncStyleFilter(); renderAll();"></select>
+              <select id="filterStock" onchange="renderAll()">
+                <option value="all">Tutte le scorte</option>
+                <option value="ok">Disponibili</option>
+                <option value="low">Sotto scorta</option>
+                <option value="zero">Esaurite</option>
+              </select>
+            </div>
+
+            <div class="filters-2">
+              <select id="filterStyle" onchange="renderAll()"></select>
+              <select id="filterExpiry" onchange="renderAll()">
+                <option value="all">Tutte le scadenze</option>
+                <option value="expired">Scadute</option>
+                <option value="30">Entro 30 giorni</option>
+                <option value="60">Entro 60 giorni</option>
+                <option value="none">Senza scadenza</option>
+              </select>
+              <select id="sortMode" onchange="renderAll()">
+                <option value="name">Ordina per nome</option>
+                <option value="brewery">Ordina per birrificio</option>
+                <option value="style">Ordina per stile</option>
+                <option value="stockDesc">Stock decrescente</option>
+                <option value="stockAsc">Stock crescente</option>
+                <option value="expiryAsc">Scadenza più vicina</option>
+              </select>
+            </div>
+
+            <div style="margin-bottom:16px;">
+              <button class="btn-soft btn-full" onclick="resetFilters()">Reset filtri</button>
+            </div>
+
+            <div id="beerList" class="beer-grid"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="card dark">
+            <h2>Movimento Rapido</h2>
+
+            <select id="moveBeer"></select>
+
+            <div class="form-grid-2" style="margin-top:10px;">
+              <button class="btn-green" onclick="quickMove('carico')">+ Carico 1</button>
+              <button class="btn-red" onclick="quickMove('scarico')">- Scarico 1</button>
+            </div>
+
+            <div class="form-grid-2">
+              <input type="number" id="moveQty" value="1" min="1" placeholder="Quantità" />
+              <input id="moveNote" placeholder="Nota movimento" />
+            </div>
+
+            <div class="form-grid-2">
+              <button class="btn-green" onclick="manualMove('carico')">Registra carico</button>
+              <button class="btn-red" onclick="manualMove('scarico')">Registra scarico</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Alert Magazzino</h2>
+            <div id="alertsBox"></div>
+          </div>
+
+          <div class="card">
+            <h2>Strumenti</h2>
+            <div class="tools-grid">
+              <button class="btn-blue" onclick="exportExcel()">Export Excel</button>
+              <button class="btn-violet" onclick="exportBackup()">Backup JSON</button>
+            </div>
+            <div style="margin-top:10px;">
+              <div class="label-file">Importa backup JSON</div>
+              <input type="file" id="importFile" accept=".json,application/json" onchange="importBackup(event)" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-movimenti" class="tab">
+      <div class="card">
+        <h2>Storico Movimenti</h2>
+        <div id="movementList"></div>
+      </div>
+    </div>
+
+    <div id="tab-stili" class="tab">
+      <div id="styleBoxes" class="style-list"></div>
+    </div>
+
+    <div id="tab-nuova" class="tab">
+      <div class="card">
+        <h2>Inserisci Nuova Etichetta</h2>
+
+        <div class="form-grid">
+          <input id="newName" placeholder="Nome birra" />
+          <input id="newBrewery" placeholder="Birrificio" />
+          <input id="newCountry" placeholder="Nazione" />
+
+          <input id="newProducer" placeholder="Produttore / importatore" />
+          <input id="newSupplier" placeholder="Fornitore" />
+          <input id="newCode" placeholder="Codice interno / barcode" />
+
+          <select id="newCategory" onchange="populateStyleSelect('newCategory','newStyle')"></select>
+          <select id="newStyle"></select>
+          <input id="newFormat" placeholder="Formato es. 33 cl / 44 cl / 75 cl" />
+
+          <input id="newAbv" placeholder="ABV %" />
+          <input id="newIbu" placeholder="IBU" />
+          <input id="newColor" placeholder="Colore birra / EBC / SRM" />
+
+          <input id="newOg" placeholder="OG" />
+          <input id="newFg" placeholder="FG" />
+          <input id="newFermentation" placeholder="Fermentazione: alta / bassa / mista / spontanea" />
+
+          <input id="newPrice" type="number" step="0.01" placeholder="Prezzo vendita" />
+          <input id="newCost" type="number" step="0.01" placeholder="Costo acquisto" />
+          <input id="newStock" type="number" placeholder="Stock iniziale" />
+
+          <input id="newMinStock" type="number" placeholder="Scorta minima" />
+          <input id="newShelf" placeholder="Scaffale / posizione" />
+          <input id="newLot" placeholder="Lotto" />
+
+          <input id="newExpiry" type="date" />
+          <input id="newServingTemp" placeholder="Temperatura servizio" />
+          <input id="newCarbonation" placeholder="Carbonazione" />
+
+          <input id="newBody" placeholder="Corpo" />
+          <input id="newHead" placeholder="Schiuma" />
+          <input id="newAppearance" placeholder="Aspetto visivo" />
+        </div>
+
+        <div class="form-grid-2">
+          <textarea id="newAroma" placeholder="Aroma"></textarea>
+          <textarea id="newTaste" placeholder="Gusto"></textarea>
+        </div>
+
+        <div class="form-grid-2">
+          <textarea id="newAftertaste" placeholder="Retrogusto"></textarea>
+          <textarea id="newIngredients" placeholder="Ingredienti"></textarea>
+        </div>
+
+        <div class="form-grid-2">
+          <textarea id="newAllergens" placeholder="Allergeni"></textarea>
+          <textarea id="newPairings" placeholder="Abbinamenti consigliati"></textarea>
+        </div>
+
+        <div class="form-grid-2">
+          <textarea id="newNotes" placeholder="Note tecniche / commerciali"></textarea>
+          <div>
+            <div class="label-file">Immagine etichetta / lattina / bottiglia</div>
+            <input type="file" id="newImage" accept="image/*" onchange="previewNewImage(event)" />
+            <img id="newImagePreview" class="preview-image" src="" style="margin-top:10px;display:none;" alt="Anteprima immagine">
+          </div>
+        </div>
+
+        <button class="btn-dark btn-full" onclick="addBeer()">Aggiungi etichetta</button>
+      </div>
+    </div>
+
+    <div id="tab-dettaglio" class="tab">
+      <div class="card" id="detailCard">
+        <div class="empty">Seleziona una birra dal magazzino usando il pulsante <b>Scheda</b>.</div>
+      </div>
+
+      <div class="card" id="editCard" style="display:none;">
+        <h2>Modifica Birra Selezionata</h2>
+
+        <div class="preview-wrap">
+          <div>
+            <img id="editImagePreview" class="preview-image" src="" alt="Anteprima immagine birra">
+          </div>
+          <div>
+            <div class="label-file">Cambia immagine</div>
+            <input type="file" id="editImage" accept="image/*" onchange="previewEditImage(event)" />
+            <div class="tools-grid" style="margin-top:10px;">
+              <button class="btn-soft" onclick="clearEditImage()">Rimuovi immagine</button>
+              <button class="btn-gold" onclick="saveEditedBeer()">Salva modifiche</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-grid" style="margin-top:14px;">
+          <input id="editName" placeholder="Nome birra" />
+          <input id="editBrewery" placeholder="Birrificio" />
+          <input id="editCountry" placeholder="Nazione" />
+
+          <input id="editProducer" placeholder="Produttore / importatore" />
+          <input id="editSupplier" placeholder="Fornitore" />
+          <input id="editCode" placeholder="Codice interno / barcode" />
+
+          <select id="editCategory" onchange="populateStyleSelect('editCategory','editStyle')"></select>
+          <select id="editStyle"></select>
+          <input id="editFormat" placeholder="Formato" />
+
+          <input id="editAbv" placeholder="ABV %" />
+          <input id="editIbu" placeholder="IBU" />
+          <input id="editColor" placeholder="Colore / EBC / SRM" />
+
+          <input id="editOg" placeholder="OG" />
+          <input id="editFg" placeholder="FG" />
+          <input id="editFermentation" placeholder="Fermentazione" />
+
+          <input id="editPrice" type="number" step="0.01" placeholder="Prezzo vendita" />
+          <input id="editCost" type="number" step="0.01" placeholder="Costo acquisto" />
+          <input id="editStock" type="number" placeholder="Stock" />
+
+          <input id="editMinStock" type="number" placeholder="Scorta minima" />
+          <input id="editShelf" placeholder="Scaffale" />
+          <input id="editLot" placeholder="Lotto" />
+
+          <input id="editExpiry" type="date" />
+          <input id="editServingTemp" placeholder="Temperatura servizio" />
+          <input id="editCarbonation" placeholder="Carbonazione" />
+
+          <input id="editBody" placeholder="Corpo" />
+          <input id="editHead" placeholder="Schiuma" />
+          <input id="editAppearance" placeholder="Aspetto visivo" />
+        </div>
+
+        <div class="form-grid-2">
+          <textarea id="editAroma" placeholder="Aroma"></textarea>
+          <textarea id="editTaste" placeholder="Gusto"></textarea>
+        </div>
+
+        <div class="form-grid-2">
+          <textarea id="editAftertaste" placeholder="Retrogusto"></textarea>
+          <textarea id="editIngredients" placeholder="Ingredienti"></textarea>
+        </div>
+
+        <div class="form-grid-2">
+          <textarea id="editAllergens" placeholder="Allergeni"></textarea>
+          <textarea id="editPairings" placeholder="Abbinamenti"></textarea>
+        </div>
+
+        <div class="form-grid-2">
+          <textarea id="editNotes" placeholder="Note"></textarea>
+          <div class="empty">Modifica i campi e premi <b>Salva modifiche</b>.</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-scanner" class="tab">
+      <div class="card">
+        <h2>Scanner Barcode</h2>
+        <div class="scanner-box">
+          <div id="reader"></div>
+        </div>
+        <div id="scanResult" class="empty" style="margin-top:12px;">Apri questa schermata da server o APK per usare la fotocamera.</div>
+      </div>
+    </div>
+
+    <div id="tab-cassa" class="tab">
+      <div class="card">
+        <h2>Modalità Cassa</h2>
+        <input id="cassaSearch" placeholder="Cerca veloce..." oninput="renderCassa()" />
+        <div id="cassaGrid" class="beer-grid" style="margin-top:14px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const BJCP = {
+      "1. Standard American Beer": ["1A American Light Lager","1B American Lager","1C Cream Ale","1D American Wheat Beer"],
+      "2. International Lager": ["2A International Pale Lager","2B International Amber Lager","2C International Dark Lager"],
+      "3. Czech Lager": ["3A Czech Pale Lager","3B Czech Premium Pale Lager","3C Czech Amber Lager","3D Czech Dark Lager"],
+      "4. Pale Malty European Lager": ["4A Munich Helles","4B Festbier","4C Helles Bock"],
+      "5. Pale Bitter European Beer": ["5A German Leichtbier","5B Kölsch","5C German Helles Exportbier","5D German Pils"],
+      "6. Amber Malty European Lager": ["6A Märzen","6B Rauchbier","6C Dunkles Bock"],
+      "7. Amber Bitter European Beer": ["7A Vienna Lager","7B Altbier","7C Kellerbier"],
+      "8. Dark European Lager": ["8A Munich Dunkel","8B Schwarzbier"],
+      "9. Strong European Beer": ["9A Doppelbock","9B Eisbock","9C Baltic Porter"],
+      "10. German Wheat Beer": ["10A Weissbier","10B Dunkles Weissbier","10C Weizenbock"],
+      "11. British Bitter": ["11A Ordinary Bitter","11B Best Bitter","11C Strong Bitter"],
+      "12. Pale Commonwealth Beer": ["12A British Golden Ale","12B Australian Sparkling Ale","12C English IPA"],
+      "13. Brown British Beer": ["13A Dark Mild","13B British Brown Ale","13C English Porter"],
+      "14. Scottish Ale": ["14A Scottish Light","14B Scottish Heavy","14C Scottish Export","14D Irish Red Ale"],
+      "15. Irish Beer": ["15A Irish Red Ale","15B Irish Stout","15C Irish Extra Stout","15D Irish Extra Foreign Stout"],
+      "16. Dark British Beer": ["16A Sweet Stout","16B Oatmeal Stout","16C Tropical Stout","16D Foreign Extra Stout"],
+      "17. Strong British Ale": ["17A British Strong Ale","17B Old Ale","17C Wee Heavy","17D English Barleywine"],
+      "18. Pale American Ale": ["18A Blonde Ale","18B American Pale Ale"],
+      "19. Amber and Brown American Beer": ["19A American Amber Ale","19B California Common","19C American Brown Ale"],
+      "20. American Porter and Stout": ["20A American Porter","20B American Stout","20C Imperial Stout"],
+      "21. IPA": ["21A American IPA","21B Specialty IPA: Belgian IPA","21B Specialty IPA: Black IPA","21B Specialty IPA: Brown IPA","21B Specialty IPA: Red IPA","21B Specialty IPA: Rye IPA","21B Specialty IPA: White IPA","21C Hazy IPA"],
+      "22. Strong American Ale": ["22A Double IPA","22B American Strong Ale","22C American Barleywine","22D Wheatwine"],
+      "23. European Sour Ale": ["23A Berliner Weisse","23B Flanders Red Ale","23C Oud Bruin","23D Lambic","23E Gueuze","23F Fruit Lambic"],
+      "24. Belgian Ale": ["24A Witbier","24B Belgian Pale Ale","24C Bière de Garde"],
+      "25. Strong Belgian Ale": ["25A Belgian Blond Ale","25B Saison","25C Belgian Golden Strong Ale","25D Belgian Single"],
+      "26. Monastic Ale": ["26A Belgian Dubbel","26B Belgian Tripel","26C Belgian Dark Strong Ale"],
+      "27. Historical Beer": ["27A Historical Beer: Kellerbier","27B Historical Beer: Kygris","27C Historical Beer: Adambier","27D Historical Beer: Catharina Sour","27E Historical Beer: Gose","27F Historical Beer: Kentucky Common","27G Historical Beer: London Brown Ale","27H Historical Beer: Piwo Grodziskie","27I Historical Beer: Pre-Prohibition Lager","27J Historical Beer: Pre-Prohibition Porter","27K Historical Beer: Roggenbier","27L Historical Beer: Sahti"],
+      "28. American Wild Ale": ["28A Brett Beer","28B Mixed-Fermentation Sour Beer","28C Wild Specialty Beer"],
+      "29. Fruit Beer": ["29A Fruit Beer","29B Fruit and Spice Beer","29C Specialty Fruit Beer"],
+      "30. Spiced Beer": ["30A Spice, Herb, or Vegetable Beer","30B Autumn Seasonal Beer","30C Winter Seasonal Beer"],
+      "31. Alternative Fermentables Beer": ["31A Alternative Grain Beer","31B Alternative Sugar Beer"],
+      "32. Smoked Beer": ["32A Classic Style Smoked Beer","32B Specialty Smoked Beer"],
+      "33. Wood Beer": ["33A Wood-Aged Beer","33B Specialty Wood-Aged Beer"],
+      "34. Specialty Beer": ["34A Clone Beer","34B Mixed-Style Beer","34C Experimental Beer","34D Specialty Grain Beer","34E Out-of-Category Specialty Beer"]
+    };
+
+    const CATEGORY_NAMES = Object.keys(BJCP);
+    const STORAGE_BEERS = "xaMagazzinoBeersV1";
+    const STORAGE_MOVEMENTS = "xaMagazzinoMovementsV1";
+
+    const PLACEHOLDER_IMG = "data:image/svg+xml;utf8," + encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
+        <defs>
+          <linearGradient id="g" x1="0" x2="1">
+            <stop offset="0%" stop-color="#000000"/>
+            <stop offset="100%" stop-color="#232323"/>
+          </linearGradient>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#g)"/>
+        <text x="50%" y="46%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-family="Arial" font-size="58" font-weight="900">XA</text>
+        <text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" fill="#d4af37" font-family="Arial" font-size="22" font-weight="700">Nessuna immagine</text>
+      </svg>
+    `);
+
+    let selectedBeerId = null;
+    let pendingNewImage = null;
+    let pendingEditImage = null;
+    let scannerInstance = null;
+    let scannerStarted = false;
+
+    let beers = JSON.parse(localStorage.getItem(STORAGE_BEERS) || "null") || [
+      {
+        id: Date.now()+1,
+        name:"Pils Classica Boema",
+        brewery:"Birrificio Aurora",
+        country:"Repubblica Ceca",
+        producer:"Aurora Import",
+        supplier:"Fornitore Centrale",
+        code:"XA-001",
+        category:"3. Czech Lager",
+        style:"3B Czech Premium Pale Lager",
+        format:"33 cl",
+        abv:"5.0%",
+        ibu:"35",
+        color:"Dorata / 7 EBC",
+        og:"1.048",
+        fg:"1.010",
+        fermentation:"Bassa fermentazione",
+        price:4.90,
+        cost:2.60,
+        stock:24,
+        minStock:8,
+        shelf:"A1",
+        lot:"L240401",
+        expiry:"2026-12-31",
+        servingTemp:"6-8°C",
+        carbonation:"Media",
+        body:"Snello",
+        head:"Bianca fine",
+        appearance:"Limpida, brillante",
+        aroma:"Crosta di pane, floreale, speziato delicato.",
+        taste:"Secca, elegante, luppolata con finale netto.",
+        aftertaste:"Pulito, erbaceo, leggermente speziato.",
+        ingredients:"Acqua, malto d'orzo, luppolo, lievito.",
+        allergens:"Glutine.",
+        pairings:"Fritture, formaggi freschi, pizza bianca.",
+        notes:"Etichetta demo XA.",
+        image:null
+      },
+      {
+        id: Date.now()+2,
+        name:"Nebbia Tropicale",
+        brewery:"Hop District",
+        country:"Italia",
+        producer:"Hop District",
+        supplier:"Craft Wave",
+        code:"XA-002",
+        category:"21. IPA",
+        style:"21C Hazy IPA",
+        format:"44 cl",
+        abv:"6.5%",
+        ibu:"40",
+        color:"Giallo opalescente / 10 EBC",
+        og:"1.060",
+        fg:"1.014",
+        fermentation:"Alta fermentazione",
+        price:7.50,
+        cost:3.90,
+        stock:11,
+        minStock:6,
+        shelf:"B3",
+        lot:"L240318",
+        expiry:"2026-08-20",
+        servingTemp:"7-9°C",
+        carbonation:"Media",
+        body:"Morbido",
+        head:"Bianca cremosa",
+        appearance:"Velata, juicy",
+        aroma:"Mango, ananas, agrumi, frutta gialla.",
+        taste:"Succosa, morbida, amaro contenuto.",
+        aftertaste:"Fruttato persistente.",
+        ingredients:"Acqua, malto d'orzo, avena, frumento, luppolo, lievito.",
+        allergens:"Glutine.",
+        pairings:"Hamburger, tacos, cucina speziata.",
+        notes:"Etichetta demo XA.",
+        image:null
+      }
+    ];
+
+    let movements = JSON.parse(localStorage.getItem(STORAGE_MOVEMENTS) || "null") || [
+      {id:1, beerId:beers[0]?.id, type:"carico", qty:12, note:"Arrivo fornitore", date:nowString()},
+      {id:2, beerId:beers[1]?.id, type:"scarico", qty:2, note:"Vendita negozio", date:nowString()}
+    ];
+
+    function nowString(){
+      const d = new Date();
+      const p = n => String(n).padStart(2,"0");
+      return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+    }
+
+    function money(v){
+      return new Intl.NumberFormat("it-IT",{style:"currency", currency:"EUR"}).format(Number(v || 0));
+    }
+
+    function saveAll(){
+      localStorage.setItem(STORAGE_BEERS, JSON.stringify(beers));
+      localStorage.setItem(STORAGE_MOVEMENTS, JSON.stringify(movements));
+    }
+
+    function escapeHtml(text){
+      return String(text ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function openTab(id, el){
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+      if(el) el.classList.add("active");
+      if(id === "tab-scanner") startScanner();
+      if(id === "tab-cassa") renderCassa();
+    }
+
+    function daysToExpiry(dateStr){
+      if(!dateStr) return null;
+      const today = new Date();
+      const target = new Date(dateStr + "T00:00:00");
+      const diff = target - new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      return Math.floor(diff / (1000*60*60*24));
+    }
+
+    function expiryBadge(dateStr){
+      if(!dateStr) return `<span class="badge b-slate">Scadenza n/d</span>`;
+      const d = daysToExpiry(dateStr);
+      if(d < 0) return `<span class="badge b-red">Scaduta</span>`;
+      if(d <= 30) return `<span class="badge b-amber">Entro 30 gg</span>`;
+      if(d <= 60) return `<span class="badge b-cyan">Entro 60 gg</span>`;
+      return `<span class="badge b-green">Scadenza ok</span>`;
+    }
+
+    function stockBadge(stock, minStock){
+      if(stock === 0) return `<span class="badge b-red">Esaurita</span>`;
+      if(stock <= minStock) return `<span class="badge b-amber">Sotto scorta</span>`;
+      return `<span class="badge b-green">Disponibile</span>`;
+    }
+
+    function stockPercent(stock, minStock){
+      if(minStock <= 0) return 100;
+      return Math.max(0, Math.min(100, Math.round((stock / (minStock * 2)) * 100)));
+    }
+
+    function fillCategorySelect(selectId, includeAll=false){
+      const s = document.getElementById(selectId);
+      s.innerHTML = "";
+      if(includeAll) s.innerHTML += `<option value="all">Tutte le categorie BJCP</option>`;
+      CATEGORY_NAMES.forEach(cat => {
+        s.innerHTML += `<option value="${escapeHtml(cat)}">${escapeHtml(cat)}</option>`;
+      });
+    }
+
+    function populateStyleSelect(categorySelectId, styleSelectId, includeAll=false){
+      const category = document.getElementById(categorySelectId).value;
+      const styleSelect = document.getElementById(styleSelectId);
+      styleSelect.innerHTML = "";
+      if(includeAll) styleSelect.innerHTML += `<option value="all">Tutti gli stili</option>`;
+
+      if(category === "all"){
+        CATEGORY_NAMES.forEach(cat => {
+          BJCP[cat].forEach(style => {
+            styleSelect.innerHTML += `<option value="${escapeHtml(style)}">${escapeHtml(style)}</option>`;
+          });
+        });
+      } else {
+        (BJCP[category] || []).forEach(style => {
+          styleSelect.innerHTML += `<option value="${escapeHtml(style)}">${escapeHtml(style)}</option>`;
+        });
+      }
+    }
+
+    function syncStyleFilter(){
+      populateStyleSelect("filterCategory", "filterStyle", true);
+    }
+
+    function populateMoveBeerSelect(){
+      const s = document.getElementById("moveBeer");
+      const current = s.value;
+      s.innerHTML = "";
+      beers.slice().sort((a,b)=>a.name.localeCompare(b.name)).forEach(b => {
+        s.innerHTML += `<option value="${b.id}">${escapeHtml(b.name)} • ${escapeHtml(b.style)} • stock ${b.stock}</option>`;
+      });
+      if(current) s.value = current;
+    }
+
+    function resetFilters(){
+      document.getElementById("searchInput").value = "";
+      document.getElementById("filterCategory").value = "all";
+      syncStyleFilter();
+      document.getElementById("filterStyle").value = "all";
+      document.getElementById("filterStock").value = "all";
+      document.getElementById("filterExpiry").value = "all";
+      document.getElementById("sortMode").value = "name";
+      renderAll();
+    }
+
+    function fileToBase64(file, callback){
+      if(!file){ callback(null); return; }
+      const reader = new FileReader();
+      reader.onload = e => callback(e.target.result);
+      reader.readAsDataURL(file);
+    }
+
+    function previewNewImage(event){
+      const file = event.target.files[0];
+      if(!file){ pendingNewImage = null; hideNewImagePreview(); return; }
+      fileToBase64(file, data => {
+        pendingNewImage = data;
+        const img = document.getElementById("newImagePreview");
+        img.src = data;
+        img.style.display = "block";
+      });
+    }
+
+    function hideNewImagePreview(){
+      const img = document.getElementById("newImagePreview");
+      img.src = "";
+      img.style.display = "none";
+    }
+
+    function previewEditImage(event){
+      const file = event.target.files[0];
+      if(!file) return;
+      fileToBase64(file, data => {
+        pendingEditImage = data;
+        document.getElementById("editImagePreview").src = data;
+      });
+    }
+
+    function clearEditImage(){
+      pendingEditImage = "__REMOVE__";
+      document.getElementById("editImage").value = "";
+      document.getElementById("editImagePreview").src = PLACEHOLDER_IMG;
+    }
+
+    function clearForm(){
+      [
+        "newName","newBrewery","newCountry","newProducer","newSupplier","newCode",
+        "newFormat","newAbv","newIbu","newColor","newOg","newFg","newFermentation",
+        "newPrice","newCost","newStock","newMinStock","newShelf","newLot","newExpiry",
+        "newServingTemp","newCarbonation","newBody","newHead","newAppearance",
+        "newAroma","newTaste","newAftertaste","newIngredients","newAllergens","newPairings","newNotes"
+      ].forEach(id => document.getElementById(id).value = "");
+      document.getElementById("newImage").value = "";
+      document.getElementById("newCategory").value = CATEGORY_NAMES[0];
+      populateStyleSelect("newCategory","newStyle",false);
+      pendingNewImage = null;
+      hideNewImagePreview();
+    }
+
+    function addBeer(){
+      const name = document.getElementById("newName").value.trim();
+      const brewery = document.getElementById("newBrewery").value.trim();
+      const category = document.getElementById("newCategory").value;
+      const style = document.getElementById("newStyle").value;
+
+      if(!name || !brewery || !category || !style){
+        alert("Compila almeno nome, birrificio, categoria BJCP e stile BJCP.");
+        return;
+      }
+
+      const beer = {
+        id: Date.now(),
+        name,
+        brewery,
+        country: document.getElementById("newCountry").value.trim(),
+        producer: document.getElementById("newProducer").value.trim(),
+        supplier: document.getElementById("newSupplier").value.trim(),
+        code: document.getElementById("newCode").value.trim(),
+        category,
+        style,
+        format: document.getElementById("newFormat").value.trim(),
+        abv: document.getElementById("newAbv").value.trim(),
+        ibu: document.getElementById("newIbu").value.trim(),
+        color: document.getElementById("newColor").value.trim(),
+        og: document.getElementById("newOg").value.trim(),
+        fg: document.getElementById("newFg").value.trim(),
+        fermentation: document.getElementById("newFermentation").value.trim(),
+        price: parseFloat(document.getElementById("newPrice").value || 0),
+        cost: parseFloat(document.getElementById("newCost").value || 0),
+        stock: parseInt(document.getElementById("newStock").value || 0),
+        minStock: parseInt(document.getElementById("newMinStock").value || 0),
+        shelf: document.getElementById("newShelf").value.trim(),
+        lot: document.getElementById("newLot").value.trim(),
+        expiry: document.getElementById("newExpiry").value,
+        servingTemp: document.getElementById("newServingTemp").value.trim(),
+        carbonation: document.getElementById("newCarbonation").value.trim(),
+        body: document.getElementById("newBody").value.trim(),
+        head: document.getElementById("newHead").value.trim(),
+        appearance: document.getElementById("newAppearance").value.trim(),
+        aroma: document.getElementById("newAroma").value.trim(),
+        taste: document.getElementById("newTaste").value.trim(),
+        aftertaste: document.getElementById("newAftertaste").value.trim(),
+        ingredients: document.getElementById("newIngredients").value.trim(),
+        allergens: document.getElementById("newAllergens").value.trim(),
+        pairings: document.getElementById("newPairings").value.trim(),
+        notes: document.getElementById("newNotes").value.trim(),
+        image: pendingNewImage || null
+      };
+
+      beers.unshift(beer);
+      movements.unshift({
+        id: Date.now()+999,
+        beerId: beer.id,
+        type:"carico",
+        qty: beer.stock,
+        note:"Inserimento nuova etichetta",
+        date: nowString()
+      });
+
+      saveAll();
+      selectedBeerId = beer.id;
+      clearForm();
+      renderAll();
+      showBeerDetail(beer.id);
+      openTab("tab-dettaglio", document.querySelectorAll(".tab-btn")[4]);
+      alert("Etichetta aggiunta.");
+    }
+
+    function changeStock(id, delta, noteText){
+      const beer = beers.find(b => b.id === id);
+      if(!beer) return;
+
+      const old = beer.stock;
+      beer.stock = Math.max(0, beer.stock + delta);
+      const realDelta = beer.stock - old;
+      if(realDelta === 0) return;
+
+      movements.unshift({
+        id: Date.now() + Math.floor(Math.random()*1000),
+        beerId:id,
+        type: realDelta > 0 ? "carico" : "scarico",
+        qty: Math.abs(realDelta),
+        note: noteText || (realDelta > 0 ? "Carico rapido" : "Scarico rapido"),
+        date: nowString()
+      });
+
+      saveAll();
+      renderAll();
+      if(selectedBeerId === id) showBeerDetail(id);
+      renderCassa();
+    }
+
+    function quickMove(type){
+      const id = Number(document.getElementById("moveBeer").value);
+      if(!id) return;
+      changeStock(id, type === "carico" ? 1 : -1, type === "carico" ? "Carico rapido +1" : "Scarico rapido -1");
+    }
+
+    function manualMove(type){
+      const id = Number(document.getElementById("moveBeer").value);
+      const qty = parseInt(document.getElementById("moveQty").value || 1);
+      const note = document.getElementById("moveNote").value.trim() || (type === "carico" ? "Carico manuale" : "Scarico manuale");
+      if(!id || qty < 1) return;
+      changeStock(id, type === "carico" ? qty : -qty, note);
+      document.getElementById("moveQty").value = 1;
+      document.getElementById("moveNote").value = "";
+    }
+
+    function editMinStock(id){
+      const beer = beers.find(b => b.id === id);
+      if(!beer) return;
+      const v = prompt("Nuova scorta minima:", beer.minStock);
+      if(v === null) return;
+      const n = parseInt(v || 0);
+      if(isNaN(n) || n < 0) return;
+      beer.minStock = n;
+      saveAll();
+      renderAll();
+      if(selectedBeerId === id) showBeerDetail(id);
+    }
+
+    function deleteBeer(id){
+      const beer = beers.find(b => b.id === id);
+      if(!beer) return;
+      const ok = confirm(`Eliminare "${beer.name}" dal magazzino?`);
+      if(!ok) return;
+      beers = beers.filter(b => b.id !== id);
+      movements = movements.filter(m => m.beerId !== id);
+      if(selectedBeerId === id) selectedBeerId = null;
+      saveAll();
+      renderAll();
+      renderDetailEmpty();
+      document.getElementById("editCard").style.display = "none";
+      renderCassa();
+    }
+
+    function filteredBeers(){
+      const q = document.getElementById("searchInput").value.toLowerCase().trim();
+      const cat = document.getElementById("filterCategory").value;
+      const style = document.getElementById("filterStyle").value;
+      const stock = document.getElementById("filterStock").value;
+      const expiry = document.getElementById("filterExpiry").value;
+      const sortMode = document.getElementById("sortMode").value;
+
+      let arr = beers.filter(b => {
+        const text = `${b.name} ${b.brewery} ${b.country} ${b.producer} ${b.supplier} ${b.code} ${b.category} ${b.style} ${b.shelf} ${b.lot}`.toLowerCase();
+
+        const qOk = !q || text.includes(q);
+        const catOk = cat === "all" || b.category === cat;
+        const styleOk = style === "all" || b.style === style;
+
+        let stockOk = true;
+        if(stock === "ok") stockOk = b.stock > b.minStock;
+        if(stock === "low") stockOk = b.stock <= b.minStock && b.stock > 0;
+        if(stock === "zero") stockOk = b.stock === 0;
+
+        let expiryOk = true;
+        const d = daysToExpiry(b.expiry);
+        if(expiry === "expired") expiryOk = d !== null && d < 0;
+        if(expiry === "30") expiryOk = d !== null && d >= 0 && d <= 30;
+        if(expiry === "60") expiryOk = d !== null && d >= 0 && d <= 60;
+        if(expiry === "none") expiryOk = !b.expiry;
+
+        return qOk && catOk && styleOk && stockOk && expiryOk;
+      });
+
+      if(sortMode === "name") arr.sort((a,b)=>a.name.localeCompare(b.name));
+      if(sortMode === "brewery") arr.sort((a,b)=>a.brewery.localeCompare(b.brewery));
+      if(sortMode === "style") arr.sort((a,b)=>a.style.localeCompare(b.style));
+      if(sortMode === "stockDesc") arr.sort((a,b)=>b.stock-a.stock);
+      if(sortMode === "stockAsc") arr.sort((a,b)=>a.stock-b.stock);
+      if(sortMode === "expiryAsc") arr.sort((a,b)=>{
+        const da = daysToExpiry(a.expiry);
+        const db = daysToExpiry(b.expiry);
+        if(da === null && db === null) return 0;
+        if(da === null) return 1;
+        if(db === null) return -1;
+        return da - db;
+      });
+
+      return arr;
+    }
+
+    function renderStats(){
+      const totalLabels = beers.length;
+      const totalUnits = beers.reduce((a,b)=>a + Number(b.stock || 0),0);
+      const low = beers.filter(b => b.stock > 0 && b.stock <= b.minStock).length;
+      const expired = beers.filter(b => {
+        const d = daysToExpiry(b.expiry);
+        return d !== null && d < 0;
+      }).length;
+      const value = beers.reduce((a,b)=>a + ((Number(b.stock)||0) * (Number(b.price)||0)),0);
+
+      document.getElementById("statLabels").textContent = totalLabels;
+      document.getElementById("statUnits").textContent = totalUnits;
+      document.getElementById("statLow").textContent = low;
+      document.getElementById("statExpired").textContent = expired;
+      document.getElementById("statValue").textContent = money(value);
+    }
+
+    function renderBeerList(){
+      const box = document.getElementById("beerList");
+      const arr = filteredBeers();
+
+      if(arr.length === 0){
+        box.innerHTML = `<div class="empty" style="grid-column:1/-1;">Nessuna etichetta trovata con questi filtri.</div>`;
+        return;
+      }
+
+      box.innerHTML = arr.map(b => {
+        const pct = stockPercent(b.stock, b.minStock);
+        const margin = (Number(b.price||0) - Number(b.cost||0));
+        return `
+          <div class="beer-card">
+            <div class="beer-topbar"></div>
+            <div class="beer-content">
+              <img class="beer-image" src="${b.image || PLACEHOLDER_IMG}" alt="${escapeHtml(b.name)}">
+
+              <div class="beer-title">${escapeHtml(b.name)}</div>
+              <div class="beer-sub">${escapeHtml(b.brewery)}${b.country ? " • " + escapeHtml(b.country) : ""}</div>
+
+              <div class="row-badges">
+                <span class="badge b-black">XA</span>
+                <span class="badge b-gold">${escapeHtml(b.category)}</span>
+                <span class="badge b-violet">${escapeHtml(b.style)}</span>
+                ${stockBadge(b.stock, b.minStock)}
+                ${expiryBadge(b.expiry)}
+              </div>
+
+              <div class="mini-grid">
+                <div class="mini"><div class="l">Formato</div><div class="v">${escapeHtml(b.format || "-")}</div></div>
+                <div class="mini"><div class="l">ABV</div><div class="v">${escapeHtml(b.abv || "-")}</div></div>
+                <div class="mini"><div class="l">IBU</div><div class="v">${escapeHtml(b.ibu || "-")}</div></div>
+                <div class="mini"><div class="l">Colore</div><div class="v">${escapeHtml(b.color || "-")}</div></div>
+                <div class="mini"><div class="l">Scaffale</div><div class="v">${escapeHtml(b.shelf || "-")}</div></div>
+                <div class="mini"><div class="l">Lotto</div><div class="v">${escapeHtml(b.lot || "-")}</div></div>
+              </div>
+
+              <div class="full-info">
+                <div class="mini"><div class="l">Aroma</div><div class="v">${escapeHtml(b.aroma || "-")}</div></div>
+                <div class="mini"><div class="l">Gusto</div><div class="v">${escapeHtml(b.taste || "-")}</div></div>
+              </div>
+
+              <div class="progress-wrap">
+                <div class="progress-head">
+                  <span>Livello scorta</span>
+                  <span>${b.stock} / min ${b.minStock}</span>
+                </div>
+                <div class="progress"><div style="width:${pct}%;"></div></div>
+              </div>
+
+              <div class="row-badges" style="margin-bottom:8px;">
+                <span class="badge b-slate">Stock: ${b.stock}</span>
+                <span class="badge b-slate">Prezzo: ${money(b.price)}</span>
+                <span class="badge b-slate">Margine: ${money(margin)}</span>
+              </div>
+
+              <div class="beer-actions">
+                <button class="btn-green" onclick="changeStock(${b.id}, 1, 'Carico rapido +1')">+ Carico</button>
+                <button class="btn-red" onclick="changeStock(${b.id}, -1, 'Scarico rapido -1')">- Scarico</button>
+                <button class="btn-blue" onclick="showBeerDetail(${b.id}); openTab('tab-dettaglio', document.querySelectorAll('.tab-btn')[4]);">Scheda</button>
+              </div>
+
+              <div class="beer-actions">
+                <button class="btn-soft" onclick="changeStock(${b.id}, 6, 'Carico rapido +6')">+6</button>
+                <button class="btn-soft" onclick="changeStock(${b.id}, -6, 'Scarico rapido -6')">-6</button>
+                <button class="btn-gold" onclick="editMinStock(${b.id})">Scorta min.</button>
+              </div>
+
+              <div class="beer-actions">
+                <button class="btn-violet" onclick="changeStock(${b.id}, 12, 'Carico cartone +12')">+12</button>
+                <button class="btn-blue" onclick="startEditBeer(${b.id}); openTab('tab-dettaglio', document.querySelectorAll('.tab-btn')[4]);">Modifica</button>
+                <button class="btn-red" onclick="deleteBeer(${b.id})">Elimina</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderAlerts(){
+      const box = document.getElementById("alertsBox");
+
+      const critical = beers.filter(b => b.stock <= b.minStock).sort((a,b)=>a.stock-b.stock);
+      const expiring = beers.filter(b => {
+        const d = daysToExpiry(b.expiry);
+        return d !== null && d >= 0 && d <= 30;
+      }).sort((a,b)=>daysToExpiry(a.expiry)-daysToExpiry(b.expiry));
+
+      let html = "";
+
+      if(critical.length > 0){
+        html += critical.map(b => `
+          <div class="movement-item">
+            <div class="movement-head">
+              <div>
+                <div class="movement-title">${escapeHtml(b.name)}</div>
+                <div class="movement-sub">${escapeHtml(b.style)} • ${escapeHtml(b.brewery)}</div>
+              </div>
+              ${b.stock === 0 ? `<span class="badge b-red">Esaurita</span>` : `<span class="badge b-amber">Bassa</span>`}
+            </div>
+            <div class="movement-sub">Stock: <b>${b.stock}</b> • Minimo: <b>${b.minStock}</b> • Scaffale: <b>${escapeHtml(b.shelf || "-")}</b></div>
+          </div>
+        `).join("");
+      }
+
+      if(expiring.length > 0){
+        html += expiring.map(b => `
+          <div class="movement-item">
+            <div class="movement-head">
+              <div>
+                <div class="movement-title">${escapeHtml(b.name)}</div>
+                <div class="movement-sub">Scadenza: ${escapeHtml(b.expiry || "-")} • Lotto: ${escapeHtml(b.lot || "-")}</div>
+              </div>
+              <span class="badge b-cyan">Scadenza vicina</span>
+            </div>
+            <div class="movement-sub">Mancano <b>${daysToExpiry(b.expiry)}</b> giorni</div>
+          </div>
+        `).join("");
+      }
+
+      if(!html){
+        html = `<div class="empty">Tutto regolare. Nessuna etichetta critica.</div>`;
+      }
+
+      box.innerHTML = html;
+    }
+
+    function renderMovements(){
+      const box = document.getElementById("movementList");
+      if(movements.length === 0){
+        box.innerHTML = `<div class="empty">Nessun movimento registrato.</div>`;
+        return;
+      }
+
+      box.innerHTML = movements.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(m => {
+        const beer = beers.find(b => b.id === m.beerId);
+        return `
+          <div class="movement-item">
+            <div class="movement-head">
+              <div>
+                <div class="movement-title">${escapeHtml(beer ? beer.name : "Etichetta rimossa")}</div>
+                <div class="movement-sub">${beer ? escapeHtml(beer.brewery) : ""} • ${escapeHtml(m.date)}</div>
+              </div>
+              ${m.type === "carico"
+                ? `<span class="badge b-green">CARICO</span>`
+                : `<span class="badge b-red">SCARICO</span>`}
+            </div>
+            <div class="row-badges">
+              <span class="badge b-slate">Q.tà ${m.qty}</span>
+              <span class="badge b-blue">${escapeHtml(m.note || "-")}</span>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderStyles(){
+      const box = document.getElementById("styleBoxes");
+      const items = [];
+
+      CATEGORY_NAMES.forEach(cat => {
+        const labels = beers.filter(b => b.category === cat).length;
+        const units = beers.filter(b => b.category === cat).reduce((a,b)=>a+b.stock,0);
+        items.push({cat, labels, units, styles: BJCP[cat].length});
+      });
+
+      box.innerHTML = items.map(it => `
+        <div class="style-box">
+          <div class="style-bar"></div>
+          <div class="style-in">
+            <h3>${escapeHtml(it.cat)}</h3>
+            <div class="style-small">${it.styles} stili in questa categoria</div>
+            <div class="style-stats">
+              <div class="box">
+                <div class="t">Stili</div>
+                <div class="n">${it.styles}</div>
+              </div>
+              <div class="box">
+                <div class="t">Etichette</div>
+                <div class="n">${it.labels}</div>
+              </div>
+              <div class="box">
+                <div class="t">Unità</div>
+                <div class="n">${it.units}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderDetailEmpty(){
+      document.getElementById("detailCard").innerHTML = `<div class="empty">Seleziona una birra dal magazzino usando il pulsante <b>Scheda</b>.</div>`;
+    }
+
+    function fillBeerForm(prefix, b){
+      document.getElementById(prefix+"Name").value = b.name || "";
+      document.getElementById(prefix+"Brewery").value = b.brewery || "";
+      document.getElementById(prefix+"Country").value = b.country || "";
+      document.getElementById(prefix+"Producer").value = b.producer || "";
+      document.getElementById(prefix+"Supplier").value = b.supplier || "";
+      document.getElementById(prefix+"Code").value = b.code || "";
+      document.getElementById(prefix+"Category").value = b.category || CATEGORY_NAMES[0];
+      populateStyleSelect(prefix+"Category", prefix+"Style", false);
+      document.getElementById(prefix+"Style").value = b.style || "";
+      document.getElementById(prefix+"Format").value = b.format || "";
+      document.getElementById(prefix+"Abv").value = b.abv || "";
+      document.getElementById(prefix+"Ibu").value = b.ibu || "";
+      document.getElementById(prefix+"Color").value = b.color || "";
+      document.getElementById(prefix+"Og").value = b.og || "";
+      document.getElementById(prefix+"Fg").value = b.fg || "";
+      document.getElementById(prefix+"Fermentation").value = b.fermentation || "";
+      document.getElementById(prefix+"Price").value = b.price || 0;
+      document.getElementById(prefix+"Cost").value = b.cost || 0;
+      document.getElementById(prefix+"Stock").value = b.stock || 0;
+      document.getElementById(prefix+"MinStock").value = b.minStock || 0;
+      document.getElementById(prefix+"Shelf").value = b.shelf || "";
+      document.getElementById(prefix+"Lot").value = b.lot || "";
+      document.getElementById(prefix+"Expiry").value = b.expiry || "";
+      document.getElementById(prefix+"ServingTemp").value = b.servingTemp || "";
+      document.getElementById(prefix+"Carbonation").value = b.carbonation || "";
+      document.getElementById(prefix+"Body").value = b.body || "";
+      document.getElementById(prefix+"Head").value = b.head || "";
+      document.getElementById(prefix+"Appearance").value = b.appearance || "";
+      document.getElementById(prefix+"Aroma").value = b.aroma || "";
+      document.getElementById(prefix+"Taste").value = b.taste || "";
+      document.getElementById(prefix+"Aftertaste").value = b.aftertaste || "";
+      document.getElementById(prefix+"Ingredients").value = b.ingredients || "";
+      document.getElementById(prefix+"Allergens").value = b.allergens || "";
+      document.getElementById(prefix+"Pairings").value = b.pairings || "";
+      document.getElementById(prefix+"Notes").value = b.notes || "";
+    }
+
+    function showBeerDetail(id){
+      const b = beers.find(x => x.id === id);
+      if(!b){
+        renderDetailEmpty();
+        return;
+      }
+      selectedBeerId = id;
+
+      const margin = (Number(b.price||0) - Number(b.cost||0));
+      const days = daysToExpiry(b.expiry);
+
+      document.getElementById("detailCard").innerHTML = `
+        <div class="detail-grid">
+          <div>
+            <img class="detail-image" src="${b.image || PLACEHOLDER_IMG}" alt="${escapeHtml(b.name)}">
+          </div>
+
+          <div>
+            <h3 class="detail-title">${escapeHtml(b.name)}</h3>
+            <div class="detail-sub">${escapeHtml(b.brewery)}${b.country ? " • " + escapeHtml(b.country) : ""}</div>
+
+            <div class="row-badges">
+              <span class="badge b-black">XA</span>
+              <span class="badge b-gold">${escapeHtml(b.category || "-")}</span>
+              <span class="badge b-violet">${escapeHtml(b.style || "-")}</span>
+              ${stockBadge(b.stock, b.minStock)}
+              ${expiryBadge(b.expiry)}
+            </div>
+
+            <div class="detail-sections">
+              <div class="section-box">
+                <h4>Identità e magazzino</h4>
+                <div class="section-grid">
+                  <div class="mini"><div class="l">Birrificio</div><div class="v">${escapeHtml(b.brewery || "-")}</div></div>
+                  <div class="mini"><div class="l">Nazione</div><div class="v">${escapeHtml(b.country || "-")}</div></div>
+                  <div class="mini"><div class="l">Produttore/importatore</div><div class="v">${escapeHtml(b.producer || "-")}</div></div>
+
+                  <div class="mini"><div class="l">Fornitore</div><div class="v">${escapeHtml(b.supplier || "-")}</div></div>
+                  <div class="mini"><div class="l">Codice / barcode</div><div class="v">${escapeHtml(b.code || "-")}</div></div>
+                  <div class="mini"><div class="l">Formato</div><div class="v">${escapeHtml(b.format || "-")}</div></div>
+
+                  <div class="mini"><div class="l">Stock</div><div class="v">${b.stock}</div></div>
+                  <div class="mini"><div class="l">Scorta minima</div><div class="v">${b.minStock}</div></div>
+                  <div class="mini"><div class="l">Scaffale</div><div class="v">${escapeHtml(b.shelf || "-")}</div></div>
+
+                  <div class="mini"><div class="l">Lotto</div><div class="v">${escapeHtml(b.lot || "-")}</div></div>
+                  <div class="mini"><div class="l">Scadenza</div><div class="v">${escapeHtml(b.expiry || "-")}</div></div>
+                  <div class="mini"><div class="l">Giorni a scadenza</div><div class="v">${days === null ? "-" : days}</div></div>
+
+                  <div class="mini"><div class="l">Prezzo vendita</div><div class="v">${money(b.price)}</div></div>
+                  <div class="mini"><div class="l">Costo acquisto</div><div class="v">${money(b.cost)}</div></div>
+                  <div class="mini"><div class="l">Margine unitario</div><div class="v">${money(margin)}</div></div>
+                </div>
+              </div>
+
+              <div class="section-box">
+                <h4>Dati tecnici</h4>
+                <div class="section-grid">
+                  <div class="mini"><div class="l">ABV</div><div class="v">${escapeHtml(b.abv || "-")}</div></div>
+                  <div class="mini"><div class="l">IBU</div><div class="v">${escapeHtml(b.ibu || "-")}</div></div>
+                  <div class="mini"><div class="l">Colore</div><div class="v">${escapeHtml(b.color || "-")}</div></div>
+
+                  <div class="mini"><div class="l">OG</div><div class="v">${escapeHtml(b.og || "-")}</div></div>
+                  <div class="mini"><div class="l">FG</div><div class="v">${escapeHtml(b.fg || "-")}</div></div>
+                  <div class="mini"><div class="l">Fermentazione</div><div class="v">${escapeHtml(b.fermentation || "-")}</div></div>
+
+                  <div class="mini"><div class="l">Temperatura servizio</div><div class="v">${escapeHtml(b.servingTemp || "-")}</div></div>
+                  <div class="mini"><div class="l">Carbonazione</div><div class="v">${escapeHtml(b.carbonation || "-")}</div></div>
+                  <div class="mini"><div class="l">Corpo</div><div class="v">${escapeHtml(b.body || "-")}</div></div>
+
+                  <div class="mini"><div class="l">Schiuma</div><div class="v">${escapeHtml(b.head || "-")}</div></div>
+                  <div class="mini"><div class="l">Aspetto</div><div class="v">${escapeHtml(b.appearance || "-")}</div></div>
+                  <div class="mini"><div class="l">BJCP</div><div class="v">${escapeHtml(b.style || "-")}</div></div>
+                </div>
+              </div>
+
+              <div class="section-box">
+                <h4>Analisi sensoriale</h4>
+                <div class="full-info">
+                  <div class="mini"><div class="l">Aroma</div><div class="v">${escapeHtml(b.aroma || "-")}</div></div>
+                  <div class="mini"><div class="l">Gusto</div><div class="v">${escapeHtml(b.taste || "-")}</div></div>
+                  <div class="mini"><div class="l">Retrogusto</div><div class="v">${escapeHtml(b.aftertaste || "-")}</div></div>
+                </div>
+              </div>
+
+              <div class="section-box">
+                <h4>Ingredienti e servizio</h4>
+                <div class="full-info">
+                  <div class="mini"><div class="l">Ingredienti</div><div class="v">${escapeHtml(b.ingredients || "-")}</div></div>
+                  <div class="mini"><div class="l">Allergeni</div><div class="v">${escapeHtml(b.allergens || "-")}</div></div>
+                  <div class="mini"><div class="l">Abbinamenti</div><div class="v">${escapeHtml(b.pairings || "-")}</div></div>
+                  <div class="mini"><div class="l">Note</div><div class="v">${escapeHtml(b.notes || "-")}</div></div>
+                </div>
+              </div>
+
+              <div class="danger-zone">
+                <button class="btn-green" onclick="changeStock(${b.id}, 1, 'Carico rapido +1')">+ Carico</button>
+                <button class="btn-red" onclick="changeStock(${b.id}, -1, 'Scarico rapido -1')">- Scarico</button>
+                <button class="btn-blue" onclick="startEditBeer(${b.id})">Modifica</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function startEditBeer(id){
+      const b = beers.find(x => x.id === id);
+      if(!b) return;
+      selectedBeerId = id;
+      document.getElementById("editCard").style.display = "block";
+      pendingEditImage = null;
+      document.getElementById("editImage").value = "";
+      document.getElementById("editImagePreview").src = b.image || PLACEHOLDER_IMG;
+      fillBeerForm("edit", b);
+      showBeerDetail(id);
+    }
+
+    function saveEditedBeer(){
+      if(selectedBeerId === null) return;
+      const b = beers.find(x => x.id === selectedBeerId);
+      if(!b) return;
+
+      b.name = document.getElementById("editName").value.trim();
+      b.brewery = document.getElementById("editBrewery").value.trim();
+      b.country = document.getElementById("editCountry").value.trim();
+      b.producer = document.getElementById("editProducer").value.trim();
+      b.supplier = document.getElementById("editSupplier").value.trim();
+      b.code = document.getElementById("editCode").value.trim();
+      b.category = document.getElementById("editCategory").value;
+      b.style = document.getElementById("editStyle").value;
+      b.format = document.getElementById("editFormat").value.trim();
+      b.abv = document.getElementById("editAbv").value.trim();
+      b.ibu = document.getElementById("editIbu").value.trim();
+      b.color = document.getElementById("editColor").value.trim();
+      b.og = document.getElementById("editOg").value.trim();
+      b.fg = document.getElementById("editFg").value.trim();
+      b.fermentation = document.getElementById("editFermentation").value.trim();
+      b.price = parseFloat(document.getElementById("editPrice").value || 0);
+      b.cost = parseFloat(document.getElementById("editCost").value || 0);
+      b.stock = parseInt(document.getElementById("editStock").value || 0);
+      b.minStock = parseInt(document.getElementById("editMinStock").value || 0);
+      b.shelf = document.getElementById("editShelf").value.trim();
+      b.lot = document.getElementById("editLot").value.trim();
+      b.expiry = document.getElementById("editExpiry").value;
+      b.servingTemp = document.getElementById("editServingTemp").value.trim();
+      b.carbonation = document.getElementById("editCarbonation").value.trim();
+      b.body = document.getElementById("editBody").value.trim();
+      b.head = document.getElementById("editHead").value.trim();
+      b.appearance = document.getElementById("editAppearance").value.trim();
+      b.aroma = document.getElementById("editAroma").value.trim();
+      b.taste = document.getElementById("editTaste").value.trim();
+      b.aftertaste = document.getElementById("editAftertaste").value.trim();
+      b.ingredients = document.getElementById("editIngredients").value.trim();
+      b.allergens = document.getElementById("editAllergens").value.trim();
+      b.pairings = document.getElementById("editPairings").value.trim();
+      b.notes = document.getElementById("editNotes").value.trim();
+
+      if(pendingEditImage === "__REMOVE__"){
+        b.image = null;
+      } else if(pendingEditImage){
+        b.image = pendingEditImage;
+      }
+
+      saveAll();
+      renderAll();
+      showBeerDetail(b.id);
+      renderCassa();
+      alert("Modifiche salvate.");
+    }
+
+    function renderCassa(){
+      const q = (document.getElementById("cassaSearch")?.value || "").toLowerCase();
+      const arr = beers.filter(b =>
+        `${b.name} ${b.brewery} ${b.code}`.toLowerCase().includes(q)
+      );
+
+      const box = document.getElementById("cassaGrid");
+      if(!box) return;
+
+      if(arr.length === 0){
+        box.innerHTML = `<div class="empty" style="grid-column:1/-1;">Nessuna birra trovata.</div>`;
+        return;
+      }
+
+      box.innerHTML = arr.map(b => `
+        <div class="beer-card" onclick="sellBeer(${b.id})" style="cursor:pointer;">
+          <div class="beer-topbar"></div>
+          <div class="beer-content">
+            <img class="beer-image" src="${b.image || PLACEHOLDER_IMG}" alt="${escapeHtml(b.name)}">
+            <div class="beer-title">${escapeHtml(b.name)}</div>
+            <div class="beer-sub">${escapeHtml(b.brewery)}</div>
+            <div class="row-badges">
+              <span class="badge b-black">XA</span>
+              <span class="badge b-slate">${money(b.price)}</span>
+              <span class="badge b-slate">Stock ${b.stock}</span>
+            </div>
+            <button class="btn-dark btn-full">TAP PER VENDERE</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function sellBeer(id){
+      changeStock(id, -1, "Vendita cassa");
+      renderCassa();
+    }
+
+    function startScanner(){
+      const resultBox = document.getElementById("scanResult");
+
+      if (location.protocol === "file:") {
+        resultBox.innerHTML = "Scanner disattivato in file locale. Per usarlo, apri questa app da server o come APK.";
+        return;
+      }
+
+      if (scannerStarted) return;
+
+      try{
+        scannerInstance = new Html5Qrcode("reader");
+        scannerInstance.start(
+          { facingMode: { exact: "environment" } },
+          { fps: 10, qrbox: 250 },
+          (decodedText) => {
+            const beer = beers.find(b => b.code === decodedText);
+            if(beer){
+              changeStock(beer.id, -1, "Vendita da scanner");
+              resultBox.innerHTML = `✔ Venduta: <b>${escapeHtml(beer.name)}</b>`;
+            } else {
+              resultBox.innerHTML = `❌ Codice non trovato: <b>${escapeHtml(decodedText)}</b>`;
+            }
+          },
+          () => {}
+        ).then(() => {
+          scannerStarted = true;
+          resultBox.innerHTML = "Scanner attivo.";
+        }).catch(err => {
+          resultBox.innerHTML = "Fotocamera non disponibile o permesso negato.";
+        });
+      }catch(e){
+        resultBox.innerHTML = "Scanner non avviabile in questa modalità.";
+      }
+    }
+
+    function exportExcel(){
+      const data = beers.map(b => ({
+        Nome: b.name,
+        Birrificio: b.brewery,
+        Nazione: b.country,
+        Codice: b.code,
+        Categoria_BJCP: b.category,
+        Stile_BJCP: b.style,
+        Formato: b.format,
+        ABV: b.abv,
+        IBU: b.ibu,
+        Colore: b.color,
+        OG: b.og,
+        FG: b.fg,
+        Fermentazione: b.fermentation,
+        Prezzo: b.price,
+        Costo: b.cost,
+        Stock: b.stock,
+        Scorta_minima: b.minStock,
+        Scaffale: b.shelf,
+        Lotto: b.lot,
+        Scadenza: b.expiry,
+        Temperatura_servizio: b.servingTemp,
+        Carbonazione: b.carbonation,
+        Corpo: b.body,
+        Schiuma: b.head,
+        Aspetto: b.appearance,
+        Aroma: b.aroma,
+        Gusto: b.taste,
+        Retrogusto: b.aftertaste,
+        Ingredienti: b.ingredients,
+        Allergeni: b.allergens,
+        Abbinamenti: b.pairings,
+        Note: b.notes
+      }));
+
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "XA_Magazzino");
+      XLSX.writeFile(wb, "XA_magazzino.xlsx");
+    }
+
+    function exportBackup(){
+      const payload = {
+        exported_at: new Date().toISOString(),
+        app: "XA Magazzino",
+        beers,
+        movements
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "XA_backup.json";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function importBackup(event){
+      const file = event.target.files[0];
+      if(!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e){
+        try{
+          const data = JSON.parse(e.target.result);
+          if(!data.beers || !Array.isArray(data.beers)){
+            alert("File non valido.");
+            return;
+          }
+          beers = data.beers;
+          movements = Array.isArray(data.movements) ? data.movements : [];
+          selectedBeerId = null;
+          saveAll();
+          renderAll();
+          renderDetailEmpty();
+          document.getElementById("editCard").style.display = "none";
+          renderCassa();
+          alert("Backup importato.");
+        }catch(err){
+          alert("Errore nel file JSON.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function renderAll(){
+      renderStats();
+      renderBeerList();
+      renderAlerts();
+      renderMovements();
+      renderStyles();
+      populateMoveBeerSelect();
+      if(selectedBeerId){
+        const found = beers.find(b => b.id === selectedBeerId);
+        if(found){
+          showBeerDetail(selectedBeerId);
+        } else {
+          renderDetailEmpty();
+        }
+      }
+    }
+
+    function init(){
+      fillCategorySelect("filterCategory", true);
+      fillCategorySelect("newCategory", false);
+      fillCategorySelect("editCategory", false);
+
+      document.getElementById("filterCategory").value = "all";
+      syncStyleFilter();
+      document.getElementById("filterStyle").value = "all";
+      document.getElementById("filterStock").value = "all";
+      document.getElementById("filterExpiry").value = "all";
+      document.getElementById("sortMode").value = "name";
+
+      document.getElementById("newCategory").value = CATEGORY_NAMES[0];
+      populateStyleSelect("newCategory","newStyle",false);
+
+      document.getElementById("editCategory").value = CATEGORY_NAMES[0];
+      populateStyleSelect("editCategory","editStyle",false);
+
+      populateMoveBeerSelect();
+      renderAll();
+      renderCassa();
+    }
+
+    init();
+  </script>
+</body>
+</html>
