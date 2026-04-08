@@ -1,15 +1,24 @@
 {
-  "name": "XA Magazzino PRO",
-  "short_name": "XA PRO",
-  "start_url": ".",
+  "name": "XA Magazzino Pro",
+  "short_name": "XA Magazzino",
+  "description": "App installabile per carico e scarico magazzino birre.",
+  "start_url": "./",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#000000",
+  "background_color": "#0f1115",
+  "theme_color": "#111111",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
