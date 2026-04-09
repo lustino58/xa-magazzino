@@ -11,8 +11,6 @@
     :root{
       --bg:#091018;
       --bg2:#0d1520;
-      --panel:#141d28;
-      --panel2:#1b2633;
       --line:#2b3748;
       --text:#f4f7fb;
       --muted:#a8b4c4;
@@ -477,6 +475,18 @@
       font-weight:800;
     }
 
+    .editBox{
+      margin-top:10px;
+      padding:12px;
+      border-radius:16px;
+      background:rgba(90,164,255,.10);
+      border:1px solid rgba(90,164,255,.35);
+      color:#e7f1ff;
+      font-size:13px;
+      font-weight:800;
+      display:none;
+    }
+
     .bottomNav{
       position:fixed;
       left:0;
@@ -528,7 +538,7 @@
 
     <div class="hero">
       <h1>XA Magazzino</h1>
-      <p>Catalogo per birrificio • vendita veloce • auto BJCP • scanner • magazzino • cassa • statistiche</p>
+      <p>Modifica completo • prezzo modificabile dai campi • catalogo per birrificio • vendita veloce • auto BJCP</p>
     </div>
 
     <section id="section-home" class="section active">
@@ -556,6 +566,8 @@
 
       <div class="card">
         <div class="sectionTitle">Inserimento rapido</div>
+
+        <div id="editBox" class="editBox">Stai modificando un prodotto. Cambia i campi e premi <b>Salva modifica</b>.</div>
 
         <div class="field">
           <label for="barcode">Barcode</label>
@@ -648,8 +660,8 @@
         </div>
 
         <div class="toolbar2">
-          <button class="btn btn-green" onclick="salvaProdotto()">Salva prodotto</button>
-          <button class="btn btn-cyan" onclick="svuotaCampi()">Svuota campi</button>
+          <button id="saveBtn" class="btn btn-green" onclick="salvaProdotto()">Salva prodotto</button>
+          <button class="btn btn-cyan" onclick="annullaModifica()">Svuota campi</button>
         </div>
 
         <div id="messageBox" class="small"></div>
@@ -829,6 +841,7 @@
     let html5QrCode = null;
     let scannerAttivo = false;
     let breweryFilterChip = "";
+    let editIndex = null;
 
     function showSection(name, btn){
       document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
@@ -989,12 +1002,39 @@
       return prodotti.findIndex(p => String(p.barcode || "").trim() === String(barcode || "").trim());
     }
 
-    function svuotaCampi(){
+    function entraInModalitaModifica(i){
+      const p = prodotti[i];
+      editIndex = i;
+
+      document.getElementById("barcode").value = p.barcode || "";
+      document.getElementById("nome").value = p.nome || "";
+      document.getElementById("birrificio").value = p.birrificio || "";
+      document.getElementById("formato").value = p.formato || "";
+      document.getElementById("stile").value = p.stile || "";
+      document.getElementById("qty").value = p.qty ?? 0;
+      document.getElementById("soglia").value = p.soglia ?? 0;
+      document.getElementById("prezzo").value = p.prezzo ?? 0;
+      document.getElementById("abv").value = p.abv || "";
+      document.getElementById("ibu").value = p.ibu || "";
+      document.getElementById("srm").value = p.srm || "";
+      document.getElementById("note").value = p.note || "";
+
+      document.getElementById("editBox").style.display = "block";
+      document.getElementById("saveBtn").textContent = "Salva modifica";
+
+      showSection("home", document.querySelector('.navBtn[data-section="home"]'));
+      setMsg("Prezzo e dati pronti da modificare. Cambia i campi e premi Salva modifica.", "ok");
+    }
+
+    function annullaModifica(){
+      editIndex = null;
       ["barcode","nome","birrificio","formato","qty","soglia","prezzo","abv","ibu","srm","note","searchStyle"].forEach(id => {
         document.getElementById(id).value = "";
       });
       document.getElementById("stile").value = "";
       document.getElementById("foto").value = "";
+      document.getElementById("editBox").style.display = "none";
+      document.getElementById("saveBtn").textContent = "Salva prodotto";
       document.getElementById("autoAbvChip").textContent = "ABV: -";
       document.getElementById("autoIbuChip").textContent = "IBU: -";
       document.getElementById("autoSrmChip").textContent = "SRM: -";
@@ -1033,22 +1073,67 @@
       if(!barcode){ setMsg("Inserisci o scansiona un barcode.", "warn"); return; }
       if(!nome){ setMsg("Inserisci il nome prodotto.", "warn"); return; }
 
+      if(editIndex !== null){
+        if(file){
+          const reader = new FileReader();
+          reader.onload = function(){
+            salvaModificaCompleta({
+              barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, abv, ibu, srm, note, foto: reader.result
+            });
+          };
+          reader.readAsDataURL(file);
+        } else {
+          salvaModificaCompleta({
+            barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, abv, ibu, srm, note, foto: prodotti[editIndex].foto || ""
+          });
+        }
+        return;
+      }
+
       const idx = trovaPerBarcode(barcode);
 
       if(file){
         const reader = new FileReader();
         reader.onload = function(){
-          completaSalvataggio(idx, { barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, abv, ibu, srm, note, foto: reader.result });
+          completaSalvataggioNuovo(idx, { barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, abv, ibu, srm, note, foto: reader.result });
         };
         reader.readAsDataURL(file);
       } else {
         let fotoEsistente = "";
         if(idx >= 0) fotoEsistente = prodotti[idx].foto || "";
-        completaSalvataggio(idx, { barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, abv, ibu, srm, note, foto: fotoEsistente });
+        completaSalvataggioNuovo(idx, { barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, abv, ibu, srm, note, foto: fotoEsistente });
       }
     }
 
-    function completaSalvataggio(idx, data){
+    function salvaModificaCompleta(data){
+      const vecchioBarcode = prodotti[editIndex].barcode || "";
+      prodotti[editIndex] = {
+        ...prodotti[editIndex],
+        barcode:data.barcode,
+        nome:data.nome,
+        birrificio:data.birrificio,
+        formato:data.formato,
+        stile:data.stile,
+        qty:Number(data.qty || 0),
+        soglia:Number(data.soglia || 0),
+        prezzo:Number(data.prezzo || 0),
+        abv:data.abv,
+        ibu:data.ibu,
+        srm:data.srm,
+        note:data.note,
+        foto:data.foto || prodotti[editIndex].foto || ""
+      };
+      registraMovimento("MODIFICA", prodotti[editIndex], 0);
+      salvaDati();
+      annullaModifica();
+      refreshAll();
+      setMsg("Prodotto modificato correttamente.", "ok");
+      if(vecchioBarcode !== data.barcode){
+        setMsg("Prodotto modificato. Anche barcode aggiornato.", "ok");
+      }
+    }
+
+    function completaSalvataggioNuovo(idx, data){
       if(idx >= 0){
         prodotti[idx] = {
           ...prodotti[idx],
@@ -1056,7 +1141,7 @@
           birrificio:data.birrificio,
           formato:data.formato,
           stile:data.stile,
-          soglia:data.soglia,
+          soglia:Number(data.soglia || 0),
           prezzo:Number(data.prezzo || 0),
           abv:data.abv,
           ibu:data.ibu,
@@ -1110,18 +1195,6 @@
       if(!confirm("Eliminare " + p.nome + "?")) return;
       registraMovimento("ELIMINATO", p, Number(p.qty || 0));
       prodotti.splice(i,1);
-      salvaDati();
-      refreshAll();
-    }
-
-    function modificaQty(i){
-      const p = prodotti[i];
-      const val = prompt("Nuova quantità per " + p.nome, p.qty || 0);
-      if(val === null) return;
-      const nuova = Math.max(0, parseInt(val || "0", 10));
-      const differenza = nuova - Number(p.qty || 0);
-      p.qty = nuova;
-      registraMovimento("MODIFICA", p, differenza);
       salvaDati();
       refreshAll();
     }
@@ -1274,7 +1347,7 @@
                     ${p.note ? "Note: " + escapeHtml(p.note) : ""}
                   </div>
                 </div>
-                <div class="badge">${bassa ? "Scorta bassa" : "OK"}</div>
+                <div class="badge">${bassa ? "OK LOW" : "OK"}</div>
               </div>
 
               <div class="qtyPriceRow">
@@ -1291,7 +1364,7 @@
               <div class="productActions">
                 <button class="btn btn-green" onclick="carico(${realIndex})">+1 Carico</button>
                 <button class="btn btn-orange" onclick="scarico(${realIndex})">-1 Scarico</button>
-                <button class="btn btn-blue" onclick="modificaQty(${realIndex})">Modifica</button>
+                <button class="btn btn-blue" onclick="entraInModalitaModifica(${realIndex})">Modifica</button>
                 <button class="btn btn-red" onclick="eliminaProdotto(${realIndex})">Elimina</button>
               </div>
             </div>
@@ -1344,7 +1417,7 @@
         document.getElementById("birrificio").value = p.birrificio || "";
         document.getElementById("formato").value = p.formato || "";
         document.getElementById("stile").value = p.stile || "";
-        document.getElementById("qty").value = "1";
+        document.getElementById("qty").value = p.qty || 0;
         document.getElementById("soglia").value = p.soglia || 0;
         document.getElementById("prezzo").value = p.prezzo || 0;
         document.getElementById("abv").value = p.abv || "";
@@ -1540,9 +1613,10 @@
       vendite = [];
       cassa = [];
       breweryFilterChip = "";
+      editIndex = null;
       salvaDati();
       refreshAll();
-      svuotaCampi();
+      annullaModifica();
       setMsg("Magazzino azzerato.", "warn");
     }
 
