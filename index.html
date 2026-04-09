@@ -60,11 +60,7 @@
     body::before{left:0}
     body::after{right:0}
 
-    .app{
-      max-width:1100px;
-      margin:0 auto;
-    }
-
+    .app{max-width:1100px;margin:0 auto}
     h1,h2,h3,p{margin:0}
 
     .hero{
@@ -161,7 +157,7 @@
     }
 
     textarea{
-      min-height:88px;
+      min-height:82px;
       resize:vertical;
     }
 
@@ -270,9 +266,7 @@
       outline:0 solid transparent;
     }
 
-    .catalogItem:active{
-      transform:scale(.98);
-    }
+    .catalogItem:active{ transform:scale(.98); }
 
     .catalogItem.flash{
       box-shadow:0 0 0 2px rgba(67,198,109,.85), 0 0 18px rgba(67,198,109,.45);
@@ -301,7 +295,7 @@
       font-size:13px;
       color:var(--muted);
       line-height:1.35;
-      min-height:72px;
+      min-height:84px;
     }
 
     .quickHint{
@@ -430,9 +424,7 @@
       font-size:16px;
     }
 
-    .cassaName{
-      font-weight:800;
-    }
+    .cassaName{ font-weight:800; }
 
     .cassaQty{
       padding:6px 10px;
@@ -538,7 +530,7 @@
 
     <div class="hero">
       <h1>XA Magazzino</h1>
-      <p>Modifica completo • prezzo modificabile dai campi • catalogo per birrificio • vendita veloce • auto BJCP</p>
+      <p>BJCP AUTO PRO • scheda gusto professionale • catalogo per birrificio • vendita veloce • modifica completa</p>
     </div>
 
     <section id="section-home" class="section active">
@@ -650,8 +642,33 @@
         </div>
 
         <div class="field">
-          <label for="note">Note gusto / aroma</label>
-          <textarea id="note" placeholder="Es. maltata, pane, pulita, floreale"></textarea>
+          <label for="gusto">Gusto</label>
+          <textarea id="gusto" placeholder="Es. maltata, pane, poco amara"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="aroma">Aroma</label>
+          <textarea id="aroma" placeholder="Es. floreale, erbaceo, agrumato"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="corpo">Corpo</label>
+          <input id="corpo" placeholder="Es. leggero / medio / pieno" />
+        </div>
+
+        <div class="field">
+          <label for="finale">Finale</label>
+          <input id="finale" placeholder="Es. secco, pulito, morbido" />
+        </div>
+
+        <div class="field">
+          <label for="abbinamenti">Abbinamenti</label>
+          <textarea id="abbinamenti" placeholder="Es. salumi, formaggi, fritti, carne"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="note">Note extra</label>
+          <textarea id="note" placeholder="Note extra del negozio o del birrificio"></textarea>
         </div>
 
         <div class="field">
@@ -818,18 +835,138 @@
 
   <script>
     const BJCP_DATA = {
-      "4A Munich Helles": {abv:"4.7–5.4", ibu:"16–22", srm:"3–5", note:"Maltata, pane fresco, pulita, elegante, finale morbido."},
-      "5D German Pils": {abv:"4.4–5.2", ibu:"22–40", srm:"2–5", note:"Secca, erbacea, speziata, amaro netto e pulito."},
-      "10A Weissbier": {abv:"4.3–5.6", ibu:"8–15", srm:"2–6", note:"Banana, chiodo di garofano, pane bianco, fresca."},
-      "15A Irish Stout": {abv:"4.0–4.5", ibu:"25–45", srm:"25–40", note:"Caffè, tostato secco, corpo leggero, finale asciutto."},
-      "18A Blonde Ale": {abv:"3.8–5.5", ibu:"15–28", srm:"3–6", note:"Chiara, pane, lieve frutto, beverina."},
-      "18B American Pale Ale": {abv:"4.5–6.2", ibu:"30–50", srm:"5–10", note:"Agrumi, resina lieve, biscotto, finale fresco."},
-      "21A American IPA": {abv:"5.5–7.5", ibu:"40–70", srm:"6–14", note:"Agrumi, resina, frutta tropicale, amaro deciso."},
-      "22A Double IPA": {abv:"7.5–10.0", ibu:"60–100", srm:"6–14", note:"Molto luppolata, intensa, fruttata e resinosa."},
-      "24A Witbier": {abv:"4.5–5.5", ibu:"8–20", srm:"2–4", note:"Coriandolo, agrumi, cereale, fresca e torbida."},
-      "25B Saison": {abv:"5.0–7.0", ibu:"20–35", srm:"5–14", note:"Pepata, secca, agrumata, rustica e fresca."},
-      "26C Belgian Tripel": {abv:"7.5–9.5", ibu:"20–40", srm:"4.5–7", note:"Fruttata, pepata, secca, elegante e forte."},
-      "23A Berliner Weisse": {abv:"2.8–3.8", ibu:"3–8", srm:"2–3", note:"Acida, citrica, leggera, molto secca."}
+      "4A Munich Helles": {
+        abv:"4.7–5.4",
+        ibu:"16–22",
+        srm:"3–5",
+        gusto:"Maltata, pane fresco, delicatamente dolce, poco amara.",
+        aroma:"Pane, miele leggero, cereale pulito, luppolo molto delicato.",
+        corpo:"Leggero-medio",
+        finale:"Pulito, morbido, scorrevole",
+        abbinamenti:"Salumi, wurstel, pretzel, fritti, formaggi dolci",
+        note:"Profilo elegante, bilanciato e molto beverino."
+      },
+      "5D German Pils": {
+        abv:"4.4–5.2",
+        ibu:"22–40",
+        srm:"2–5",
+        gusto:"Secca, croccante, più amara di una Helles.",
+        aroma:"Erbaceo, speziato, floreale, cereale chiaro.",
+        corpo:"Leggero",
+        finale:"Secco, netto, pulito",
+        abbinamenti:"Fritti, pizza bianca, pesce, snack salati",
+        note:"Luppolo tedesco più evidente, grande bevibilità."
+      },
+      "10A Weissbier": {
+        abv:"4.3–5.6",
+        ibu:"8–15",
+        srm:"2–6",
+        gusto:"Fresca, fruttata, morbida, poco amara.",
+        aroma:"Banana, chiodo di garofano, pane bianco.",
+        corpo:"Medio",
+        finale:"Morbido, fresco, vivace",
+        abbinamenti:"Insalate, pollo, piatti speziati leggeri, formaggi freschi",
+        note:"Frumento in evidenza, schiuma abbondante."
+      },
+      "15A Irish Stout": {
+        abv:"4.0–4.5",
+        ibu:"25–45",
+        srm:"25–40",
+        gusto:"Tostata, secca, caffè, cacao amaro.",
+        aroma:"Orzo tostato, caffè, lieve cioccolato fondente.",
+        corpo:"Leggero-medio",
+        finale:"Asciutto, tostato, deciso",
+        abbinamenti:"Ostriche, carni grigliate, burger, dolci al cacao",
+        note:"Scura ma non pesante, molto diretta."
+      },
+      "18A Blonde Ale": {
+        abv:"3.8–5.5",
+        ibu:"15–28",
+        srm:"3–6",
+        gusto:"Chiara, morbida, pane leggero, facile da bere.",
+        aroma:"Cereale, floreale lieve, fruttato delicato.",
+        corpo:"Leggero-medio",
+        finale:"Pulito, semplice, beverino",
+        abbinamenti:"Panini, aperitivi, fritti, pizza",
+        note:"Ale facile e versatile."
+      },
+      "18B American Pale Ale": {
+        abv:"4.5–6.2",
+        ibu:"30–50",
+        srm:"5–10",
+        gusto:"Agrumata, resinosa, biscotto, amaro moderato.",
+        aroma:"Agrumi, resina, frutta tropicale leggera, malto biscuit.",
+        corpo:"Medio-leggero",
+        finale:"Fresco, amaro equilibrato",
+        abbinamenti:"Hamburger, tacos, pizza saporita, cheddar",
+        note:"Equilibrio tra malto e luppolo americano."
+      },
+      "21A American IPA": {
+        abv:"5.5–7.5",
+        ibu:"40–70",
+        srm:"6–14",
+        gusto:"Amara, agrumata, resinosa, fruttata.",
+        aroma:"Pompelmo, arancia, mango, resina, luppolo intenso.",
+        corpo:"Medio",
+        finale:"Amaro, persistente, secco",
+        abbinamenti:"Cucina speziata, burger, barbecue, blue cheese",
+        note:"Luppolo protagonista, profilo molto moderno."
+      },
+      "22A Double IPA": {
+        abv:"7.5–10.0",
+        ibu:"60–100",
+        srm:"6–14",
+        gusto:"Molto intensa, amara, fruttata, potente.",
+        aroma:"Tropicale, agrumato, resinoso, alcol delicato.",
+        corpo:"Medio-pieno",
+        finale:"Lungo, amaro, caldo",
+        abbinamenti:"Piatti molto saporiti, bbq, formaggi stagionati",
+        note:"IPA estrema, ricca e carica di luppolo."
+      },
+      "24A Witbier": {
+        abv:"4.5–5.5",
+        ibu:"8–20",
+        srm:"2–4",
+        gusto:"Fresca, agrumata, morbida, poco amara.",
+        aroma:"Coriandolo, scorza d'arancia, frumento.",
+        corpo:"Leggero-medio",
+        finale:"Fresco, leggermente speziato",
+        abbinamenti:"Pesce, insalate, sushi, formaggi freschi",
+        note:"Chiara e torbida, ottima d'estate."
+      },
+      "25B Saison": {
+        abv:"5.0–7.0",
+        ibu:"20–35",
+        srm:"5–14",
+        gusto:"Secca, speziata, rustica, fresca.",
+        aroma:"Pepata, agrumata, erbacea, fruttata leggera.",
+        corpo:"Leggero-medio",
+        finale:"Molto secco, vivace",
+        abbinamenti:"Salumi, pollo, formaggi caprini, piatti speziati",
+        note:"Alta bevibilità con carattere rustico."
+      },
+      "26C Belgian Tripel": {
+        abv:"7.5–9.5",
+        ibu:"20–40",
+        srm:"4.5–7",
+        gusto:"Ricca ma secca, fruttata, speziata, alcol elegante.",
+        aroma:"Pera, banana lieve, pepe, miele leggero.",
+        corpo:"Medio-pieno",
+        finale:"Secco, caldo, raffinato",
+        abbinamenti:"Carni bianche, formaggi stagionati, cucina ricca",
+        note:"Forte, elegante, complessa ma scorrevole."
+      },
+      "23A Berliner Weisse": {
+        abv:"2.8–3.8",
+        ibu:"3–8",
+        srm:"2–3",
+        gusto:"Acida, citrica, leggerissima.",
+        aroma:"Limone, yogurt, cereale molto tenue.",
+        corpo:"Molto leggero",
+        finale:"Secco, acidulo, pulitissimo",
+        abbinamenti:"Pesce crudo, aperitivo, fritti leggeri",
+        note:"Acidità protagonista, gradazione molto bassa."
+      }
     };
 
     const ALL_STYLES = Object.keys(BJCP_DATA);
@@ -988,14 +1125,20 @@
         document.getElementById("autoNotePreview").textContent = "Seleziona uno stile BJCP per compilare automaticamente le specifiche.";
         return;
       }
+
       document.getElementById("abv").value = data.abv;
       document.getElementById("ibu").value = data.ibu;
       document.getElementById("srm").value = data.srm;
-      document.getElementById("note").value = data.note;
+      document.getElementById("gusto").value = data.gusto;
+      document.getElementById("aroma").value = data.aroma;
+      document.getElementById("corpo").value = data.corpo;
+      document.getElementById("finale").value = data.finale;
+      document.getElementById("abbinamenti").value = data.abbinamenti;
+
       document.getElementById("autoAbvChip").textContent = "ABV: " + data.abv;
       document.getElementById("autoIbuChip").textContent = "IBU: " + data.ibu;
       document.getElementById("autoSrmChip").textContent = "SRM: " + data.srm;
-      document.getElementById("autoNotePreview").textContent = data.note;
+      document.getElementById("autoNotePreview").textContent = data.gusto + " " + data.aroma;
     }
 
     function trovaPerBarcode(barcode){
@@ -1017,18 +1160,23 @@
       document.getElementById("abv").value = p.abv || "";
       document.getElementById("ibu").value = p.ibu || "";
       document.getElementById("srm").value = p.srm || "";
+      document.getElementById("gusto").value = p.gusto || "";
+      document.getElementById("aroma").value = p.aroma || "";
+      document.getElementById("corpo").value = p.corpo || "";
+      document.getElementById("finale").value = p.finale || "";
+      document.getElementById("abbinamenti").value = p.abbinamenti || "";
       document.getElementById("note").value = p.note || "";
 
       document.getElementById("editBox").style.display = "block";
       document.getElementById("saveBtn").textContent = "Salva modifica";
 
       showSection("home", document.querySelector('.navBtn[data-section="home"]'));
-      setMsg("Prezzo e dati pronti da modificare. Cambia i campi e premi Salva modifica.", "ok");
+      setMsg("Prodotto pronto da modificare.", "ok");
     }
 
     function annullaModifica(){
       editIndex = null;
-      ["barcode","nome","birrificio","formato","qty","soglia","prezzo","abv","ibu","srm","note","searchStyle"].forEach(id => {
+      ["barcode","nome","birrificio","formato","qty","soglia","prezzo","abv","ibu","srm","gusto","aroma","corpo","finale","abbinamenti","note","searchStyle"].forEach(id => {
         document.getElementById(id).value = "";
       });
       document.getElementById("stile").value = "";
@@ -1067,6 +1215,11 @@
       const abv = document.getElementById("abv").value.trim();
       const ibu = document.getElementById("ibu").value.trim();
       const srm = document.getElementById("srm").value.trim();
+      const gusto = document.getElementById("gusto").value.trim();
+      const aroma = document.getElementById("aroma").value.trim();
+      const corpo = document.getElementById("corpo").value.trim();
+      const finale = document.getElementById("finale").value.trim();
+      const abbinamenti = document.getElementById("abbinamenti").value.trim();
       const note = document.getElementById("note").value.trim();
       const file = document.getElementById("foto").files[0];
 
@@ -1078,13 +1231,13 @@
           const reader = new FileReader();
           reader.onload = function(){
             salvaModificaCompleta({
-              barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, abv, ibu, srm, note, foto: reader.result
+              barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, abv, ibu, srm, gusto, aroma, corpo, finale, abbinamenti, note, foto: reader.result
             });
           };
           reader.readAsDataURL(file);
         } else {
           salvaModificaCompleta({
-            barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, abv, ibu, srm, note, foto: prodotti[editIndex].foto || ""
+            barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, abv, ibu, srm, gusto, aroma, corpo, finale, abbinamenti, note, foto: prodotti[editIndex].foto || ""
           });
         }
         return;
@@ -1095,18 +1248,17 @@
       if(file){
         const reader = new FileReader();
         reader.onload = function(){
-          completaSalvataggioNuovo(idx, { barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, abv, ibu, srm, note, foto: reader.result });
+          completaSalvataggioNuovo(idx, { barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, abv, ibu, srm, gusto, aroma, corpo, finale, abbinamenti, note, foto: reader.result });
         };
         reader.readAsDataURL(file);
       } else {
         let fotoEsistente = "";
         if(idx >= 0) fotoEsistente = prodotti[idx].foto || "";
-        completaSalvataggioNuovo(idx, { barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, abv, ibu, srm, note, foto: fotoEsistente });
+        completaSalvataggioNuovo(idx, { barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, abv, ibu, srm, gusto, aroma, corpo, finale, abbinamenti, note, foto: fotoEsistente });
       }
     }
 
     function salvaModificaCompleta(data){
-      const vecchioBarcode = prodotti[editIndex].barcode || "";
       prodotti[editIndex] = {
         ...prodotti[editIndex],
         barcode:data.barcode,
@@ -1120,6 +1272,11 @@
         abv:data.abv,
         ibu:data.ibu,
         srm:data.srm,
+        gusto:data.gusto,
+        aroma:data.aroma,
+        corpo:data.corpo,
+        finale:data.finale,
+        abbinamenti:data.abbinamenti,
         note:data.note,
         foto:data.foto || prodotti[editIndex].foto || ""
       };
@@ -1128,9 +1285,6 @@
       annullaModifica();
       refreshAll();
       setMsg("Prodotto modificato correttamente.", "ok");
-      if(vecchioBarcode !== data.barcode){
-        setMsg("Prodotto modificato. Anche barcode aggiornato.", "ok");
-      }
     }
 
     function completaSalvataggioNuovo(idx, data){
@@ -1146,6 +1300,11 @@
           abv:data.abv,
           ibu:data.ibu,
           srm:data.srm,
+          gusto:data.gusto,
+          aroma:data.aroma,
+          corpo:data.corpo,
+          finale:data.finale,
+          abbinamenti:data.abbinamenti,
           note:data.note,
           foto:data.foto || prodotti[idx].foto || "",
           qty:Number(prodotti[idx].qty || 0) + Number(data.qty || 0)
@@ -1165,6 +1324,11 @@
           abv:data.abv,
           ibu:data.ibu,
           srm:data.srm,
+          gusto:data.gusto,
+          aroma:data.aroma,
+          corpo:data.corpo,
+          finale:data.finale,
+          abbinamenti:data.abbinamenti,
           note:data.note,
           foto:data.foto || ""
         };
@@ -1284,7 +1448,7 @@
             <div class="catalogMeta">
               ${p.birrificio ? escapeHtml(p.birrificio) + "<br>" : ""}
               ${p.stile ? escapeHtml(p.stile) + "<br>" : ""}
-              ABV ${escapeHtml(p.abv || "-")} · IBU ${escapeHtml(p.ibu || "-")}<br>
+              ${p.gusto ? escapeHtml(p.gusto) + "<br>" : ""}
               € ${Number(p.prezzo || 0).toFixed(2)}
             </div>
             <div class="quickHint">Tocca per aggiungere in cassa</div>
@@ -1343,8 +1507,13 @@
                     ABV: ${escapeHtml(p.abv || "-")}<br>
                     IBU: ${escapeHtml(p.ibu || "-")}<br>
                     SRM: ${escapeHtml(p.srm || "-")}<br>
-                    Scorta minima: ${Number(p.soglia||0)}<br>
-                    ${p.note ? "Note: " + escapeHtml(p.note) : ""}
+                    Gusto: ${escapeHtml(p.gusto || "-")}<br>
+                    Aroma: ${escapeHtml(p.aroma || "-")}<br>
+                    Corpo: ${escapeHtml(p.corpo || "-")}<br>
+                    Finale: ${escapeHtml(p.finale || "-")}<br>
+                    Abbinamenti: ${escapeHtml(p.abbinamenti || "-")}<br>
+                    ${p.note ? "Note: " + escapeHtml(p.note) + "<br>" : ""}
+                    Scorta minima: ${Number(p.soglia||0)}
                   </div>
                 </div>
                 <div class="badge">${bassa ? "OK LOW" : "OK"}</div>
@@ -1423,6 +1592,11 @@
         document.getElementById("abv").value = p.abv || "";
         document.getElementById("ibu").value = p.ibu || "";
         document.getElementById("srm").value = p.srm || "";
+        document.getElementById("gusto").value = p.gusto || "";
+        document.getElementById("aroma").value = p.aroma || "";
+        document.getElementById("corpo").value = p.corpo || "";
+        document.getElementById("finale").value = p.finale || "";
+        document.getElementById("abbinamenti").value = p.abbinamenti || "";
         document.getElementById("note").value = p.note || "";
         setScan("Prodotto già presente nel tuo magazzino.", "ok");
         return;
