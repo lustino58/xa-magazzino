@@ -235,6 +235,7 @@
       display:flex;
       gap:8px;
       flex-wrap:wrap;
+      margin-top:10px;
     }
 
     .chip{
@@ -244,6 +245,13 @@
       border:1px solid var(--line);
       font-size:12px;
       font-weight:800;
+      color:var(--text);
+      width:auto;
+    }
+
+    .chip.active{
+      border-color:var(--gold);
+      color:#fff;
     }
 
     .catalogGrid{
@@ -520,7 +528,7 @@
 
     <div class="hero">
       <h1>XA Magazzino</h1>
-      <p>Modalità cassa hardcore • tap diretto dal catalogo • bip • flash • auto BJCP • scanner • catalogo • magazzino • statistiche</p>
+      <p>Catalogo per birrificio • vendita veloce • auto BJCP • scanner • magazzino • cassa • statistiche</p>
     </div>
 
     <section id="section-home" class="section active">
@@ -569,7 +577,7 @@
 
         <div class="field">
           <label for="birrificio">Birrificio</label>
-          <input id="birrificio" placeholder="Es. Schwaben Bräu" />
+          <input id="birrificio" placeholder="Es. Spaten" />
         </div>
 
         <div class="field">
@@ -653,7 +661,7 @@
         <div class="sectionTitle">Catalogo birre</div>
 
         <div class="hardcoreBox">
-          Modalità vendita veloce attiva: tocca una birra e va subito in cassa.
+          Tocca una birra per aggiungerla subito in cassa. Puoi filtrare anche per birrificio.
         </div>
 
         <div class="field">
@@ -666,6 +674,18 @@
           <select id="catalogStyle" onchange="renderCatalogo()">
             <option value="">Tutti gli stili</option>
           </select>
+        </div>
+
+        <div class="field">
+          <label for="catalogBrewery">Filtro birrificio</label>
+          <select id="catalogBrewery" onchange="renderCatalogo()">
+            <option value="">Tutti i birrifici</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Birrifici rapidi</label>
+          <div class="chipRow" id="breweryChips"></div>
         </div>
 
         <div id="catalogoGrid" class="catalogGrid"></div>
@@ -800,9 +820,7 @@
       "23A Berliner Weisse": {abv:"2.8–3.8", ibu:"3–8", srm:"2–3", note:"Acida, citrica, leggera, molto secca."}
     };
 
-    const ALL_STYLES = [
-      "4A Munich Helles","5D German Pils","10A Weissbier","15A Irish Stout","18A Blonde Ale","18B American Pale Ale","21A American IPA","22A Double IPA","24A Witbier","25B Saison","26C Belgian Tripel","23A Berliner Weisse"
-    ];
+    const ALL_STYLES = Object.keys(BJCP_DATA);
 
     let prodotti = JSON.parse(localStorage.getItem("prodotti_xa_max")) || [];
     let movimenti = JSON.parse(localStorage.getItem("movimenti_xa_max")) || [];
@@ -810,6 +828,7 @@
     let cassa = [];
     let html5QrCode = null;
     let scannerAttivo = false;
+    let breweryFilterChip = "";
 
     function showSection(name, btn){
       document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
@@ -893,6 +912,42 @@
         catalogStyle.appendChild(o);
       });
       catalogStyle.value = old;
+    }
+
+    function popolaBirrificiCatalogo(){
+      const select = document.getElementById("catalogBrewery");
+      const old = select.value;
+      const breweries = [...new Set(prodotti.map(p => String(p.birrificio || "").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"it"));
+      select.innerHTML = `<option value="">Tutti i birrifici</option>`;
+      breweries.forEach(b => {
+        const o = document.createElement("option");
+        o.value = b;
+        o.textContent = b;
+        select.appendChild(o);
+      });
+      if(breweries.includes(old)) select.value = old;
+    }
+
+    function renderBreweryChips(){
+      const row = document.getElementById("breweryChips");
+      const breweries = [...new Set(prodotti.map(p => String(p.birrificio || "").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"it"));
+      if(breweries.length === 0){
+        row.innerHTML = `<div class="small">Nessun birrificio ancora salvato.</div>`;
+        return;
+      }
+      row.innerHTML = `
+        <button class="chip ${breweryFilterChip === "" ? "active" : ""}" onclick="setBreweryChip('')">Tutti</button>
+        ${breweries.map(b => `
+          <button class="chip ${breweryFilterChip === b ? "active" : ""}" onclick="setBreweryChip('${escapeHtml(b)}')">${escapeHtml(b)}</button>
+        `).join("")}
+      `;
+    }
+
+    function setBreweryChip(name){
+      breweryFilterChip = name;
+      document.getElementById("catalogBrewery").value = name;
+      renderBreweryChips();
+      renderCatalogo();
     }
 
     function filtraStili(){
@@ -1121,6 +1176,7 @@
       let items = [...prodotti];
       const q = document.getElementById("catalogSearch").value.trim().toLowerCase();
       const style = document.getElementById("catalogStyle").value;
+      const brewery = document.getElementById("catalogBrewery").value || breweryFilterChip;
 
       if(q){
         items = items.filter(p =>
@@ -1132,6 +1188,10 @@
 
       if(style){
         items = items.filter(p => String(p.stile||"") === style);
+      }
+
+      if(brewery){
+        items = items.filter(p => String(p.birrificio||"") === brewery);
       }
 
       if(items.length === 0){
@@ -1356,9 +1416,7 @@
       const m = {};
       cassa.forEach(item => {
         const key = item.barcode + "||" + item.nome + "||" + item.prezzo;
-        if(!m[key]){
-          m[key] = { ...item, count: 0 };
-        }
+        if(!m[key]) m[key] = { ...item, count: 0 };
         m[key].count += 1;
       });
       return Object.values(m);
@@ -1481,6 +1539,7 @@
       movimenti = [];
       vendite = [];
       cassa = [];
+      breweryFilterChip = "";
       salvaDati();
       refreshAll();
       svuotaCampi();
@@ -1489,6 +1548,8 @@
 
     function refreshAll(){
       updateStats();
+      popolaBirrificiCatalogo();
+      renderBreweryChips();
       renderCatalogo();
       renderMagazzino();
       renderCassa();
