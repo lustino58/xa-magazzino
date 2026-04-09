@@ -1,187 +1,53 @@
 <!DOCTYPE html>
-<html lang="it">
+<html>
 <head>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>XA Magazzino PRO</title>
+<title>XA Magazzino</title>
 
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#111111">
-<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script src="https://unpkg.com/html5-qrcode"></script>
 
 <style>
 body{
   background:#0f1115;
   color:white;
-  font-family:sans-serif;
-  padding:10px;
-}
-.card{
-  background:#1a1d23;
-  padding:10px;
-  border-radius:12px;
-  margin-bottom:10px;
-}
-img{
-  width:100%;
-  border-radius:10px;
-  margin-top:8px;
+  font-family:Arial;
+  padding:20px;
 }
 input,button{
-  padding:10px;
-  margin:5px 0;
   width:100%;
-  border-radius:10px;
-  border:none;
-}
-button{
-  background:#d4af37;
-  color:#111;
-  font-weight:bold;
-}
-.secondary{
-  background:#2a2f38;
-  color:white;
+  padding:12px;
+  margin:5px 0;
 }
 #reader{
-  width:100%;
   margin-top:10px;
-  display:none;
-}
-.small{
-  font-size:14px;
-  color:#bbb;
 }
 </style>
 </head>
 
 <body>
 
-<h2>XA Magazzino PRO</h2>
+<h2>XA Magazzino</h2>
 
-<div class="card">
-  <h3>Nuovo prodotto</h3>
-  <input type="text" id="nome" placeholder="Nome prodotto">
-  <input type="number" id="qty" placeholder="Quantità">
-  <input type="text" id="barcode" placeholder="Barcode">
-  <input type="file" id="foto" accept="image/*">
-  <button onclick="salva()">Salva prodotto</button>
-  <button class="secondary" onclick="startScanner()">Scanner barcode</button>
-  <div id="reader"></div>
-  <div id="scanStatus" class="small"></div>
-</div>
+<input id="barcode" placeholder="Barcode">
 
-<div id="lista"></div>
+<button onclick="startScanner()">📷 Scanner</button>
+
+<div id="reader"></div>
 
 <script>
-let prodotti = JSON.parse(localStorage.getItem("prodotti") || "[]");
-let html5QrCode = null;
-let scannerAttivo = false;
-
-function salva(){
-  let nome = document.getElementById("nome").value.trim();
-  let qty = document.getElementById("qty").value.trim();
-  let barcode = document.getElementById("barcode").value.trim();
-  let file = document.getElementById("foto").files[0];
-
-  if(!nome) return alert("Inserisci nome prodotto");
-
-  let reader = new FileReader();
-  reader.onload = function(){
-    prodotti.push({
-      nome,
-      qty,
-      barcode,
-      foto: reader.result || ""
-    });
-    localStorage.setItem("prodotti", JSON.stringify(prodotti));
-    pulisciForm();
-    mostra();
-  };
-
-  if(file){
-    reader.readAsDataURL(file);
-  } else {
-    prodotti.push({ nome, qty, barcode, foto:"" });
-    localStorage.setItem("prodotti", JSON.stringify(prodotti));
-    pulisciForm();
-    mostra();
-  }
-}
-
-function pulisciForm(){
-  document.getElementById("nome").value = "";
-  document.getElementById("qty").value = "";
-  document.getElementById("barcode").value = "";
-  document.getElementById("foto").value = "";
-}
-
-function mostra(){
-  let html = "";
-  prodotti.forEach((p, i) => {
-    html += `
-      <div class="card">
-        <b>${p.nome}</b><br>
-        Quantità: ${p.qty || 0}<br>
-        Barcode: ${p.barcode || "-"}<br>
-        ${p.foto ? `<img src="${p.foto}" alt="${p.nome}">` : ""}
-      </div>
-    `;
-  });
-  document.getElementById("lista").innerHTML = html;
-}
-
 function startScanner(){
-  const readerDiv = document.getElementById("reader");
-  const status = document.getElementById("scanStatus");
-
-  if(scannerAttivo){
-    status.innerText = "Scanner già attivo";
-    return;
-  }
-
-  readerDiv.style.display = "block";
-  status.innerText = "Avvio fotocamera...";
-
-  html5QrCode = new Html5Qrcode("reader");
-  scannerAttivo = true;
+  const html5QrCode = new Html5Qrcode("reader");
 
   html5QrCode.start(
     { facingMode: "environment" },
-    {
-      fps: 10,
-      qrbox: { width: 250, height: 120 }
-    },
+    { fps: 10, qrbox: 250 },
     (decodedText) => {
       document.getElementById("barcode").value = decodedText;
-      status.innerText = "Barcode letto: " + decodedText;
-      stopScanner();
-    },
-    () => {}
-  ).catch(err => {
-    status.innerText = "Errore fotocamera";
-    scannerAttivo = false;
-  });
+      html5QrCode.stop();
+    }
+  );
 }
-
-function stopScanner(){
-  const status = document.getElementById("scanStatus");
-  const readerDiv = document.getElementById("reader");
-
-  if(html5QrCode && scannerAttivo){
-    html5QrCode.stop().then(() => {
-      html5QrCode.clear();
-      scannerAttivo = false;
-      readerDiv.style.display = "none";
-    }).catch(() => {
-      scannerAttivo = false;
-      readerDiv.style.display = "none";
-    });
-  }
-}
-
-mostra();
-</script>
+</script>>
 
 </body>
 </html>
