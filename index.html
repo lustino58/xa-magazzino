@@ -34,7 +34,7 @@
       --dark:#3e4a5c;
       --defaultCard:#223043;
 
-      --neon:#ff3b3b; /* cambia qui: rosso #ff3b3b, verde #00ff9c, blu #00d4ff */
+      --neon:#ff3b3b;
     }
 
     *{box-sizing:border-box}
@@ -93,13 +93,8 @@
       line-height:1.4;
     }
 
-    .section{
-      display:none;
-    }
-
-    .section.active{
-      display:block;
-    }
+    .section{ display:none; }
+    .section.active{ display:block; }
 
     .card{
       background:linear-gradient(180deg,#141d28,#17212d);
@@ -146,9 +141,7 @@
       line-height:1;
     }
 
-    .field{
-      margin-top:10px;
-    }
+    .field{ margin-top:10px; }
 
     .field label{
       display:block;
@@ -160,7 +153,7 @@
       letter-spacing:.7px;
     }
 
-    input, select, button{
+    input, select, textarea, button{
       width:100%;
       padding:14px;
       border-radius:15px;
@@ -169,9 +162,14 @@
       font-family:inherit;
     }
 
-    input, select{
+    input, select, textarea{
       background:#f2f5f9;
       color:#111;
+    }
+
+    textarea{
+      min-height:88px;
+      resize:vertical;
     }
 
     button{
@@ -201,13 +199,6 @@
       margin-top:10px;
     }
 
-    .toolbar3{
-      display:grid;
-      grid-template-columns:1fr 1fr 1fr;
-      gap:10px;
-      margin-top:10px;
-    }
-
     .small{
       font-size:14px;
       color:var(--muted);
@@ -228,71 +219,36 @@
       min-height:80px;
     }
 
-    .categoryGrid{
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:10px;
+    .autoBox{
       margin-top:10px;
+      padding:12px;
+      border-radius:16px;
+      background:rgba(255,255,255,.03);
+      border:1px solid var(--line);
     }
 
-    .categoryCard{
-      border-radius:18px;
-      padding:10px;
-      border:1px solid rgba(255,255,255,.08);
-      box-shadow:0 6px 14px rgba(0,0,0,.16);
-      cursor:pointer;
-      transition:transform .15s ease;
-    }
-
-    .categoryCard:active{
-      transform:scale(.98);
-    }
-
-    .categoryThumb{
-      width:100%;
-      height:120px;
-      object-fit:cover;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.08);
-      background:#111;
-      margin-bottom:8px;
-    }
-
-    .categoryName{
-      font-size:20px;
-      font-weight:800;
-      line-height:1.1;
-    }
-
-    .categoryCount{
-      color:#eef3fb;
-      opacity:.9;
-      margin-top:6px;
+    .autoTitle{
       font-size:13px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.7px;
+      color:var(--muted);
+      margin-bottom:8px;
     }
 
     .chipRow{
       display:flex;
       gap:8px;
-      overflow:auto;
-      padding-bottom:4px;
-      margin-top:10px;
+      flex-wrap:wrap;
     }
 
     .chip{
-      flex:0 0 auto;
-      padding:10px 12px;
+      padding:8px 10px;
       border-radius:999px;
-      border:1px solid var(--line);
       background:#18222e;
-      color:var(--text);
-      font-size:13px;
+      border:1px solid var(--line);
+      font-size:12px;
       font-weight:800;
-    }
-
-    .chip.active{
-      border-color:var(--gold);
-      color:#fff;
     }
 
     .catalogGrid{
@@ -332,17 +288,7 @@
       font-size:13px;
       color:var(--muted);
       line-height:1.35;
-      min-height:58px;
-    }
-
-    .miniBadge{
-      display:inline-block;
-      margin-top:8px;
-      font-size:12px;
-      padding:6px 8px;
-      border-radius:999px;
-      background:rgba(0,0,0,.18);
-      border:1px solid rgba(255,255,255,.12);
+      min-height:72px;
     }
 
     .inventoryGrid{
@@ -415,15 +361,9 @@
     }
 
     .infoValue{
-      font-size:34px;
-      font-weight:900;
-      line-height:1;
-    }
-
-    .priceValue{
       font-size:28px;
       font-weight:900;
-      line-height:1;
+      line-height:1.1;
     }
 
     .productImage{
@@ -517,8 +457,7 @@
 
     @media (min-width:900px){
       .inventoryGrid,
-      .catalogGrid,
-      .categoryGrid{
+      .catalogGrid{
         grid-template-columns:1fr 1fr;
       }
     }
@@ -529,7 +468,7 @@
 
     <div class="hero">
       <h1>XA Magazzino</h1>
-      <p>App a sezioni con menu fisso • catalogo a icone • magazzino separato • cassa • statistiche • bordo neon laterale</p>
+      <p>Auto BJCP completo • ABV • IBU • SRM • note gusto • scanner • catalogo • cassa • statistiche</p>
     </div>
 
     <section id="section-home" class="section active">
@@ -593,9 +532,19 @@
 
         <div class="field">
           <label for="stile">Stile BJCP</label>
-          <select id="stile">
+          <select id="stile" onchange="autoCompilaBJCP()">
             <option value="">Seleziona stile BJCP</option>
           </select>
+        </div>
+
+        <div class="autoBox">
+          <div class="autoTitle">Auto BJCP</div>
+          <div class="chipRow">
+            <div class="chip" id="autoAbvChip">ABV: -</div>
+            <div class="chip" id="autoIbuChip">IBU: -</div>
+            <div class="chip" id="autoSrmChip">SRM: -</div>
+          </div>
+          <div class="small" id="autoNotePreview">Seleziona uno stile BJCP per compilare automaticamente le specifiche.</div>
         </div>
 
         <div class="field">
@@ -614,6 +563,26 @@
         </div>
 
         <div class="field">
+          <label for="abv">ABV %</label>
+          <input id="abv" placeholder="Es. 4.7–5.4" />
+        </div>
+
+        <div class="field">
+          <label for="ibu">IBU</label>
+          <input id="ibu" placeholder="Es. 16–22" />
+        </div>
+
+        <div class="field">
+          <label for="srm">SRM / Colore</label>
+          <input id="srm" placeholder="Es. 3–5" />
+        </div>
+
+        <div class="field">
+          <label for="note">Note gusto / aroma</label>
+          <textarea id="note" placeholder="Es. maltata, pane, pulita, floreale"></textarea>
+        </div>
+
+        <div class="field">
           <label for="foto">Foto etichetta</label>
           <input type="file" id="foto" accept="image/*" />
         </div>
@@ -629,11 +598,6 @@
 
     <section id="section-catalogo" class="section">
       <div class="card">
-        <div class="sectionTitle">Categorie catalogo</div>
-        <div id="categoryGrid" class="categoryGrid"></div>
-      </div>
-
-      <div class="card">
         <div class="sectionTitle">Catalogo birre</div>
 
         <div class="field">
@@ -648,7 +612,6 @@
           </select>
         </div>
 
-        <div class="chipRow" id="familyChips"></div>
         <div id="catalogoGrid" class="catalogGrid"></div>
       </div>
     </section>
@@ -713,7 +676,6 @@
     <section id="section-statistiche" class="section">
       <div class="card">
         <div class="sectionTitle">Statistiche</div>
-
         <div class="stats">
           <div class="stat">
             <div class="label">Incasso totale</div>
@@ -767,42 +729,140 @@
   </nav>
 
   <script>
-    const stiliBJCP = [
-      "1A American Light Lager","1B American Lager","1C Cream Ale","1D American Wheat Beer",
-      "2A International Pale Lager","2B International Amber Lager","2C International Dark Lager",
-      "3A Czech Pale Lager","3B Czech Premium Pale Lager","3C Czech Amber Lager","3D Czech Dark Lager",
-      "4A Munich Helles","4B Festbier","4C Helles Bock",
-      "5A German Leichtbier","5B Kölsch","5C German Helles Exportbier","5D German Pils",
-      "6A Märzen","6B Rauchbier","6C Dunkles Bock",
-      "7A Vienna Lager","7B Altbier","7C Kellerbier",
-      "8A Munich Dunkel","8B Schwarzbier",
-      "9A Doppelbock","9B Eisbock","9C Baltic Porter",
-      "10A Weissbier","10B Dunkles Weissbier","10C Weizenbock",
-      "11A Ordinary Bitter","11B Best Bitter","11C Strong Bitter",
-      "12A British Golden Ale","12B Australian Sparkling Ale","12C English IPA",
-      "13A Dark Mild","13B British Brown Ale","13C English Porter",
-      "14A Scottish Light","14B Scottish Heavy","14C Scottish Export","14D Irish Red Ale",
-      "15A Irish Stout","15B Irish Extra Stout","15C Sweet Stout","15D Oatmeal Stout","15E Tropical Stout","15F Foreign Extra Stout",
-      "16A Sweet Stout","16B Oatmeal Stout","16C Tropical Stout","16D Foreign Extra Stout",
-      "17A British Strong Ale","17B Old Ale","17C Wee Heavy","17D English Barleywine",
-      "18A Blonde Ale","18B American Pale Ale",
-      "19A American Amber Ale","19B California Common",
-      "20A American Porter","20B American Stout","20C Imperial Stout",
-      "21A American IPA","21B Specialty IPA",
-      "22A Double IPA","22B American Strong Ale","22C American Barleywine","22D Wheatwine",
-      "23A Berliner Weisse","23B Flanders Red Ale","23C Oud Bruin","23D Lambic","23E Gueuze","23F Fruit Lambic",
-      "24A Witbier","24B Belgian Pale Ale","24C Bière de Garde",
-      "25A Belgian Blond Ale","25B Saison","25C Belgian Golden Strong Ale",
-      "26A Belgian Single","26B Belgian Dubbel","26C Belgian Tripel","26D Belgian Dark Strong Ale",
-      "27A Historical Beer","27B Kentucky Common","27C Kellerbier","27D Pre-Prohibition Lager","27E Pre-Prohibition Porter",
-      "28A Brett Beer","28B Mixed-Fermentation Sour Beer","28C Wild Specialty Beer",
-      "29A Fruit Beer","29B Fruit and Spice Beer","29C Specialty Fruit Beer",
-      "30A Spice, Herb, or Vegetable Beer","30B Autumn Seasonal Beer","30C Winter Seasonal Beer",
-      "31A Alternative Grain Beer","31B Alternative Sugar Beer","31C Classic Style Smoked Beer","31D Specialty Smoked Beer",
-      "32A Wood-Aged Beer","32B Specialty Wood-Aged Beer",
-      "33A Specialty Beer",
-      "34A Clone Beer","34B Mixed-Style Beer","34C Experimental Beer"
-    ];
+    const BJCP_DATA = {
+      "1A American Light Lager": {abv:"2.8–4.2", ibu:"8–12", srm:"2–3", note:"Molto leggera, cereale neutro, finale secco e pulito."},
+      "1B American Lager": {abv:"4.2–5.3", ibu:"8–18", srm:"2–4", note:"Pulita, leggera, poco amaro, cereale delicato."},
+      "1C Cream Ale": {abv:"4.2–5.6", ibu:"8–20", srm:"2.5–5", note:"Morbida, pulita, leggermente maltata, molto beverina."},
+      "1D American Wheat Beer": {abv:"4.0–5.5", ibu:"15–30", srm:"3–6", note:"Pane, cereale, agrumi leggeri, finale fresco."},
+
+      "2A International Pale Lager": {abv:"4.6–6.0", ibu:"18–25", srm:"2–6", note:"Pulita, croccante, leggera maltosità, finale secco."},
+      "2B International Amber Lager": {abv:"4.6–6.0", ibu:"8–25", srm:"7–14", note:"Caramello leggero, tostato tenue, equilibrio semplice."},
+      "2C International Dark Lager": {abv:"4.2–6.0", ibu:"8–20", srm:"14–30", note:"Tostato lieve, caramello, scorrevole e pulita."},
+
+      "3A Czech Pale Lager": {abv:"3.0–4.1", ibu:"20–35", srm:"3–6", note:"Crosta di pane, luppolo speziato, amaro deciso ma elegante."},
+      "3B Czech Premium Pale Lager": {abv:"4.2–5.8", ibu:"30–45", srm:"3.5–6", note:"Maltata, speziata, floreale, piena ma molto equilibrata."},
+      "3C Czech Amber Lager": {abv:"4.4–5.8", ibu:"20–35", srm:"10–16", note:"Pane tostato, caramello lieve, luppolo speziato."},
+      "3D Czech Dark Lager": {abv:"4.4–5.8", ibu:"18–34", srm:"14–35", note:"Pane nero, cacao leggero, morbida e pulita."},
+
+      "4A Munich Helles": {abv:"4.7–5.4", ibu:"16–22", srm:"3–5", note:"Maltata, pane fresco, pulita, elegante, finale morbido."},
+      "4B Festbier": {abv:"5.8–6.3", ibu:"18–25", srm:"4–7", note:"Pane, miele leggero, pulita, rotonda ma scorrevole."},
+      "4C Helles Bock": {abv:"6.3–7.4", ibu:"23–35", srm:"6–11", note:"Maltata intensa, pane, miele, alcol morbido."},
+
+      "5A German Leichtbier": {abv:"2.4–3.6", ibu:"15–28", srm:"2–5", note:"Leggera, cereale, secca, molto facile da bere."},
+      "5B Kölsch": {abv:"4.4–5.2", ibu:"18–30", srm:"3.5–5", note:"Pulita, delicatamente fruttata, pane chiaro, finale secco."},
+      "5C German Helles Exportbier": {abv:"5.0–6.0", ibu:"20–30", srm:"4–6", note:"Maltata, leggermente più intensa, equilibrata, pulita."},
+      "5D German Pils": {abv:"4.4–5.2", ibu:"22–40", srm:"2–5", note:"Secca, erbacea, speziata, amaro netto e pulito."},
+
+      "6A Märzen": {abv:"5.8–6.3", ibu:"18–24", srm:"8–17", note:"Pane tostato, crosta, maltata, corpo medio."},
+      "6B Rauchbier": {abv:"4.8–6.0", ibu:"20–30", srm:"12–22", note:"Affumicato morbido, pane tostato, maltata."},
+      "6C Dunkles Bock": {abv:"6.3–7.2", ibu:"20–27", srm:"14–22", note:"Pane nero, tostato morbido, maltata intensa."},
+
+      "7A Vienna Lager": {abv:"4.7–5.5", ibu:"18–30", srm:"9–15", note:"Ambrata, pane tostato, secca, elegante."},
+      "7B Altbier": {abv:"4.3–5.5", ibu:"25–50", srm:"11–17", note:"Tostata, secca, erbacea, finale amaro pulito."},
+      "7C Kellerbier": {abv:"4.7–5.4", ibu:"20–35", srm:"3–17", note:"Rustica, fresca, cereale e luppolo evidenti."},
+
+      "8A Munich Dunkel": {abv:"4.5–5.6", ibu:"18–28", srm:"14–28", note:"Pane scuro, tostato morbido, maltata, pulita."},
+      "8B Schwarzbier": {abv:"4.4–5.4", ibu:"20–30", srm:"17–30", note:"Scura ma leggera, cacao tenue, finale secco."},
+
+      "9A Doppelbock": {abv:"7.0–10.0", ibu:"16–26", srm:"6–25", note:"Ricca, maltata, pane, frutta secca, alcol morbido."},
+      "9B Eisbock": {abv:"9.0–14.0", ibu:"25–35", srm:"18–30", note:"Molto intensa, maltata, liquorosa, frutta secca."},
+      "9C Baltic Porter": {abv:"6.5–9.5", ibu:"20–40", srm:"17–30", note:"Cioccolato, prugna, pane scuro, morbida."},
+
+      "10A Weissbier": {abv:"4.3–5.6", ibu:"8–15", srm:"2–6", note:"Banana, chiodo di garofano, pane bianco, fresca."},
+      "10B Dunkles Weissbier": {abv:"4.3–5.6", ibu:"10–18", srm:"14–23", note:"Banana, chiodo di garofano, pane scuro, caramello lieve."},
+      "10C Weizenbock": {abv:"6.5–9.0", ibu:"15–30", srm:"6–25", note:"Banana, spezie, pane, alcol morbido, ricca."},
+
+      "11A Ordinary Bitter": {abv:"3.2–3.8", ibu:"25–35", srm:"8–14", note:"Biscotto, erbaceo, amaro netto ma facile."},
+      "11B Best Bitter": {abv:"3.8–4.6", ibu:"25–40", srm:"8–16", note:"Biscotto, caramello lieve, amaro equilibrato."},
+      "11C Strong Bitter": {abv:"4.6–6.2", ibu:"30–50", srm:"8–18", note:"Maltata inglese, frutta lieve, amaro deciso."},
+
+      "12A British Golden Ale": {abv:"3.8–5.0", ibu:"20–45", srm:"2–6", note:"Chiara, erbacea, floreale, secca e fresca."},
+      "12B Australian Sparkling Ale": {abv:"4.5–6.0", ibu:"20–35", srm:"4–7", note:"Fruttata, fresca, carbonazione vivace."},
+      "12C English IPA": {abv:"5.0–7.5", ibu:"40–60", srm:"6–14", note:"Terrosa, agrumata leggera, biscotto, amaro britannico."},
+
+      "13A Dark Mild": {abv:"3.0–3.8", ibu:"10–25", srm:"12–25", note:"Leggera, nocciola, tostato tenue, scorrevole."},
+      "13B British Brown Ale": {abv:"4.2–5.4", ibu:"20–30", srm:"12–22", note:"Nocciola, biscotto, cacao lieve, morbida."},
+      "13C English Porter": {abv:"4.0–5.4", ibu:"18–35", srm:"20–30", note:"Cacao, tostato, pane scuro, moderata."},
+
+      "14A Scottish Light": {abv:"2.5–3.2", ibu:"10–20", srm:"9–17", note:"Maltata, caramello lieve, morbida, bassa gradazione."},
+      "14B Scottish Heavy": {abv:"3.2–3.9", ibu:"10–20", srm:"9–17", note:"Caramello, tostato lieve, equilibrata."},
+      "14C Scottish Export": {abv:"3.9–6.0", ibu:"15–30", srm:"9–17", note:"Maltata, biscotto, leggero toffee."},
+      "14D Irish Red Ale": {abv:"3.8–5.0", ibu:"18–28", srm:"9–14", note:"Caramello delicato, tostato lieve, finale secco."},
+
+      "15A Irish Stout": {abv:"4.0–4.5", ibu:"25–45", srm:"25–40", note:"Caffè, tostato secco, corpo leggero, finale asciutto."},
+      "15B Irish Extra Stout": {abv:"5.0–6.5", ibu:"35–50", srm:"30–40", note:"Tostata, caffè, cacao, più intensa."},
+      "15C Sweet Stout": {abv:"4.0–6.0", ibu:"20–40", srm:"30–40", note:"Dolce, lattosa, cioccolato, cremosa."},
+      "15D Oatmeal Stout": {abv:"4.2–5.9", ibu:"25–40", srm:"22–40", note:"Morbida, cremosa, tostato rotondo."},
+      "15E Tropical Stout": {abv:"4.5–7.0", ibu:"30–50", srm:"30–40", note:"Dolce-scura, cacao, melassa, più corposa."},
+      "15F Foreign Extra Stout": {abv:"6.3–8.0", ibu:"30–70", srm:"30–40", note:"Caffè, cioccolato, tostato intenso, robusta."},
+
+      "18A Blonde Ale": {abv:"3.8–5.5", ibu:"15–28", srm:"3–6", note:"Chiara, pane, lieve frutto, beverina."},
+      "18B American Pale Ale": {abv:"4.5–6.2", ibu:"30–50", srm:"5–10", note:"Agrumi, resina lieve, biscotto, finale fresco."},
+      "19A American Amber Ale": {abv:"4.5–6.2", ibu:"25–40", srm:"10–17", note:"Caramello, agrumi, resina, equilibrio maltoluppolo."},
+      "19B California Common": {abv:"4.5–5.5", ibu:"30–45", srm:"10–14", note:"Tostata, luppolo legnoso-mentolato, finale secco."},
+
+      "20A American Porter": {abv:"4.8–6.5", ibu:"25–50", srm:"22–40", note:"Cioccolato, caffè lieve, luppolo americano moderato."},
+      "20B American Stout": {abv:"5.0–7.0", ibu:"35–60", srm:"30–40", note:"Tostata, agrumata, cioccolato, robusta."},
+      "20C Imperial Stout": {abv:"8.0–12.0", ibu:"50–90", srm:"30–40", note:"Molto intensa, cacao, caffè, frutta scura, alcol."},
+
+      "21A American IPA": {abv:"5.5–7.5", ibu:"40–70", srm:"6–14", note:"Agrumi, resina, frutta tropicale, amaro deciso."},
+      "21B Specialty IPA": {abv:"variabile", ibu:"variabile", srm:"variabile", note:"IPA speciale: dipende dalla sottocategoria."},
+      "22A Double IPA": {abv:"7.5–10.0", ibu:"60–100", srm:"6–14", note:"Molto luppolata, intensa, fruttata e resinosa."},
+      "22B American Strong Ale": {abv:"6.3–10.0", ibu:"50–100", srm:"7–19", note:"Potente, luppolo e malto intensi."},
+      "22C American Barleywine": {abv:"8.0–12.0", ibu:"50–100", srm:"10–19", note:"Ricca, caramello, frutta, luppolo americano."},
+      "22D Wheatwine": {abv:"8.0–12.0", ibu:"30–60", srm:"4–10", note:"Frumento intenso, morbida, alcolica e ricca."},
+
+      "23A Berliner Weisse": {abv:"2.8–3.8", ibu:"3–8", srm:"2–3", note:"Acida, citrica, leggera, molto secca."},
+      "23B Flanders Red Ale": {abv:"4.6–6.5", ibu:"10–25", srm:"10–16", note:"Acida, fruttata, legno, complessa."},
+      "23C Oud Bruin": {abv:"4.0–8.0", ibu:"20–25", srm:"17–22", note:"Acida morbida, caramello, frutta scura."},
+      "23D Lambic": {abv:"5.0–6.5", ibu:"0–10", srm:"3–7", note:"Acida, rustica, funky, complessa."},
+      "23E Gueuze": {abv:"5.0–8.0", ibu:"0–10", srm:"3–7", note:"Acida, secca, molto complessa, funky."},
+      "23F Fruit Lambic": {abv:"5.0–7.0", ibu:"0–10", srm:"variabile", note:"Acida, fruttata, funky, secca."},
+
+      "24A Witbier": {abv:"4.5–5.5", ibu:"8–20", srm:"2–4", note:"Coriandolo, agrumi, cereale, fresca e torbida."},
+      "24B Belgian Pale Ale": {abv:"4.8–5.5", ibu:"20–30", srm:"8–14", note:"Maltata, pepata lieve, floreale, equilibrata."},
+      "24C Bière de Garde": {abv:"6.0–8.5", ibu:"18–28", srm:"6–19", note:"Maltata, tostata lieve, secca, rustica elegante."},
+
+      "25A Belgian Blond Ale": {abv:"6.0–7.5", ibu:"15–30", srm:"4–7", note:"Fruttata, speziata, morbida, elegante."},
+      "25B Saison": {abv:"5.0–7.0", ibu:"20–35", srm:"5–14", note:"Pepata, secca, agrumata, rustica e fresca."},
+      "25C Belgian Golden Strong Ale": {abv:"7.5–10.5", ibu:"22–35", srm:"3–6", note:"Fruttata, speziata, secca, alcolica ma scorrevole."},
+
+      "26A Belgian Single": {abv:"4.8–6.0", ibu:"25–45", srm:"5–6", note:"Pepata, fruttata lieve, secca, beverina."},
+      "26B Belgian Dubbel": {abv:"6.0–7.6", ibu:"15–25", srm:"10–17", note:"Caramello, frutta secca, speziata, ricca."},
+      "26C Belgian Tripel": {abv:"7.5–9.5", ibu:"20–40", srm:"4.5–7", note:"Fruttata, pepata, secca, elegante e forte."},
+      "26D Belgian Dark Strong Ale": {abv:"8.0–12.0", ibu:"20–35", srm:"12–22", note:"Ricca, frutta scura, speziata, alcol morbido."},
+
+      "27A Historical Beer": {abv:"variabile", ibu:"variabile", srm:"variabile", note:"Dipende dal sottostile storico."},
+      "27B Kentucky Common": {abv:"4.0–5.5", ibu:"15–30", srm:"11–20", note:"Mais, pane, tostato lieve, facile."},
+      "27C Kellerbier": {abv:"4.7–5.4", ibu:"20–35", srm:"variabile", note:"Rustica, fresca, cereale e luppolo."},
+      "27D Pre-Prohibition Lager": {abv:"4.5–6.0", ibu:"20–30", srm:"3–6", note:"Decisa, cereale, più luppolata delle lager moderne."},
+      "27E Pre-Prohibition Porter": {abv:"4.5–6.0", ibu:"18–35", srm:"20–30", note:"Tostata, cioccolato, robusta ma beverina."},
+
+      "28A Brett Beer": {abv:"variabile", ibu:"variabile", srm:"variabile", note:"Brett evidente, funky, rustica, dipende dalla base."},
+      "28B Mixed-Fermentation Sour Beer": {abv:"variabile", ibu:"variabile", srm:"variabile", note:"Acida complessa, fermentazione mista, grande profondità."},
+      "28C Wild Specialty Beer": {abv:"variabile", ibu:"variabile", srm:"variabile", note:"Selvatica, sperimentale, molto variabile."},
+
+      "29A Fruit Beer": {abv:"variabile", ibu:"variabile", srm:"variabile", note:"Frutto evidente ma integrato."},
+      "29B Fruit and Spice Beer": {abv:"variabile", ibu:"variabile", srm:"variabile", note:"Frutta + spezie bilanciate."},
+      "29C Specialty Fruit Beer": {abv:"variabile", ibu:"variabile", srm:"variabile", note:"Birra alla frutta speciale, molto variabile."},
+
+      "30A Spice, Herb, or Vegetable Beer": {abv:"variabile", ibu:"variabile", srm:"variabile", note:"Spezie/erbe/vegetali in equilibrio con la base."},
+      "30B Autumn Seasonal Beer": {abv:"variabile", ibu:"variabile", srm:"variabile", note:"Autunnale, spezie calde, maltata."},
+      "30C Winter Seasonal Beer": {abv:"variabile", ibu:"variabile", srm:"variabile", note:"Invernale, ricca, speziata o calda."},
+
+      "31A Alternative Grain Beer": {abv:"variabile", ibu:"variabile", srm:"variabile", note:"Cereali alternativi, profilo base + carattere del grano."},
+      "31B Alternative Sugar Beer": {abv:"variabile", ibu:"variabile", srm:"variabile", note:"Zuccheri speciali integrati nello stile base."},
+      "31C Classic Style Smoked Beer": {abv:"variabile", ibu:"variabile", srm:"variabile", note:"Affumicata in stile classico."},
+      "31D Specialty Smoked Beer": {abv:"variabile", ibu:"variabile", srm:"variabile", note:"Affumicata speciale, molto variabile."},
+
+      "32A Wood-Aged Beer": {abv:"variabile", ibu:"variabile", srm:"variabile", note:"Legno integrato, vaniglia/tannino/cocco a seconda del fusto."},
+      "32B Specialty Wood-Aged Beer": {abv:"variabile", ibu:"variabile", srm:"variabile", note:"Legno speciale o complesso, molto variabile."},
+
+      "33A Specialty Beer": {abv:"variabile", ibu:"variabile", srm:"variabile", note:"Specialità fuori schema, da descrivere bene."},
+      "34A Clone Beer": {abv:"variabile", ibu:"variabile", srm:"variabile", note:"Clone di birra famosa."},
+      "34B Mixed-Style Beer": {abv:"variabile", ibu:"variabile", srm:"variabile", note:"Mix di stili, va descritta chiaramente."},
+      "34C Experimental Beer": {abv:"variabile", ibu:"variabile", srm:"variabile", note:"Sperimentale, creativa, molto variabile."}
+    };
 
     let prodotti = JSON.parse(localStorage.getItem("prodotti_xa_max")) || [];
     let movimenti = JSON.parse(localStorage.getItem("movimenti_xa_max")) || [];
@@ -810,7 +870,6 @@
     let cassa = [];
     let html5QrCode = null;
     let scannerAttivo = false;
-    let famigliaCatalogoAttiva = "Tutte";
 
     function showSection(name, btn){
       document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
@@ -896,27 +955,23 @@
       return p.foto && String(p.foto).trim() ? p.foto : placeholderSvg(styleFamily(p.stile || p.nome || "Birra"), getStyleColor(p.stile));
     }
 
-    function imageForFamily(fam){
-      const trovato = prodotti.find(p => styleFamily(p.stile) === fam && p.foto);
-      return trovato ? trovato.foto : placeholderSvg(fam, familyColor(fam));
-    }
-
-    function popolaStili(lista){
+    function popolaStili(){
+      const list = Object.keys(BJCP_DATA);
       const select = document.getElementById("stile");
-      const valoreAttuale = select.value;
+      const attuale = select.value;
       select.innerHTML = `<option value="">Seleziona stile BJCP</option>`;
-      lista.forEach(stile => {
+      list.forEach(stile => {
         const option = document.createElement("option");
         option.value = stile;
         option.textContent = stile;
         select.appendChild(option);
       });
-      if(lista.includes(valoreAttuale)) select.value = valoreAttuale;
+      if(list.includes(attuale)) select.value = attuale;
 
       const catalogStyle = document.getElementById("catalogStyle");
       const old = catalogStyle.value;
       catalogStyle.innerHTML = `<option value="">Tutti gli stili</option>`;
-      stiliBJCP.forEach(st => {
+      list.forEach(st => {
         const option = document.createElement("option");
         option.value = st;
         option.textContent = st;
@@ -927,12 +982,40 @@
 
     function filtraStili(){
       const q = document.getElementById("searchStyle").value.trim().toLowerCase();
-      if(!q){
-        popolaStili(stiliBJCP);
+      const select = document.getElementById("stile");
+      const list = Object.keys(BJCP_DATA).filter(s => s.toLowerCase().includes(q));
+      const attuale = select.value;
+      select.innerHTML = `<option value="">Seleziona stile BJCP</option>`;
+      list.forEach(st => {
+        const option = document.createElement("option");
+        option.value = st;
+        option.textContent = st;
+        select.appendChild(option);
+      });
+      if(list.includes(attuale)) select.value = attuale;
+    }
+
+    function autoCompilaBJCP(){
+      const stile = document.getElementById("stile").value;
+      const data = BJCP_DATA[stile];
+
+      if(!data){
+        document.getElementById("autoAbvChip").textContent = "ABV: -";
+        document.getElementById("autoIbuChip").textContent = "IBU: -";
+        document.getElementById("autoSrmChip").textContent = "SRM: -";
+        document.getElementById("autoNotePreview").textContent = "Seleziona uno stile BJCP per compilare automaticamente le specifiche.";
         return;
       }
-      const filtrati = stiliBJCP.filter(s => s.toLowerCase().includes(q));
-      popolaStili(filtrati);
+
+      document.getElementById("abv").value = data.abv;
+      document.getElementById("ibu").value = data.ibu;
+      document.getElementById("srm").value = data.srm;
+      document.getElementById("note").value = data.note;
+
+      document.getElementById("autoAbvChip").textContent = "ABV: " + data.abv;
+      document.getElementById("autoIbuChip").textContent = "IBU: " + data.ibu;
+      document.getElementById("autoSrmChip").textContent = "SRM: " + data.srm;
+      document.getElementById("autoNotePreview").textContent = data.note;
     }
 
     function trovaPerBarcode(barcode){
@@ -940,19 +1023,18 @@
     }
 
     function svuotaCampi(){
-      document.getElementById("barcode").value = "";
-      document.getElementById("nome").value = "";
-      document.getElementById("birrificio").value = "";
-      document.getElementById("formato").value = "";
+      ["barcode","nome","birrificio","formato","qty","soglia","prezzo","abv","ibu","srm","note","searchStyle"].forEach(id => {
+        document.getElementById(id).value = "";
+      });
       document.getElementById("stile").value = "";
-      document.getElementById("qty").value = "";
-      document.getElementById("soglia").value = "";
-      document.getElementById("prezzo").value = "";
       document.getElementById("foto").value = "";
-      document.getElementById("searchStyle").value = "";
-      popolaStili(stiliBJCP);
+      document.getElementById("autoAbvChip").textContent = "ABV: -";
+      document.getElementById("autoIbuChip").textContent = "IBU: -";
+      document.getElementById("autoSrmChip").textContent = "SRM: -";
+      document.getElementById("autoNotePreview").textContent = "Seleziona uno stile BJCP per compilare automaticamente le specifiche.";
       setMsg("");
       setScan("");
+      popolaStili();
     }
 
     function registraMovimento(tipo, prodotto, quantita){
@@ -975,6 +1057,10 @@
       const qty = parseInt(document.getElementById("qty").value || "0", 10);
       const soglia = parseInt(document.getElementById("soglia").value || "0", 10);
       const prezzo = parseFloat(document.getElementById("prezzo").value || "0");
+      const abv = document.getElementById("abv").value.trim();
+      const ibu = document.getElementById("ibu").value.trim();
+      const srm = document.getElementById("srm").value.trim();
+      const note = document.getElementById("note").value.trim();
       const file = document.getElementById("foto").files[0];
 
       if(!barcode){
@@ -991,30 +1077,33 @@
       if(file){
         const reader = new FileReader();
         reader.onload = function(){
-          completaSalvataggio(idx, {
-            barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, foto: reader.result
-          });
+          completaSalvataggio(idx, { barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, abv, ibu, srm, note, foto: reader.result });
         };
         reader.readAsDataURL(file);
       } else {
         let fotoEsistente = "";
         if(idx >= 0) fotoEsistente = prodotti[idx].foto || "";
-        completaSalvataggio(idx, {
-          barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, foto: fotoEsistente
-        });
+        completaSalvataggio(idx, { barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, abv, ibu, srm, note, foto: fotoEsistente });
       }
     }
 
     function completaSalvataggio(idx, data){
       if(idx >= 0){
-        prodotti[idx].nome = data.nome;
-        prodotti[idx].birrificio = data.birrificio;
-        prodotti[idx].formato = data.formato;
-        prodotti[idx].stile = data.stile;
-        prodotti[idx].soglia = data.soglia;
-        prodotti[idx].prezzo = Number(data.prezzo || 0);
-        prodotti[idx].foto = data.foto || prodotti[idx].foto || "";
-        prodotti[idx].qty = Number(prodotti[idx].qty || 0) + Number(data.qty || 0);
+        prodotti[idx] = {
+          ...prodotti[idx],
+          nome:data.nome,
+          birrificio:data.birrificio,
+          formato:data.formato,
+          stile:data.stile,
+          soglia:data.soglia,
+          prezzo:Number(data.prezzo || 0),
+          abv:data.abv,
+          ibu:data.ibu,
+          srm:data.srm,
+          note:data.note,
+          foto:data.foto || prodotti[idx].foto || "",
+          qty:Number(prodotti[idx].qty || 0) + Number(data.qty || 0)
+        };
         registraMovimento("CARICO", prodotti[idx], Number(data.qty || 0));
         setMsg("Prodotto aggiornato. Quantità aumentata.", "ok");
       } else {
@@ -1027,6 +1116,10 @@
           qty:Number(data.qty || 0),
           soglia:Number(data.soglia || 0),
           prezzo:Number(data.prezzo || 0),
+          abv:data.abv,
+          ibu:data.ibu,
+          srm:data.srm,
+          note:data.note,
           foto:data.foto || ""
         };
         prodotti.push(nuovo);
@@ -1095,35 +1188,6 @@
       document.getElementById("statVenduti").textContent = venduti;
     }
 
-    function renderCategoryCards(){
-      const box = document.getElementById("categoryGrid");
-      const famiglie = ["Lager","Ale","Scure","Belghe","Wheat","Sour/Fruit","Altro"];
-      box.innerHTML = famiglie.map(fam => {
-        const count = prodotti.filter(p => styleFamily(p.stile) === fam).length;
-        return `
-          <div class="categoryCard" style="background:linear-gradient(180deg, ${familyColor(fam)} 0%, #1b2430 48%);" onclick="setFamilyFilter('${fam}')">
-            <img class="categoryThumb" src="${imageForFamily(fam)}" alt="${escapeHtml(fam)}">
-            <div class="categoryName">${escapeHtml(fam)}</div>
-            <div class="categoryCount">${count} prodotti</div>
-          </div>
-        `;
-      }).join("");
-    }
-
-    function renderFamilyChips(){
-      const famiglie = ["Tutte","Lager","Ale","Scure","Belghe","Wheat","Sour/Fruit","Altro"];
-      const row = document.getElementById("familyChips");
-      row.innerHTML = famiglie.map(fam => `
-        <button class="chip ${famigliaCatalogoAttiva === fam ? "active" : ""}" onclick="setFamilyFilter('${fam}')">${fam}</button>
-      `).join("");
-    }
-
-    function setFamilyFilter(fam){
-      famigliaCatalogoAttiva = fam;
-      renderFamilyChips();
-      renderCatalogo();
-    }
-
     function renderCatalogo(){
       const box = document.getElementById("catalogoGrid");
       let items = [...prodotti];
@@ -1142,10 +1206,6 @@
         items = items.filter(p => String(p.stile||"") === style);
       }
 
-      if(famigliaCatalogoAttiva !== "Tutte"){
-        items = items.filter(p => styleFamily(p.stile) === famigliaCatalogoAttiva);
-      }
-
       if(items.length === 0){
         box.innerHTML = `<div class="emptyBox">Nessun prodotto nel catalogo.</div>`;
         return;
@@ -1156,15 +1216,14 @@
         const color = getStyleColor(p.stile);
         return `
           <div class="catalogItem" style="background:linear-gradient(180deg, ${color} 0%, #1d2937 42%);">
-            <img src="${imageForProduct(p)}" alt="${escapeHtml(p.nome)}">
+            <img src="${p.foto && p.foto.trim() ? p.foto : ''}" alt="${escapeHtml(p.nome)}" onerror="this.style.display='none'">
             <div class="catalogName">${escapeHtml(p.nome || "Senza nome")}</div>
             <div class="catalogMeta">
               ${p.birrificio ? escapeHtml(p.birrificio) + "<br>" : ""}
               ${p.stile ? escapeHtml(p.stile) + "<br>" : ""}
-              ${p.formato ? escapeHtml(p.formato) + "<br>" : ""}
+              ABV ${escapeHtml(p.abv || "-")} · IBU ${escapeHtml(p.ibu || "-")}<br>
               € ${Number(p.prezzo || 0).toFixed(2)}
             </div>
-            <div class="miniBadge">Qty: ${Number(p.qty||0)}</div>
             <div class="toolbar2">
               <button class="btn btn-green" onclick="aggiungiProdottoInCassa(${i})">In cassa</button>
               <button class="btn btn-blue" onclick="apriProdotto('${escapeHtml(p.barcode)}')">Apri</button>
@@ -1217,32 +1276,34 @@
           const color = getStyleColor(p.stile);
           return `
             <div class="product" style="background:linear-gradient(180deg, ${color} 0%, rgba(20,27,36,.96) 34%);">
-              <div>
-                <img class="productImage" src="${imageForProduct(p)}" alt="${escapeHtml(p.nome)}">
-                <div class="productHeader">
-                  <div style="flex:1;">
-                    <div class="productName">${escapeHtml(p.nome || "Senza nome")}</div>
-                    <div class="productMeta">
-                      Barcode: ${escapeHtml(p.barcode || "-")}<br>
-                      ${p.birrificio ? "Birrificio: " + escapeHtml(p.birrificio) + "<br>" : ""}
-                      ${p.stile ? "BJCP: " + escapeHtml(p.stile) + "<br>" : ""}
-                      ${p.formato ? "Formato: " + escapeHtml(p.formato) + "<br>" : ""}
-                      Prezzo impostato: € ${Number(p.prezzo || 0).toFixed(2)}<br>
-                      Scorta minima: ${Number(p.soglia||0)}
-                    </div>
+              ${p.foto ? `<img class="productImage" src="${p.foto}" alt="${escapeHtml(p.nome)}">` : ""}
+              <div class="productHeader">
+                <div style="flex:1;">
+                  <div class="productName">${escapeHtml(p.nome || "Senza nome")}</div>
+                  <div class="productMeta">
+                    Barcode: ${escapeHtml(p.barcode || "-")}<br>
+                    ${p.birrificio ? "Birrificio: " + escapeHtml(p.birrificio) + "<br>" : ""}
+                    ${p.stile ? "BJCP: " + escapeHtml(p.stile) + "<br>" : ""}
+                    ${p.formato ? "Formato: " + escapeHtml(p.formato) + "<br>" : ""}
+                    Prezzo: € ${Number(p.prezzo || 0).toFixed(2)}<br>
+                    ABV: ${escapeHtml(p.abv || "-")}<br>
+                    IBU: ${escapeHtml(p.ibu || "-")}<br>
+                    SRM: ${escapeHtml(p.srm || "-")}<br>
+                    Scorta minima: ${Number(p.soglia||0)}<br>
+                    ${p.note ? "Note: " + escapeHtml(p.note) : ""}
                   </div>
-                  <div class="badge">${bassa ? "Scorta bassa" : "OK"}</div>
                 </div>
+                <div class="badge">${bassa ? "Scorta bassa" : "OK"}</div>
+              </div>
 
-                <div class="qtyPriceRow">
-                  <div class="infoBox">
-                    <div class="infoLabel">Quantità</div>
-                    <div class="infoValue">${Number(p.qty||0)}</div>
-                  </div>
-                  <div class="infoBox">
-                    <div class="infoLabel">Prezzo</div>
-                    <div class="priceValue">€ ${Number(p.prezzo || 0).toFixed(2)}</div>
-                  </div>
+              <div class="qtyPriceRow">
+                <div class="infoBox">
+                  <div class="infoLabel">Quantità</div>
+                  <div class="infoValue">${Number(p.qty||0)}</div>
+                </div>
+                <div class="infoBox">
+                  <div class="infoLabel">Prezzo</div>
+                  <div class="infoValue">€ ${Number(p.prezzo || 0).toFixed(2)}</div>
                 </div>
               </div>
 
@@ -1252,27 +1313,10 @@
                 <button class="btn btn-blue" onclick="modificaQty(${realIndex})">Modifica</button>
                 <button class="btn btn-red" onclick="eliminaProdotto(${realIndex})">Elimina</button>
               </div>
-              <div class="toolbar2">
-                <button class="btn btn-gold" onclick="aggiungiProdottoInCassa(${realIndex})">In cassa</button>
-                <button class="btn btn-cyan" onclick="caricaCampiDaProdotto(${realIndex})">Nei campi</button>
-              </div>
             </div>
           `;
         }).join("");
       }
-    }
-
-    function caricaCampiDaProdotto(i){
-      const p = prodotti[i];
-      document.getElementById("barcode").value = p.barcode || "";
-      document.getElementById("nome").value = p.nome || "";
-      document.getElementById("birrificio").value = p.birrificio || "";
-      document.getElementById("formato").value = p.formato || "";
-      document.getElementById("stile").value = p.stile || "";
-      document.getElementById("qty").value = 1;
-      document.getElementById("soglia").value = p.soglia || 0;
-      document.getElementById("prezzo").value = p.prezzo || 0;
-      showSection('home', document.querySelector('.navBtn[data-section="home"]'));
     }
 
     async function cercaProdottoOnline(barcode){
@@ -1315,7 +1359,6 @@
 
     async function gestisciBarcodeLetto(barcode){
       document.getElementById("barcode").value = barcode;
-
       const idx = trovaPerBarcode(barcode);
 
       if(idx >= 0){
@@ -1327,11 +1370,23 @@
         document.getElementById("qty").value = "1";
         document.getElementById("soglia").value = p.soglia || 0;
         document.getElementById("prezzo").value = p.prezzo || 0;
+        document.getElementById("abv").value = p.abv || "";
+        document.getElementById("ibu").value = p.ibu || "";
+        document.getElementById("srm").value = p.srm || "";
+        document.getElementById("note").value = p.note || "";
+        autoCompilaPreviewOnly();
         setScan("Prodotto già presente nel tuo magazzino.", "ok");
         return;
       }
 
       await cercaProdottoOnline(barcode);
+    }
+
+    function autoCompilaPreviewOnly(){
+      document.getElementById("autoAbvChip").textContent = "ABV: " + (document.getElementById("abv").value || "-");
+      document.getElementById("autoIbuChip").textContent = "IBU: " + (document.getElementById("ibu").value || "-");
+      document.getElementById("autoSrmChip").textContent = "SRM: " + (document.getElementById("srm").value || "-");
+      document.getElementById("autoNotePreview").textContent = document.getElementById("note").value || "Nessuna nota.";
     }
 
     async function startScanner(){
@@ -1524,14 +1579,12 @@
 
     function refreshAll(){
       updateStats();
-      renderCategoryCards();
-      renderFamilyChips();
       renderCatalogo();
       renderMagazzino();
       renderCassa();
     }
 
-    popolaStili(stiliBJCP);
+    popolaStili();
     refreshAll();
   </script>
 </body>
