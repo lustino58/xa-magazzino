@@ -3,15 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>XA Magazzino Pro</title>
-  <link rel="manifest" href="manifest.json" />
+  <title>XA Magazzino ULTRA PRO</title>
   <meta name="theme-color" content="#111111" />
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
     :root{
       --bg:#091018;
       --bg2:#0d1520;
-      --line:#2b3748;
       --text:#f4f7fb;
       --muted:#a8b4c4;
       --gold:#d3af68;
@@ -21,36 +19,42 @@
       --orange:#ffad3b;
       --red:#e05b5b;
       --violet:#a26cff;
-      --neon:#ff3b3b;
+      --line:rgba(255,255,255,.10);
+      --neonL:#ff3b3b;
+      --neonR:#3b82ff;
     }
 
     *{box-sizing:border-box}
-
     body{
       margin:0;
       background:
-        radial-gradient(circle at top, rgba(255,255,255,.04), transparent 28%),
-        linear-gradient(180deg,var(--bg) 0%, var(--bg2) 100%);
+        radial-gradient(circle at top, rgba(255,255,255,.05), transparent 28%),
+        linear-gradient(180deg,var(--bg),var(--bg2));
       color:var(--text);
       font-family:Arial,sans-serif;
-      padding:12px 12px 96px 12px;
+      padding:12px 12px 96px;
     }
 
-    body::before,
-    body::after{
+    body::before, body::after{
       content:"";
       position:fixed;
       top:0;
       width:6px;
       height:100%;
-      background:var(--neon);
-      box-shadow:0 0 8px var(--neon),0 0 15px var(--neon),0 0 26px rgba(255,59,59,.5);
       z-index:999;
       pointer-events:none;
-      opacity:.95;
+      opacity:.92;
     }
-    body::before{left:0}
-    body::after{right:0}
+    body::before{
+      left:0;
+      background:linear-gradient(180deg,var(--neonL),transparent 30%,transparent 70%,var(--neonL));
+      box-shadow:0 0 8px var(--neonL),0 0 18px rgba(255,59,59,.45);
+    }
+    body::after{
+      right:0;
+      background:linear-gradient(180deg,var(--neonR),transparent 30%,transparent 70%,var(--neonR));
+      box-shadow:0 0 8px var(--neonR),0 0 18px rgba(59,130,255,.45);
+    }
 
     .app{max-width:1100px;margin:0 auto}
     h1,h2,h3,p{margin:0}
@@ -60,29 +64,19 @@
       padding:16px;
       border-radius:24px;
       background:linear-gradient(135deg,#121b26 0%, #1a2635 60%, #101720 100%);
-      border:1px solid rgba(255,255,255,.08);
+      border:1px solid var(--line);
       box-shadow:0 14px 30px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.05);
     }
 
-    .hero h1{
-      font-size:32px;
-      line-height:1;
-      margin-bottom:8px;
-      letter-spacing:.3px;
-    }
-
-    .hero p{
-      color:var(--muted);
-      font-size:14px;
-      line-height:1.4;
-    }
+    .hero h1{font-size:32px;line-height:1;margin-bottom:8px}
+    .hero p{color:var(--muted);font-size:14px;line-height:1.4}
 
     .section{display:none}
     .section.active{display:block}
 
     .card{
       background:linear-gradient(180deg,rgba(20,29,40,.96),rgba(23,33,45,.96));
-      border:1px solid rgba(255,255,255,.08);
+      border:1px solid var(--line);
       border-radius:22px;
       padding:14px;
       margin-bottom:12px;
@@ -104,10 +98,9 @@
 
     .stat{
       background:linear-gradient(180deg,#141b24,#18222d);
-      border:1px solid rgba(255,255,255,.08);
+      border:1px solid var(--line);
       border-radius:18px;
       padding:14px;
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
     }
 
     .stat .label{
@@ -140,7 +133,7 @@
       width:100%;
       padding:14px;
       border-radius:15px;
-      border:1px solid rgba(255,255,255,.08);
+      border:1px solid var(--line);
       font-size:17px;
       font-family:inherit;
     }
@@ -164,11 +157,8 @@
 
     .btn{
       border-width:2px;
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,.04) inset,
-        0 6px 14px rgba(0,0,0,.16);
+      box-shadow:0 0 0 1px rgba(255,255,255,.03) inset,0 6px 14px rgba(0,0,0,.16);
     }
-
     .btn-gold{ border-color:var(--gold); }
     .btn-green{ border-color:var(--green); }
     .btn-blue{ border-color:var(--blue); }
@@ -190,7 +180,6 @@
       margin-top:8px;
       line-height:1.35;
     }
-
     .ok{ color:#8de29f; }
     .warn{ color:#ffd27a; }
     .dangerText{ color:#ff9d9d; }
@@ -201,7 +190,7 @@
       background:#000;
       border-radius:14px;
       overflow:hidden;
-      min-height:80px;
+      min-height:120px;
     }
 
     .autoBox{
@@ -209,7 +198,7 @@
       padding:12px;
       border-radius:16px;
       background:rgba(255,255,255,.03);
-      border:1px solid rgba(255,255,255,.08);
+      border:1px solid var(--line);
     }
 
     .autoTitle{
@@ -232,17 +221,11 @@
       padding:8px 10px;
       border-radius:999px;
       background:#18222e;
-      border:1px solid rgba(255,255,255,.08);
+      border:1px solid var(--line);
       font-size:12px;
       font-weight:800;
       color:var(--text);
       width:auto;
-    }
-
-    .chip.active{
-      border-color:var(--gold);
-      color:#fff;
-      box-shadow:0 0 12px rgba(211,175,104,.18);
     }
 
     .catalogGrid{
@@ -256,33 +239,22 @@
       border-radius:22px;
       padding:10px;
       border:1px solid rgba(255,255,255,.09);
-      box-shadow:
-        0 10px 20px rgba(0,0,0,.20),
-        inset 0 1px 0 rgba(255,255,255,.08);
+      box-shadow:0 10px 20px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.08);
       cursor:pointer;
-      transition:transform .08s ease, box-shadow .12s ease, outline-color .12s ease;
-      outline:0 solid transparent;
       position:relative;
       overflow:hidden;
+      transition:transform .08s ease;
     }
-
-    .catalogItem::after,
-    .product::after{
+    .catalogItem:active{ transform:scale(.985); }
+    .catalogItem::after,.product::after{
       content:"";
       position:absolute;
       inset:0;
       background:linear-gradient(180deg, rgba(255,255,255,.10) 0%, transparent 22%, rgba(0,0,0,.08) 100%);
       pointer-events:none;
     }
-
-    .catalogItem:active{ transform:scale(.985); }
-
     .catalogItem.flash{
-      box-shadow:
-        0 0 0 2px rgba(67,198,109,.85),
-        0 0 18px rgba(67,198,109,.45),
-        0 12px 26px rgba(0,0,0,.22);
-      outline:2px solid rgba(67,198,109,.75);
+      box-shadow:0 0 0 2px rgba(67,198,109,.85),0 0 18px rgba(67,198,109,.45),0 12px 26px rgba(0,0,0,.22);
     }
 
     .catalogItem img{
@@ -311,7 +283,7 @@
       font-size:13px;
       color:#e7ecf4;
       line-height:1.35;
-      min-height:96px;
+      min-height:100px;
       position:relative;
       z-index:1;
     }
@@ -342,9 +314,7 @@
       padding:14px;
       border:1px solid rgba(255,255,255,.10);
       overflow:hidden;
-      box-shadow:
-        0 14px 26px rgba(0,0,0,.22),
-        inset 0 1px 0 rgba(255,255,255,.08);
+      box-shadow:0 14px 26px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.08);
     }
 
     .productHeader{
@@ -378,7 +348,6 @@
       background:rgba(0,0,0,.16);
       border:1px solid rgba(255,255,255,.14);
       white-space:nowrap;
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
     }
 
     .qtyPriceRow{
@@ -395,7 +364,6 @@
       border-radius:18px;
       background:rgba(0,0,0,.18);
       border:1px solid rgba(255,255,255,.10);
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
     }
 
     .infoLabel{
@@ -436,7 +404,7 @@
 
     .movement{
       background:#1b2430;
-      border:1px solid rgba(255,255,255,.08);
+      border:1px solid var(--line);
       border-radius:14px;
       padding:10px;
       margin-top:8px;
@@ -449,7 +417,7 @@
       gap:10px;
       align-items:center;
       background:#1b2430;
-      border:1px solid rgba(255,255,255,.08);
+      border:1px solid var(--line);
       border-radius:14px;
       padding:10px;
       margin-top:8px;
@@ -457,7 +425,6 @@
     }
 
     .cassaName{font-weight:800}
-
     .cassaQty{
       padding:6px 10px;
       border-radius:999px;
@@ -466,7 +433,6 @@
       font-size:12px;
       font-weight:800;
     }
-
     .cassaPrice{
       font-weight:900;
       white-space:nowrap;
@@ -486,17 +452,6 @@
       text-align:center;
       background:rgba(255,255,255,.02);
       margin-top:10px;
-    }
-
-    .hardcoreBox{
-      margin-top:10px;
-      padding:12px;
-      border-radius:16px;
-      background:rgba(67,198,109,.08);
-      border:1px solid rgba(67,198,109,.22);
-      color:#dff7e6;
-      font-size:13px;
-      font-weight:800;
     }
 
     .editBox{
@@ -535,15 +490,12 @@
       font-size:12px;
       font-weight:800;
       text-align:center;
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
     }
 
     .navBtn.active{
       color:#fff;
       border-color:var(--gold);
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,.03) inset,
-        0 0 14px rgba(211,175,104,.12);
+      box-shadow:0 0 14px rgba(211,175,104,.12);
     }
 
     .navIcon{
@@ -553,682 +505,584 @@
     }
 
     @media (min-width:900px){
-      .inventoryGrid,
-      .catalogGrid{
-        grid-template-columns:1fr 1fr;
-      }
+      .inventoryGrid,.catalogGrid{ grid-template-columns:1fr 1fr; }
     }
   </style>
 </head>
 <body>
-  <div class="app">
+<div class="app">
 
-    <div class="hero">
-      <h1>XA Magazzino</h1>
-      <p>Luxury gradient • riconoscimento birra avanzato • BJCP auto pro • catalogo per birrificio • modifica completa</p>
-    </div>
-
-    <section id="section-home" class="section active">
-      <div class="card">
-        <div class="sectionTitle">Home</div>
-        <div class="stats">
-          <div class="stat">
-            <div class="label">Prodotti</div>
-            <div class="value" id="statProdotti">0</div>
-          </div>
-          <div class="stat">
-            <div class="label">Pezzi totali</div>
-            <div class="value" id="statPezzi">0</div>
-          </div>
-          <div class="stat">
-            <div class="label">Scorte basse</div>
-            <div class="value" id="statScorte">0</div>
-          </div>
-          <div class="stat">
-            <div class="label">Movimenti</div>
-            <div class="value" id="statMovimenti">0</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="sectionTitle">Inserimento rapido</div>
-
-        <div id="editBox" class="editBox">Stai modificando un prodotto. Cambia i campi e premi <b>Salva modifica</b>.</div>
-
-        <div class="field">
-          <label for="barcode">Barcode</label>
-          <input id="barcode" placeholder="Scansiona o inserisci barcode" />
-        </div>
-
-        <div class="toolbar2">
-          <button class="btn btn-gold" onclick="startScanner()">📷 Scanner</button>
-          <button class="btn btn-red" onclick="stopScanner()">■ Stop scanner</button>
-        </div>
-
-        <div id="reader"></div>
-        <div id="scanStatus" class="small"></div>
-
-        <div class="field">
-          <label for="nome">Nome prodotto</label>
-          <input id="nome" placeholder="Es. Das Helle" />
-        </div>
-
-        <div class="field">
-          <label for="birrificio">Birrificio</label>
-          <input id="birrificio" placeholder="Es. Spaten" />
-        </div>
-
-        <div class="field">
-          <label for="formato">Formato</label>
-          <input id="formato" placeholder="Es. 0,5 l / 33 cl" />
-        </div>
-
-        <div class="field">
-          <label for="searchStyle">Cerca stile BJCP</label>
-          <input id="searchStyle" placeholder="Scrivi per cercare lo stile" oninput="filtraStili()" />
-        </div>
-
-        <div class="field">
-          <label for="stile">Stile BJCP</label>
-          <select id="stile" onchange="autoCompilaBJCP()">
-            <option value="">Seleziona stile BJCP</option>
-          </select>
-        </div>
-
-        <div class="autoBox">
-          <div class="autoTitle">Auto BJCP</div>
-          <div class="chipRow">
-            <div class="chip" id="autoAbvChip">ABV: -</div>
-            <div class="chip" id="autoIbuChip">IBU: -</div>
-            <div class="chip" id="autoSrmChip">SRM: -</div>
-          </div>
-          <div class="small" id="autoNotePreview">Seleziona uno stile BJCP per compilare automaticamente le specifiche.</div>
-        </div>
-
-        <div class="field">
-          <label for="qty">Quantità</label>
-          <input id="qty" type="number" placeholder="Es. 1" />
-        </div>
-
-        <div class="field">
-          <label for="soglia">Scorta minima</label>
-          <input id="soglia" type="number" placeholder="Es. 6" />
-        </div>
-
-        <div class="field">
-          <label for="prezzo">Prezzo €</label>
-          <input id="prezzo" type="number" step="0.01" placeholder="Es. 5.00" />
-        </div>
-
-        <div class="field">
-          <label for="abv">ABV %</label>
-          <input id="abv" placeholder="Es. 4.7–5.4" />
-        </div>
-
-        <div class="field">
-          <label for="ibu">IBU</label>
-          <input id="ibu" placeholder="Es. 16–22" />
-        </div>
-
-        <div class="field">
-          <label for="srm">SRM / Colore</label>
-          <input id="srm" placeholder="Es. 3–5" />
-        </div>
-
-        <div class="field">
-          <label for="gusto">Gusto</label>
-          <textarea id="gusto" placeholder="Es. maltata, pane, poco amara"></textarea>
-        </div>
-
-        <div class="field">
-          <label for="aroma">Aroma</label>
-          <textarea id="aroma" placeholder="Es. floreale, erbaceo, agrumato"></textarea>
-        </div>
-
-        <div class="field">
-          <label for="corpo">Corpo</label>
-          <input id="corpo" placeholder="Es. leggero / medio / pieno" />
-        </div>
-
-        <div class="field">
-          <label for="finale">Finale</label>
-          <input id="finale" placeholder="Es. secco, pulito, morbido" />
-        </div>
-
-        <div class="field">
-          <label for="abbinamenti">Abbinamenti</label>
-          <textarea id="abbinamenti" placeholder="Es. salumi, formaggi, fritti, carne"></textarea>
-        </div>
-
-        <div class="field">
-          <label for="note">Note extra</label>
-          <textarea id="note" placeholder="Note extra del negozio o del birrificio"></textarea>
-        </div>
-
-        <div class="field">
-          <label for="foto">Foto etichetta</label>
-          <input type="file" id="foto" accept="image/*" />
-        </div>
-
-        <div class="toolbar2">
-          <button id="saveBtn" class="btn btn-green" onclick="salvaProdotto()">Salva prodotto</button>
-          <button class="btn btn-cyan" onclick="annullaModifica()">Svuota campi</button>
-        </div>
-
-        <div id="messageBox" class="small"></div>
-      </div>
-    </section>
-
-    <section id="section-catalogo" class="section">
-      <div class="card">
-        <div class="sectionTitle">Catalogo birre</div>
-
-        <div class="hardcoreBox">
-          Tocca una birra per aggiungerla subito in cassa. Puoi filtrare anche per birrificio.
-        </div>
-
-        <div class="field">
-          <label for="catalogSearch">Ricerca catalogo</label>
-          <input id="catalogSearch" placeholder="Cerca nome, birrificio, stile" oninput="renderCatalogo()" />
-        </div>
-
-        <div class="field">
-          <label for="catalogStyle">Filtro stile BJCP</label>
-          <select id="catalogStyle" onchange="renderCatalogo()">
-            <option value="">Tutti gli stili</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="catalogBrewery">Filtro birrificio</label>
-          <select id="catalogBrewery" onchange="renderCatalogo()">
-            <option value="">Tutti i birrifici</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label>Birrifici rapidi</label>
-          <div class="chipRow" id="breweryChips"></div>
-        </div>
-
-        <div id="catalogoGrid" class="catalogGrid"></div>
-      </div>
-    </section>
-
-    <section id="section-magazzino" class="section">
-      <div class="card">
-        <div class="sectionTitle">Magazzino</div>
-
-        <div class="field">
-          <label for="search">Ricerca magazzino</label>
-          <input id="search" placeholder="Cerca nome, birrificio, stile, barcode" oninput="renderMagazzino()" />
-        </div>
-
-        <div class="field">
-          <label for="filterScorte">Filtro scorte</label>
-          <select id="filterScorte" onchange="renderMagazzino()">
-            <option value="tutte">Tutte le scorte</option>
-            <option value="basse">Solo scorte basse</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="sortBy">Ordina prodotti</label>
-          <select id="sortBy" onchange="renderMagazzino()">
-            <option value="nome">Ordina: nome</option>
-            <option value="qtyAsc">Ordina: quantità crescente</option>
-            <option value="qtyDesc">Ordina: quantità decrescente</option>
-          </select>
-        </div>
-
-        <div id="lista" class="inventoryGrid"></div>
-      </div>
-    </section>
-
-    <section id="section-cassa" class="section">
-      <div class="card">
-        <div class="sectionTitle">Cassa</div>
-
-        <div class="toolbar2">
-          <button class="btn btn-gold" onclick="aggiungiDaBarcode()">Aggiungi da barcode</button>
-          <button class="btn btn-red" onclick="svuotaCassa()">Svuota cassa</button>
-        </div>
-
-        <div id="cassaLista"></div>
-
-        <div class="totale">Totale: € <span id="totaleCassa">0.00</span></div>
-
-        <div class="field">
-          <label for="pagato">Contanti ricevuti</label>
-          <input id="pagato" type="number" step="0.01" placeholder="Es. 20.00" />
-        </div>
-
-        <div class="toolbar2">
-          <button class="btn btn-orange" onclick="calcolaResto()">Calcola resto</button>
-          <button class="btn btn-green" onclick="chiudiVendita()">Chiudi vendita</button>
-        </div>
-
-        <div id="restoBox" class="small"></div>
-      </div>
-    </section>
-
-    <section id="section-statistiche" class="section">
-      <div class="card">
-        <div class="sectionTitle">Statistiche</div>
-        <div class="stats">
-          <div class="stat">
-            <div class="label">Incasso totale</div>
-            <div class="value" id="statIncasso">0</div>
-          </div>
-          <div class="stat">
-            <div class="label">Pezzi venduti</div>
-            <div class="value" id="statVenduti">0</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="sectionTitle">Strumenti</div>
-        <div class="toolbar2">
-          <button class="btn btn-violet" onclick="downloadBackup()">Backup JSON</button>
-          <button class="btn btn-blue" onclick="document.getElementById('restoreFile').click()">Ripristina backup</button>
-        </div>
-        <input id="restoreFile" type="file" accept=".json,application/json" style="display:none" onchange="restoreBackup(event)" />
-        <div class="toolbar2">
-          <button class="btn btn-blue" onclick="toggleMovimenti()">Mostra/Nascondi movimenti</button>
-          <button class="btn btn-red" onclick="resetMagazzino()">Reset magazzino</button>
-        </div>
-        <div class="small">Il reset cancella prodotti, movimenti e vendite dal telefono.</div>
-      </div>
-
-      <div class="card" id="movimentiCard" style="display:none">
-        <div class="sectionTitle">Storico movimenti</div>
-        <div id="movimentiLista"></div>
-      </div>
-    </section>
-
+  <div class="hero">
+    <h1>XA Magazzino</h1>
+    <p>ULTRA PRO • proxy + Open Food Facts + BJCP auto • catalogo • magazzino • cassa • luxury gradient</p>
   </div>
 
-  <nav class="bottomNav">
-    <button class="navBtn active" data-section="home" onclick="showSection('home', this)">
-      <span class="navIcon">🏠</span>Home
-    </button>
-    <button class="navBtn" data-section="catalogo" onclick="showSection('catalogo', this)">
-      <span class="navIcon">🍺</span>Catalogo
-    </button>
-    <button class="navBtn" data-section="magazzino" onclick="showSection('magazzino', this)">
-      <span class="navIcon">📦</span>Magazzino
-    </button>
-    <button class="navBtn" data-section="cassa" onclick="showSection('cassa', this)">
-      <span class="navIcon">💰</span>Cassa
-    </button>
-    <button class="navBtn" data-section="statistiche" onclick="showSection('statistiche', this)">
-      <span class="navIcon">📊</span>Stat.
-    </button>
-  </nav>
+  <section id="section-home" class="section active">
+    <div class="card">
+      <div class="sectionTitle">Home</div>
+      <div class="stats">
+        <div class="stat"><div class="label">Prodotti</div><div class="value" id="statProdotti">0</div></div>
+        <div class="stat"><div class="label">Pezzi totali</div><div class="value" id="statPezzi">0</div></div>
+        <div class="stat"><div class="label">Scorte basse</div><div class="value" id="statScorte">0</div></div>
+        <div class="stat"><div class="label">Movimenti</div><div class="value" id="statMovimenti">0</div></div>
+      </div>
+    </div>
 
-  <script>
-    // Se un giorno avrai il proxy vero, basta mettere il suo URL qui.
-    // Così com'è, se non esiste, l'app continua a funzionare lo stesso.
-    const PROXY_URL = "";
+    <div class="card">
+      <div class="sectionTitle">Inserimento rapido</div>
 
-    const BJCP_DATA = {
-      "4A Munich Helles": {
-        abv:"4.7–5.4", ibu:"16–22", srm:"3–5",
-        gusto:"Maltata, pane fresco, delicatamente dolce, poco amara.",
-        aroma:"Pane, miele leggero, cereale pulito, luppolo delicato.",
-        corpo:"Leggero-medio",
-        finale:"Pulito, morbido, scorrevole",
-        abbinamenti:"Salumi, wurstel, pretzel, fritti, formaggi dolci",
-        note:"Profilo elegante, bilanciato e molto beverino."
-      },
-      "5D German Pils": {
-        abv:"4.4–5.2", ibu:"22–40", srm:"2–5",
-        gusto:"Secca, croccante, più amara di una Helles.",
-        aroma:"Erbaceo, speziato, floreale, cereale chiaro.",
-        corpo:"Leggero",
-        finale:"Secco, netto, pulito",
-        abbinamenti:"Fritti, pizza bianca, pesce, snack salati",
-        note:"Luppolo tedesco evidente, finale pulito."
-      },
-      "10A Weissbier": {
-        abv:"4.3–5.6", ibu:"8–15", srm:"2–6",
-        gusto:"Fresca, fruttata, morbida, poco amara.",
-        aroma:"Banana, chiodo di garofano, pane bianco.",
-        corpo:"Medio",
-        finale:"Morbido, fresco, vivace",
-        abbinamenti:"Insalate, pollo, cucina speziata leggera, formaggi freschi",
-        note:"Frumento in evidenza, schiuma abbondante."
-      },
-      "15A Irish Stout": {
-        abv:"4.0–4.5", ibu:"25–45", srm:"25–40",
-        gusto:"Tostata, secca, caffè, cacao amaro.",
-        aroma:"Orzo tostato, caffè, lieve cioccolato fondente.",
-        corpo:"Leggero-medio",
-        finale:"Asciutto, tostato, deciso",
-        abbinamenti:"Ostriche, carni grigliate, burger, dolci al cacao",
-        note:"Scura ma non pesante."
-      },
-      "18A Blonde Ale": {
-        abv:"3.8–5.5", ibu:"15–28", srm:"3–6",
-        gusto:"Chiara, morbida, pane leggero, facile da bere.",
-        aroma:"Cereale, floreale lieve, fruttato delicato.",
-        corpo:"Leggero-medio",
-        finale:"Pulito, semplice, beverino",
-        abbinamenti:"Panini, aperitivi, fritti, pizza",
-        note:"Ale facile e versatile."
-      },
-      "18B American Pale Ale": {
-        abv:"4.5–6.2", ibu:"30–50", srm:"5–10",
-        gusto:"Agrumata, resinosa, biscotto, amaro moderato.",
-        aroma:"Agrumi, resina, frutta tropicale leggera, malto biscuit.",
-        corpo:"Medio-leggero",
-        finale:"Fresco, amaro equilibrato",
-        abbinamenti:"Hamburger, tacos, pizza saporita, cheddar",
-        note:"Equilibrio tra malto e luppolo americano."
-      },
-      "21A American IPA": {
-        abv:"5.5–7.5", ibu:"40–70", srm:"6–14",
-        gusto:"Amara, agrumata, resinosa, fruttata.",
-        aroma:"Pompelmo, arancia, mango, resina, luppolo intenso.",
-        corpo:"Medio",
-        finale:"Amaro, persistente, secco",
-        abbinamenti:"Cucina speziata, burger, barbecue, blue cheese",
-        note:"Luppolo protagonista."
-      },
-      "22A Double IPA": {
-        abv:"7.5–10.0", ibu:"60–100", srm:"6–14",
-        gusto:"Molto intensa, amara, fruttata, potente.",
-        aroma:"Tropicale, agrumato, resinoso, alcol delicato.",
-        corpo:"Medio-pieno",
-        finale:"Lungo, amaro, caldo",
-        abbinamenti:"Piatti molto saporiti, bbq, formaggi stagionati",
-        note:"IPA estrema e carica di luppolo."
-      },
-      "24A Witbier": {
-        abv:"4.5–5.5", ibu:"8–20", srm:"2–4",
-        gusto:"Fresca, agrumata, morbida, poco amara.",
-        aroma:"Coriandolo, scorza d'arancia, frumento.",
-        corpo:"Leggero-medio",
-        finale:"Fresco, leggermente speziato",
-        abbinamenti:"Pesce, insalate, sushi, formaggi freschi",
-        note:"Chiara e torbida."
-      },
-      "25B Saison": {
-        abv:"5.0–7.0", ibu:"20–35", srm:"5–14",
-        gusto:"Secca, speziata, rustica, fresca.",
-        aroma:"Pepata, agrumata, erbacea, fruttata leggera.",
-        corpo:"Leggero-medio",
-        finale:"Molto secco, vivace",
-        abbinamenti:"Salumi, pollo, formaggi caprini, piatti speziati",
-        note:"Alta bevibilità con carattere rustico."
-      },
-      "26C Belgian Tripel": {
-        abv:"7.5–9.5", ibu:"20–40", srm:"4.5–7",
-        gusto:"Ricca ma secca, fruttata, speziata, alcol elegante.",
-        aroma:"Pera, banana lieve, pepe, miele leggero.",
-        corpo:"Medio-pieno",
-        finale:"Secco, caldo, raffinato",
-        abbinamenti:"Carni bianche, formaggi stagionati, cucina ricca",
-        note:"Forte, elegante, complessa."
-      },
-      "23A Berliner Weisse": {
-        abv:"2.8–3.8", ibu:"3–8", srm:"2–3",
-        gusto:"Acida, citrica, leggerissima.",
-        aroma:"Limone, yogurt, cereale tenue.",
-        corpo:"Molto leggero",
-        finale:"Secco, acidulo, pulitissimo",
-        abbinamenti:"Pesce crudo, aperitivo, fritti leggeri",
-        note:"Acidità protagonista."
-      }
-    };
+      <div id="editBox" class="editBox">Stai modificando un prodotto. Cambia i campi e premi <b>Salva modifica</b>.</div>
 
-    const ALL_STYLES = Object.keys(BJCP_DATA);
+      <div class="field">
+        <label for="barcode">Barcode</label>
+        <input id="barcode" placeholder="Scansiona o inserisci barcode" />
+      </div>
 
-    const BEER_DB = {
-      "birra moretti": { stile:"4A Munich Helles", abv:"4.6", ibu:"18–22", srm:"4" },
-      "moretti": { stile:"4A Munich Helles", abv:"4.6", ibu:"18–22", srm:"4" },
-      "peroni": { stile:"5D German Pils", abv:"4.7", ibu:"20–30", srm:"3" },
-      "ichnusa": { stile:"5D German Pils", abv:"4.7", ibu:"20–25", srm:"3" },
-      "menabrea": { stile:"4A Munich Helles", abv:"4.8", ibu:"18–22", srm:"4" },
-      "poretti": { stile:"5D German Pils", abv:"4.8", ibu:"22–30", srm:"3" },
-      "beck's": { stile:"5D German Pils", abv:"5.0", ibu:"24–32", srm:"3" },
-      "heineken": { stile:"5D German Pils", abv:"5.0", ibu:"20–25", srm:"3" },
-      "spaten": { stile:"4A Munich Helles", abv:"5.2", ibu:"16–22", srm:"4" },
-      "paulaner": { stile:"10A Weissbier", abv:"5.5", ibu:"10–14", srm:"4" },
-      "guinness": { stile:"15A Irish Stout", abv:"4.2", ibu:"35–45", srm:"35" },
-      "leffe blonde": { stile:"26C Belgian Tripel", abv:"6.6", ibu:"20–30", srm:"6" },
-      "hoegaarden": { stile:"24A Witbier", abv:"4.9", ibu:"12–18", srm:"3" }
-    };
+      <div class="toolbar2">
+        <button class="btn btn-gold" onclick="startScanner()">📷 Scanner</button>
+        <button class="btn btn-red" onclick="stopScanner()">■ Stop scanner</button>
+      </div>
 
-    const LUXURY_GRADIENTS = [
-      ["#d4af37", "#6f5620", "#101722"],
-      ["#c78b2d", "#7a4f17", "#101722"],
-      ["#cf6d2d", "#6d2f16", "#101722"],
-      ["#9e5b37", "#5d2e19", "#101722"],
-      ["#5e8fe6", "#25457a", "#101722"],
-      ["#3bb8c8", "#1f5d66", "#101722"],
-      ["#4bbf7d", "#1f5e42", "#101722"],
-      ["#7f63d8", "#3d2d72", "#101722"],
-      ["#b04acb", "#5d2270", "#101722"],
-      ["#b84b6f", "#64243a", "#101722"],
-      ["#d6d0a1", "#7c7650", "#101722"],
-      ["#9aa3ad", "#4e5864", "#101722"]
-    ];
+      <div id="reader"></div>
+      <div id="scanStatus" class="small"></div>
 
-    let prodotti = JSON.parse(localStorage.getItem("prodotti_xa_max")) || [];
-    let movimenti = JSON.parse(localStorage.getItem("movimenti_xa_max")) || [];
-    let vendite = JSON.parse(localStorage.getItem("vendite_xa_max")) || [];
-    let cassa = [];
-    let html5QrCode = null;
-    let scannerAttivo = false;
-    let breweryFilterChip = "";
-    let editIndex = null;
+      <div class="field">
+        <label for="nome">Nome prodotto</label>
+        <input id="nome" placeholder="Es. Spaten München" />
+      </div>
 
-    function showSection(name, btn){
-      document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
-      document.getElementById("section-" + name).classList.add("active");
-      document.querySelectorAll(".navBtn").forEach(b => b.classList.remove("active"));
-      if(btn) btn.classList.add("active");
+      <div class="field">
+        <label for="birrificio">Birrificio</label>
+        <input id="birrificio" placeholder="Es. Spaten München" />
+      </div>
+
+      <div class="field">
+        <label for="formato">Formato</label>
+        <input id="formato" placeholder="Es. 50 cl / 0,5 l" />
+      </div>
+
+      <div class="field">
+        <label for="searchStyle">Cerca stile BJCP</label>
+        <input id="searchStyle" placeholder="Scrivi per cercare lo stile" oninput="filtraStili()" />
+      </div>
+
+      <div class="field">
+        <label for="stile">Stile BJCP</label>
+        <select id="stile" onchange="autoCompilaBJCP()">
+          <option value="">Seleziona stile BJCP</option>
+        </select>
+      </div>
+
+      <div class="autoBox">
+        <div class="autoTitle">Auto BJCP</div>
+        <div class="chipRow">
+          <div class="chip" id="autoAbvChip">ABV: -</div>
+          <div class="chip" id="autoIbuChip">IBU: -</div>
+          <div class="chip" id="autoSrmChip">SRM: -</div>
+        </div>
+        <div class="small" id="autoNotePreview">Seleziona uno stile BJCP per compilare automaticamente le specifiche.</div>
+      </div>
+
+      <div class="field">
+        <label for="qty">Quantità</label>
+        <input id="qty" type="number" placeholder="Es. 1" />
+      </div>
+
+      <div class="field">
+        <label for="soglia">Scorta minima</label>
+        <input id="soglia" type="number" placeholder="Es. 6" />
+      </div>
+
+      <div class="field">
+        <label for="prezzo">Prezzo €</label>
+        <input id="prezzo" type="number" step="0.01" placeholder="Es. 3.50" />
+      </div>
+
+      <div class="field">
+        <label for="abv">ABV %</label>
+        <input id="abv" placeholder="Es. 5.2" />
+      </div>
+
+      <div class="field">
+        <label for="ibu">IBU</label>
+        <input id="ibu" placeholder="Es. 16–22" />
+      </div>
+
+      <div class="field">
+        <label for="srm">SRM / Colore</label>
+        <input id="srm" placeholder="Es. 3–5" />
+      </div>
+
+      <div class="field">
+        <label for="gusto">Gusto</label>
+        <textarea id="gusto" placeholder="Es. maltata, pane, poco amara"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="aroma">Aroma</label>
+        <textarea id="aroma" placeholder="Es. floreale, erbaceo, agrumato"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="corpo">Corpo</label>
+        <input id="corpo" placeholder="Es. leggero / medio / pieno" />
+      </div>
+
+      <div class="field">
+        <label for="finale">Finale</label>
+        <input id="finale" placeholder="Es. secco, pulito, morbido" />
+      </div>
+
+      <div class="field">
+        <label for="abbinamenti">Abbinamenti</label>
+        <textarea id="abbinamenti" placeholder="Es. salumi, formaggi, fritti, carne"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="note">Note extra</label>
+        <textarea id="note" placeholder="Note del negozio o del birrificio"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="foto">Foto etichetta</label>
+        <input type="file" id="foto" accept="image/*" />
+      </div>
+
+      <div class="toolbar2">
+        <button id="saveBtn" class="btn btn-green" onclick="salvaProdotto()">Salva prodotto</button>
+        <button class="btn btn-cyan" onclick="annullaModifica()">Svuota campi</button>
+      </div>
+
+      <div id="messageBox" class="small"></div>
+    </div>
+  </section>
+
+  <section id="section-catalogo" class="section">
+    <div class="card">
+      <div class="sectionTitle">Catalogo birre</div>
+
+      <div class="field">
+        <label for="catalogSearch">Ricerca catalogo</label>
+        <input id="catalogSearch" placeholder="Cerca nome, birrificio, stile" oninput="renderCatalogo()" />
+      </div>
+
+      <div class="field">
+        <label for="catalogStyle">Filtro stile BJCP</label>
+        <select id="catalogStyle" onchange="renderCatalogo()">
+          <option value="">Tutti gli stili</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="catalogBrewery">Filtro birrificio</label>
+        <select id="catalogBrewery" onchange="renderCatalogo()">
+          <option value="">Tutti i birrifici</option>
+        </select>
+      </div>
+
+      <div class="chipRow" id="breweryChips"></div>
+      <div id="catalogoGrid" class="catalogGrid"></div>
+    </div>
+  </section>
+
+  <section id="section-magazzino" class="section">
+    <div class="card">
+      <div class="sectionTitle">Magazzino</div>
+
+      <div class="field">
+        <label for="search">Ricerca magazzino</label>
+        <input id="search" placeholder="Cerca nome, birrificio, stile, barcode" oninput="renderMagazzino()" />
+      </div>
+
+      <div class="field">
+        <label for="filterScorte">Filtro scorte</label>
+        <select id="filterScorte" onchange="renderMagazzino()">
+          <option value="tutte">Tutte le scorte</option>
+          <option value="basse">Solo scorte basse</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="sortBy">Ordina prodotti</label>
+        <select id="sortBy" onchange="renderMagazzino()">
+          <option value="nome">Ordina: nome</option>
+          <option value="qtyAsc">Ordina: quantità crescente</option>
+          <option value="qtyDesc">Ordina: quantità decrescente</option>
+        </select>
+      </div>
+
+      <div id="lista" class="inventoryGrid"></div>
+    </div>
+  </section>
+
+  <section id="section-cassa" class="section">
+    <div class="card">
+      <div class="sectionTitle">Cassa</div>
+
+      <div class="toolbar2">
+        <button class="btn btn-gold" onclick="aggiungiDaBarcode()">Aggiungi da barcode</button>
+        <button class="btn btn-red" onclick="svuotaCassa()">Svuota cassa</button>
+      </div>
+
+      <div id="cassaLista"></div>
+      <div class="totale">Totale: € <span id="totaleCassa">0.00</span></div>
+
+      <div class="field">
+        <label for="pagato">Contanti ricevuti</label>
+        <input id="pagato" type="number" step="0.01" placeholder="Es. 20.00" />
+      </div>
+
+      <div class="toolbar2">
+        <button class="btn btn-orange" onclick="calcolaResto()">Calcola resto</button>
+        <button class="btn btn-green" onclick="chiudiVendita()">Chiudi vendita</button>
+      </div>
+
+      <div id="restoBox" class="small"></div>
+    </div>
+  </section>
+
+  <section id="section-statistiche" class="section">
+    <div class="card">
+      <div class="sectionTitle">Statistiche</div>
+      <div class="stats">
+        <div class="stat"><div class="label">Incasso totale</div><div class="value" id="statIncasso">0</div></div>
+        <div class="stat"><div class="label">Pezzi venduti</div><div class="value" id="statVenduti">0</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sectionTitle">Strumenti</div>
+      <div class="toolbar2">
+        <button class="btn btn-violet" onclick="downloadBackup()">Backup JSON</button>
+        <button class="btn btn-blue" onclick="document.getElementById('restoreFile').click()">Ripristina backup</button>
+      </div>
+      <input id="restoreFile" type="file" accept=".json,application/json" style="display:none" onchange="restoreBackup(event)" />
+      <div class="toolbar2">
+        <button class="btn btn-blue" onclick="toggleMovimenti()">Mostra/Nascondi movimenti</button>
+        <button class="btn btn-red" onclick="resetMagazzino()">Reset magazzino</button>
+      </div>
+      <div class="small">Il reset cancella prodotti, movimenti e vendite dal telefono.</div>
+    </div>
+
+    <div class="card" id="movimentiCard" style="display:none">
+      <div class="sectionTitle">Storico movimenti</div>
+      <div id="movimentiLista"></div>
+    </div>
+  </section>
+
+</div>
+
+<nav class="bottomNav">
+  <button class="navBtn active" data-section="home" onclick="showSection('home', this)"><span class="navIcon">🏠</span>Home</button>
+  <button class="navBtn" data-section="catalogo" onclick="showSection('catalogo', this)"><span class="navIcon">🍺</span>Catalogo</button>
+  <button class="navBtn" data-section="magazzino" onclick="showSection('magazzino', this)"><span class="navIcon">📦</span>Magazzino</button>
+  <button class="navBtn" data-section="cassa" onclick="showSection('cassa', this)"><span class="navIcon">💰</span>Cassa</button>
+  <button class="navBtn" data-section="statistiche" onclick="showSection('statistiche', this)"><span class="navIcon">📊</span>Stat.</button>
+</nav>
+
+<script>
+  const PROXY_URL = "https://still-dawn-2dc5.lustino111.workers.dev";
+
+  const BJCP_DATA = {
+    "4A Munich Helles": { abv:"4.7–5.4", ibu:"16–22", srm:"3–5", gusto:"Maltata, pane fresco, delicatamente dolce, poco amara.", aroma:"Pane, miele leggero, cereale pulito, luppolo delicato.", corpo:"Leggero-medio", finale:"Pulito, morbido, scorrevole", abbinamenti:"Salumi, wurstel, pretzel, fritti, formaggi dolci" },
+    "5D German Pils": { abv:"4.4–5.2", ibu:"22–40", srm:"2–5", gusto:"Secca, croccante, più amara di una Helles.", aroma:"Erbaceo, speziato, floreale, cereale chiaro.", corpo:"Leggero", finale:"Secco, netto, pulito", abbinamenti:"Fritti, pizza bianca, pesce, snack salati" },
+    "10A Weissbier": { abv:"4.3–5.6", ibu:"8–15", srm:"2–6", gusto:"Fresca, fruttata, morbida, poco amara.", aroma:"Banana, chiodo di garofano, pane bianco.", corpo:"Medio", finale:"Morbido, fresco, vivace", abbinamenti:"Insalate, pollo, cucina speziata leggera, formaggi freschi" },
+    "15A Irish Stout": { abv:"4.0–4.5", ibu:"25–45", srm:"25–40", gusto:"Tostata, secca, caffè, cacao amaro.", aroma:"Orzo tostato, caffè, lieve cioccolato fondente.", corpo:"Leggero-medio", finale:"Asciutto, tostato, deciso", abbinamenti:"Ostriche, carni grigliate, burger, dolci al cacao" },
+    "18A Blonde Ale": { abv:"3.8–5.5", ibu:"15–28", srm:"3–6", gusto:"Chiara, morbida, pane leggero, facile da bere.", aroma:"Cereale, floreale lieve, fruttato delicato.", corpo:"Leggero-medio", finale:"Pulito, semplice, beverino", abbinamenti:"Panini, aperitivi, fritti, pizza" },
+    "18B American Pale Ale": { abv:"4.5–6.2", ibu:"30–50", srm:"5–10", gusto:"Agrumata, resinosa, biscotto, amaro moderato.", aroma:"Agrumi, resina, frutta tropicale leggera, malto biscuit.", corpo:"Medio-leggero", finale:"Fresco, amaro equilibrato", abbinamenti:"Hamburger, tacos, pizza saporita, cheddar" },
+    "21A American IPA": { abv:"5.5–7.5", ibu:"40–70", srm:"6–14", gusto:"Amara, agrumata, resinosa, fruttata.", aroma:"Pompelmo, arancia, mango, resina, luppolo intenso.", corpo:"Medio", finale:"Amaro, persistente, secco", abbinamenti:"Cucina speziata, burger, barbecue, blue cheese" },
+    "22A Double IPA": { abv:"7.5–10.0", ibu:"60–100", srm:"6–14", gusto:"Molto intensa, amara, fruttata, potente.", aroma:"Tropicale, agrumato, resinoso, alcol delicato.", corpo:"Medio-pieno", finale:"Lungo, amaro, caldo", abbinamenti:"Piatti molto saporiti, bbq, formaggi stagionati" },
+    "24A Witbier": { abv:"4.5–5.5", ibu:"8–20", srm:"2–4", gusto:"Fresca, agrumata, morbida, poco amara.", aroma:"Coriandolo, scorza d'arancia, frumento.", corpo:"Leggero-medio", finale:"Fresco, leggermente speziato", abbinamenti:"Pesce, insalate, sushi, formaggi freschi" },
+    "25B Saison": { abv:"5.0–7.0", ibu:"20–35", srm:"5–14", gusto:"Secca, speziata, rustica, fresca.", aroma:"Pepata, agrumata, erbacea, fruttata leggera.", corpo:"Leggero-medio", finale:"Molto secco, vivace", abbinamenti:"Salumi, pollo, formaggi caprini, piatti speziati" },
+    "26C Belgian Tripel": { abv:"7.5–9.5", ibu:"20–40", srm:"4.5–7", gusto:"Ricca ma secca, fruttata, speziata, alcol elegante.", aroma:"Pera, banana lieve, pepe, miele leggero.", corpo:"Medio-pieno", finale:"Secco, caldo, raffinato", abbinamenti:"Carni bianche, formaggi stagionati, cucina ricca" },
+    "23A Berliner Weisse": { abv:"2.8–3.8", ibu:"3–8", srm:"2–3", gusto:"Acida, citrica, leggerissima.", aroma:"Limone, yogurt, cereale tenue.", corpo:"Molto leggero", finale:"Secco, acidulo, pulitissimo", abbinamenti:"Pesce crudo, aperitivo, fritti leggeri" }
+  };
+
+  const ALL_STYLES = Object.keys(BJCP_DATA);
+
+  const BEER_DB = {
+    "birra moretti": { stile:"4A Munich Helles", abv:"4.6", ibu:"18–22", srm:"4" },
+    "moretti": { stile:"4A Munich Helles", abv:"4.6", ibu:"18–22", srm:"4" },
+    "peroni": { stile:"5D German Pils", abv:"4.7", ibu:"20–30", srm:"3" },
+    "ichnusa": { stile:"5D German Pils", abv:"4.7", ibu:"20–25", srm:"3" },
+    "menabrea": { stile:"4A Munich Helles", abv:"4.8", ibu:"18–22", srm:"4" },
+    "poretti": { stile:"5D German Pils", abv:"4.8", ibu:"22–30", srm:"3" },
+    "beck's": { stile:"5D German Pils", abv:"5.0", ibu:"24–32", srm:"3" },
+    "heineken": { stile:"5D German Pils", abv:"5.0", ibu:"20–25", srm:"3" },
+    "spaten": { stile:"4A Munich Helles", abv:"5.2", ibu:"16–22", srm:"4" },
+    "paulaner": { stile:"10A Weissbier", abv:"5.5", ibu:"10–14", srm:"4" },
+    "guinness": { stile:"15A Irish Stout", abv:"4.2", ibu:"35–45", srm:"35" },
+    "leffe blonde": { stile:"26C Belgian Tripel", abv:"6.6", ibu:"20–30", srm:"6" },
+    "hoegaarden": { stile:"24A Witbier", abv:"4.9", ibu:"12–18", srm:"3" }
+  };
+
+  const LUXURY_GRADIENTS = [
+    ["#d4af37", "#6f5620", "#101722"],
+    ["#c78b2d", "#7a4f17", "#101722"],
+    ["#cf6d2d", "#6d2f16", "#101722"],
+    ["#9e5b37", "#5d2e19", "#101722"],
+    ["#5e8fe6", "#25457a", "#101722"],
+    ["#3bb8c8", "#1f5d66", "#101722"],
+    ["#4bbf7d", "#1f5e42", "#101722"],
+    ["#7f63d8", "#3d2d72", "#101722"],
+    ["#b04acb", "#5d2270", "#101722"],
+    ["#b84b6f", "#64243a", "#101722"],
+    ["#d6d0a1", "#7c7650", "#101722"],
+    ["#9aa3ad", "#4e5864", "#101722"]
+  ];
+
+  let prodotti = JSON.parse(localStorage.getItem("prodotti_xa_ultra")) || [];
+  let movimenti = JSON.parse(localStorage.getItem("movimenti_xa_ultra")) || [];
+  let vendite = JSON.parse(localStorage.getItem("vendite_xa_ultra")) || [];
+  let cassa = [];
+  let html5QrCode = null;
+  let scannerAttivo = false;
+  let breweryFilterChip = "";
+  let editIndex = null;
+
+  function showSection(name, btn){
+    document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+    document.getElementById("section-" + name).classList.add("active");
+    document.querySelectorAll(".navBtn").forEach(b => b.classList.remove("active"));
+    if(btn) btn.classList.add("active");
+  }
+
+  function salvaDati(){
+    localStorage.setItem("prodotti_xa_ultra", JSON.stringify(prodotti));
+    localStorage.setItem("movimenti_xa_ultra", JSON.stringify(movimenti));
+    localStorage.setItem("vendite_xa_ultra", JSON.stringify(vendite));
+  }
+
+  function setMsg(text, type=""){
+    const box = document.getElementById("messageBox");
+    box.className = "small " + type;
+    box.textContent = text;
+  }
+
+  function setScan(text, type=""){
+    const box = document.getElementById("scanStatus");
+    box.className = "small " + type;
+    box.textContent = text;
+  }
+
+  function nowString(){
+    return new Date().toLocaleString("it-IT");
+  }
+
+  function escapeHtml(text){
+    return String(text || "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  function stringHash(str){
+    let h = 0;
+    const s = String(str || "");
+    for(let i=0;i<s.length;i++){
+      h = ((h << 5) - h) + s.charCodeAt(i);
+      h |= 0;
     }
+    return Math.abs(h);
+  }
 
-    function salvaDati(){
-      localStorage.setItem("prodotti_xa_max", JSON.stringify(prodotti));
-      localStorage.setItem("movimenti_xa_max", JSON.stringify(movimenti));
-      localStorage.setItem("vendite_xa_max", JSON.stringify(vendite));
+  function getLuxuryGradient(item){
+    const key = `${item.nome || ""}|${item.barcode || ""}|${item.stile || ""}|${item.birrificio || ""}`;
+    const idx = stringHash(key) % LUXURY_GRADIENTS.length;
+    const g = LUXURY_GRADIENTS[idx];
+    return `linear-gradient(180deg, ${g[0]} 0%, ${g[1]} 32%, ${g[2]} 100%)`;
+  }
+
+  function popolaStili(){
+    const select = document.getElementById("stile");
+    const attuale = select.value;
+    select.innerHTML = `<option value="">Seleziona stile BJCP</option>`;
+    ALL_STYLES.forEach(st => {
+      const o = document.createElement("option");
+      o.value = st;
+      o.textContent = st;
+      select.appendChild(o);
+    });
+    if(ALL_STYLES.includes(attuale)) select.value = attuale;
+
+    const catalogStyle = document.getElementById("catalogStyle");
+    const old = catalogStyle.value;
+    catalogStyle.innerHTML = `<option value="">Tutti gli stili</option>`;
+    ALL_STYLES.forEach(st => {
+      const o = document.createElement("option");
+      o.value = st;
+      o.textContent = st;
+      catalogStyle.appendChild(o);
+    });
+    catalogStyle.value = old;
+  }
+
+  function filtraStili(){
+    const q = document.getElementById("searchStyle").value.trim().toLowerCase();
+    const select = document.getElementById("stile");
+    const list = ALL_STYLES.filter(s => s.toLowerCase().includes(q));
+    const attuale = select.value;
+    select.innerHTML = `<option value="">Seleziona stile BJCP</option>`;
+    list.forEach(st => {
+      const o = document.createElement("option");
+      o.value = st;
+      o.textContent = st;
+      select.appendChild(o);
+    });
+    if(list.includes(attuale)) select.value = attuale;
+  }
+
+  function applyBJCPStyle(stile, custom = {}){
+    const base = BJCP_DATA[stile];
+    if(!base) return false;
+
+    document.getElementById("stile").value = stile;
+    document.getElementById("abv").value = custom.abv || base.abv;
+    document.getElementById("ibu").value = custom.ibu || base.ibu;
+    document.getElementById("srm").value = custom.srm || base.srm;
+    document.getElementById("gusto").value = custom.gusto || base.gusto;
+    document.getElementById("aroma").value = custom.aroma || base.aroma;
+    document.getElementById("corpo").value = custom.corpo || base.corpo;
+    document.getElementById("finale").value = custom.finale || base.finale;
+    document.getElementById("abbinamenti").value = custom.abbinamenti || base.abbinamenti;
+
+    document.getElementById("autoAbvChip").textContent = "ABV: " + (custom.abv || base.abv);
+    document.getElementById("autoIbuChip").textContent = "IBU: " + (custom.ibu || base.ibu);
+    document.getElementById("autoSrmChip").textContent = "SRM: " + (custom.srm || base.srm);
+    document.getElementById("autoNotePreview").textContent = (custom.gusto || base.gusto) + " " + (custom.aroma || base.aroma);
+    return true;
+  }
+
+  function autoCompilaBJCP(){
+    const stile = document.getElementById("stile").value;
+    if(!stile){
+      document.getElementById("autoAbvChip").textContent = "ABV: -";
+      document.getElementById("autoIbuChip").textContent = "IBU: -";
+      document.getElementById("autoSrmChip").textContent = "SRM: -";
+      document.getElementById("autoNotePreview").textContent = "Seleziona uno stile BJCP per compilare automaticamente le specifiche.";
+      return;
     }
+    applyBJCPStyle(stile);
+  }
 
-    function setMsg(text, type=""){
-      const box = document.getElementById("messageBox");
-      box.className = "small " + type;
-      box.textContent = text;
+  function inferStyleFromText(nome, birrificio){
+    const t = `${nome || ""} ${birrificio || ""}`.toLowerCase();
+
+    for (const key in BEER_DB){
+      if(t.includes(key)) return BEER_DB[key];
     }
+    if(t.includes("double ipa") || t.includes("dipa")) return { stile:"22A Double IPA" };
+    if(t.includes("ipa")) return { stile:"21A American IPA" };
+    if(t.includes("tripel")) return { stile:"26C Belgian Tripel" };
+    if(t.includes("saison")) return { stile:"25B Saison" };
+    if(t.includes("wit") || t.includes("blanche")) return { stile:"24A Witbier" };
+    if(t.includes("weiss") || t.includes("weizen")) return { stile:"10A Weissbier" };
+    if(t.includes("stout")) return { stile:"15A Irish Stout" };
+    if(t.includes("pils")) return { stile:"5D German Pils" };
+    if(t.includes("helles") || t.includes("lager")) return { stile:"4A Munich Helles" };
+    if(t.includes("berliner")) return { stile:"23A Berliner Weisse" };
+    if(t.includes("pale ale")) return { stile:"18B American Pale Ale" };
+    if(t.includes("blonde")) return { stile:"18A Blonde Ale" };
+    return null;
+  }
 
-    function setScan(text, type=""){
-      const box = document.getElementById("scanStatus");
-      box.className = "small " + type;
-      box.textContent = text;
+  function trovaPerBarcode(barcode){
+    return prodotti.findIndex(p => String(p.barcode || "").trim() === String(barcode || "").trim());
+  }
+
+  function registraMovimento(tipo, prodotto, quantita){
+    movimenti.unshift({
+      data: nowString(),
+      tipo,
+      nome: prodotto.nome || "",
+      barcode: prodotto.barcode || "",
+      quantita
+    });
+    if(movimenti.length > 300) movimenti = movimenti.slice(0,300);
+  }
+
+  async function lookupProxy(barcode){
+    try{
+      const res = await fetch(`${PROXY_URL}/lookup?barcode=${encodeURIComponent(barcode)}`);
+      if(!res.ok) return null;
+      const txt = await res.text();
+      let data = null;
+      try{ data = JSON.parse(txt); } catch(e){ return null; }
+      if(!data || !data.found || !data.product) return null;
+      return data.product;
+    } catch(e){
+      return null;
     }
+  }
 
-    function nowString(){
-      return new Date().toLocaleString("it-IT");
+  async function lookupOpenFoodFacts(barcode){
+    try{
+      const url = `https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(barcode)}.json`;
+      const res = await fetch(url);
+      const data = await res.json();
+      const p = data?.product;
+      if(!p) return null;
+      return {
+        name: p.product_name_it || p.product_name || p.generic_name_it || p.generic_name || "",
+        brand: p.brands || "",
+        quantity: p.quantity || "",
+        image: p.image_front_url || p.image_url || ""
+      };
+    } catch(e){
+      return null;
     }
+  }
 
-    function escapeHtml(text){
-      return String(text || "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
+  async function cercaProdottoOnline(barcode){
+    setScan("Cerco prodotto...");
 
-    function stringHash(str){
-      let h = 0;
-      const s = String(str || "");
-      for(let i=0;i<s.length;i++){
-        h = ((h << 5) - h) + s.charCodeAt(i);
-        h |= 0;
-      }
-      return Math.abs(h);
-    }
-
-    function getLuxuryGradient(item){
-      const key = `${item.nome || ""}|${item.barcode || ""}|${item.stile || ""}|${item.birrificio || ""}`;
-      const idx = stringHash(key) % LUXURY_GRADIENTS.length;
-      const g = LUXURY_GRADIENTS[idx];
-      return `linear-gradient(180deg, ${g[0]} 0%, ${g[1]} 32%, ${g[2]} 100%)`;
-    }
-
-    function popolaStili(){
-      const select = document.getElementById("stile");
-      const attuale = select.value;
-      select.innerHTML = `<option value="">Seleziona stile BJCP</option>`;
-      ALL_STYLES.forEach(st => {
-        const o = document.createElement("option");
-        o.value = st;
-        o.textContent = st;
-        select.appendChild(o);
-      });
-      if(ALL_STYLES.includes(attuale)) select.value = attuale;
-
-      const catalogStyle = document.getElementById("catalogStyle");
-      const old = catalogStyle.value;
-      catalogStyle.innerHTML = `<option value="">Tutti gli stili</option>`;
-      ALL_STYLES.forEach(st => {
-        const o = document.createElement("option");
-        o.value = st;
-        o.textContent = st;
-        catalogStyle.appendChild(o);
-      });
-      catalogStyle.value = old;
-    }
-
-    function popolaBirrificiCatalogo(){
-      const select = document.getElementById("catalogBrewery");
-      const old = select.value;
-      const breweries = [...new Set(prodotti.map(p => String(p.birrificio || "").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"it"));
-      select.innerHTML = `<option value="">Tutti i birrifici</option>`;
-      breweries.forEach(b => {
-        const o = document.createElement("option");
-        o.value = b;
-        o.textContent = b;
-        select.appendChild(o);
-      });
-      if(breweries.includes(old)) select.value = old;
-    }
-
-    function renderBreweryChips(){
-      const row = document.getElementById("breweryChips");
-      const breweries = [...new Set(prodotti.map(p => String(p.birrificio || "").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"it"));
-      if(breweries.length === 0){
-        row.innerHTML = `<div class="small">Nessun birrificio ancora salvato.</div>`;
-        return;
-      }
-      row.innerHTML = `
-        <button class="chip ${breweryFilterChip === "" ? "active" : ""}" onclick="setBreweryChip('')">Tutti</button>
-        ${breweries.map(b => `
-          <button class="chip ${breweryFilterChip === b ? "active" : ""}" onclick="setBreweryChip('${escapeHtml(b)}')">${escapeHtml(b)}</button>
-        `).join("")}
-      `;
-    }
-
-    function setBreweryChip(name){
-      breweryFilterChip = name;
-      document.getElementById("catalogBrewery").value = name;
-      renderBreweryChips();
-      renderCatalogo();
-    }
-
-    function filtraStili(){
-      const q = document.getElementById("searchStyle").value.trim().toLowerCase();
-      const select = document.getElementById("stile");
-      const list = ALL_STYLES.filter(s => s.toLowerCase().includes(q));
-      const attuale = select.value;
-      select.innerHTML = `<option value="">Seleziona stile BJCP</option>`;
-      list.forEach(st => {
-        const o = document.createElement("option");
-        o.value = st;
-        o.textContent = st;
-        select.appendChild(o);
-      });
-      if(list.includes(attuale)) select.value = attuale;
-    }
-
-    function applyBJCPStyle(stile, custom = {}){
-      const base = BJCP_DATA[stile];
-      if(!base) return false;
-
-      document.getElementById("stile").value = stile;
-      document.getElementById("abv").value = custom.abv || base.abv;
-      document.getElementById("ibu").value = custom.ibu || base.ibu;
-      document.getElementById("srm").value = custom.srm || base.srm;
-      document.getElementById("gusto").value = custom.gusto || base.gusto;
-      document.getElementById("aroma").value = custom.aroma || base.aroma;
-      document.getElementById("corpo").value = custom.corpo || base.corpo;
-      document.getElementById("finale").value = custom.finale || base.finale;
-      document.getElementById("abbinamenti").value = custom.abbinamenti || base.abbinamenti;
-
-      document.getElementById("autoAbvChip").textContent = "ABV: " + (custom.abv || base.abv);
-      document.getElementById("autoIbuChip").textContent = "IBU: " + (custom.ibu || base.ibu);
-      document.getElementById("autoSrmChip").textContent = "SRM: " + (custom.srm || base.srm);
-      document.getElementById("autoNotePreview").textContent = (custom.gusto || base.gusto) + " " + (custom.aroma || base.aroma);
-
+    let product = await lookupProxy(barcode);
+    if(product){
+      document.getElementById("nome").value = product.name || "";
+      document.getElementById("birrificio").value = product.brand || "";
+      document.getElementById("formato").value = product.quantity || "";
+      document.getElementById("qty").value = "1";
+      const smart = inferStyleFromText(product.name || "", product.brand || "");
+      if(smart && smart.stile) applyBJCPStyle(smart.stile, smart);
+      setScan("Prodotto trovato tramite proxy.", "ok");
       return true;
     }
 
-    function autoCompilaBJCP(){
-      const stile = document.getElementById("stile").value;
-      if(!stile){
-        document.getElementById("autoAbvChip").textContent = "ABV: -";
-        document.getElementById("autoIbuChip").textContent = "IBU: -";
-        document.getElementById("autoSrmChip").textContent = "SRM: -";
-        document.getElementById("autoNotePreview").textContent = "Seleziona uno stile BJCP per compilare automaticamente le specifiche.";
-        return;
+    product = await lookupOpenFoodFacts(barcode);
+    if(product){
+      document.getElementById("nome").value = product.name || "";
+      document.getElementById("birrificio").value = product.brand || "";
+      document.getElementById("formato").value = product.quantity || "";
+      document.getElementById("qty").value = "1";
+      const smart = inferStyleFromText(product.name || "", product.brand || "");
+      if(smart && smart.stile){
+        applyBJCPStyle(smart.stile, smart);
+        setScan("Prodotto trovato e stile riconosciuto.", "ok");
+      } else {
+        setScan("Prodotto trovato. Scegli lo stile BJCP.", "warn");
       }
-      applyBJCPStyle(stile);
+      return true;
     }
 
-    function inferStyleFromText(nome, birrificio){
-      const t = `${nome || ""} ${birrificio || ""}`.toLowerCase();
+    setScan("Prodotto non trovato online.", "warn");
+    return false;
+  }
 
-      for (const key in BEER_DB){
-        if(t.includes(key)) return BEER_DB[key];
-      }
+  async function gestisciBarcodeLetto(barcode){
+    document.getElementById("barcode").value = barcode;
+    const idx = trovaPerBarcode(barcode);
 
-      if(t.includes("double ipa") || t.includes("dipa")) return { stile:"22A Double IPA" };
-      if(t.includes("ipa")) return { stile:"21A American IPA" };
-      if(t.includes("tripel")) return { stile:"26C Belgian Tripel" };
-      if(t.includes("saison")) return { stile:"25B Saison" };
-      if(t.includes("wit") || t.includes("blanche") || t.includes("hoegaarden")) return { stile:"24A Witbier" };
-      if(t.includes("weiss") || t.includes("weizen")) return { stile:"10A Weissbier" };
-      if(t.includes("stout") || t.includes("guinness")) return { stile:"15A Irish Stout" };
-      if(t.includes("pils")) return { stile:"5D German Pils" };
-      if(t.includes("helles") || t.includes("lager") || t.includes("moretti") || t.includes("menabrea") || t.includes("spaten")) return { stile:"4A Munich Helles" };
-      if(t.includes("berliner")) return { stile:"23A Berliner Weisse" };
-      if(t.includes("pale ale")) return { stile:"18B American Pale Ale" };
-      if(t.includes("blonde")) return { stile:"18A Blonde Ale" };
-
-      return null;
-    }
-
-    function trovaPerBarcode(barcode){
-      return prodotti.findIndex(p => String(p.barcode || "").trim() === String(barcode || "").trim());
-    }
-
-    function entraInModalitaModifica(i){
-      const p = prodotti[i];
-      editIndex = i;
-
-      document.getElementById("barcode").value = p.barcode || "";
+    if(idx >= 0){
+      const p = prodotti[idx];
       document.getElementById("nome").value = p.nome || "";
       document.getElementById("birrificio").value = p.birrificio || "";
       document.getElementById("formato").value = p.formato || "";
       document.getElementById("stile").value = p.stile || "";
-      document.getElementById("qty").value = p.qty ?? 0;
-      document.getElementById("soglia").value = p.soglia ?? 0;
-      document.getElementById("prezzo").value = p.prezzo ?? 0;
+      document.getElementById("qty").value = p.qty || 0;
+      document.getElementById("soglia").value = p.soglia || 0;
+      document.getElementById("prezzo").value = p.prezzo || 0;
       document.getElementById("abv").value = p.abv || "";
       document.getElementById("ibu").value = p.ibu || "";
       document.getElementById("srm").value = p.srm || "";
@@ -1238,689 +1092,568 @@
       document.getElementById("finale").value = p.finale || "";
       document.getElementById("abbinamenti").value = p.abbinamenti || "";
       document.getElementById("note").value = p.note || "";
-
-      document.getElementById("editBox").style.display = "block";
-      document.getElementById("saveBtn").textContent = "Salva modifica";
-      showSection("home", document.querySelector('.navBtn[data-section="home"]'));
-      setMsg("Prodotto pronto da modificare.", "ok");
+      setScan("Prodotto già presente nel magazzino.", "ok");
+      return;
     }
 
-    function annullaModifica(){
-      editIndex = null;
-      ["barcode","nome","birrificio","formato","qty","soglia","prezzo","abv","ibu","srm","gusto","aroma","corpo","finale","abbinamenti","note","searchStyle"].forEach(id => {
-        document.getElementById(id).value = "";
-      });
-      document.getElementById("stile").value = "";
-      document.getElementById("foto").value = "";
-      document.getElementById("editBox").style.display = "none";
-      document.getElementById("saveBtn").textContent = "Salva prodotto";
-      document.getElementById("autoAbvChip").textContent = "ABV: -";
-      document.getElementById("autoIbuChip").textContent = "IBU: -";
-      document.getElementById("autoSrmChip").textContent = "SRM: -";
-      document.getElementById("autoNotePreview").textContent = "Seleziona uno stile BJCP per compilare automaticamente le specifiche.";
-      setMsg("");
-      setScan("");
-      popolaStili();
+    await cercaProdottoOnline(barcode);
+  }
+
+  async function startScanner(){
+    if(scannerAttivo){
+      setScan("Scanner già attivo.");
+      return;
     }
+    const reader = document.getElementById("reader");
+    reader.style.display = "block";
+    setScan("Avvio fotocamera...");
+    html5QrCode = new Html5Qrcode("reader");
+    scannerAttivo = true;
 
-    function registraMovimento(tipo, prodotto, quantita){
-      movimenti.unshift({
-        data: nowString(),
-        tipo,
-        nome: prodotto.nome || "",
-        barcode: prodotto.barcode || "",
-        quantita
-      });
-      if(movimenti.length > 300) movimenti = movimenti.slice(0,300);
+    try{
+      await html5QrCode.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 250 },
+        async (decodedText) => {
+          await stopScanner();
+          await gestisciBarcodeLetto(decodedText);
+        },
+        () => {}
+      );
+      setScan("Inquadra il barcode.");
+    } catch(err){
+      reader.style.display = "none";
+      scannerAttivo = false;
+      setScan("Fotocamera non disponibile.", "dangerText");
     }
+  }
 
-    function salvaProdotto(){
-      const barcode = document.getElementById("barcode").value.trim();
-      const nome = document.getElementById("nome").value.trim();
-      const birrificio = document.getElementById("birrificio").value.trim();
-      const formato = document.getElementById("formato").value.trim();
-      const stile = document.getElementById("stile").value.trim();
-      const qty = parseInt(document.getElementById("qty").value || "0", 10);
-      const soglia = parseInt(document.getElementById("soglia").value || "0", 10);
-      const prezzo = parseFloat(document.getElementById("prezzo").value || "0");
-      const abv = document.getElementById("abv").value.trim();
-      const ibu = document.getElementById("ibu").value.trim();
-      const srm = document.getElementById("srm").value.trim();
-      const gusto = document.getElementById("gusto").value.trim();
-      const aroma = document.getElementById("aroma").value.trim();
-      const corpo = document.getElementById("corpo").value.trim();
-      const finale = document.getElementById("finale").value.trim();
-      const abbinamenti = document.getElementById("abbinamenti").value.trim();
-      const note = document.getElementById("note").value.trim();
-      const file = document.getElementById("foto").files[0];
+  async function stopScanner(){
+    const reader = document.getElementById("reader");
+    if(html5QrCode && scannerAttivo){
+      try{
+        await html5QrCode.stop();
+        await html5QrCode.clear();
+      } catch(e){}
+    }
+    scannerAttivo = false;
+    reader.style.display = "none";
+  }
 
-      if(!barcode){ setMsg("Inserisci o scansiona un barcode.", "warn"); return; }
-      if(!nome){ setMsg("Inserisci il nome prodotto.", "warn"); return; }
+  function entraInModalitaModifica(i){
+    const p = prodotti[i];
+    editIndex = i;
+    document.getElementById("barcode").value = p.barcode || "";
+    document.getElementById("nome").value = p.nome || "";
+    document.getElementById("birrificio").value = p.birrificio || "";
+    document.getElementById("formato").value = p.formato || "";
+    document.getElementById("stile").value = p.stile || "";
+    document.getElementById("qty").value = p.qty ?? 0;
+    document.getElementById("soglia").value = p.soglia ?? 0;
+    document.getElementById("prezzo").value = p.prezzo ?? 0;
+    document.getElementById("abv").value = p.abv || "";
+    document.getElementById("ibu").value = p.ibu || "";
+    document.getElementById("srm").value = p.srm || "";
+    document.getElementById("gusto").value = p.gusto || "";
+    document.getElementById("aroma").value = p.aroma || "";
+    document.getElementById("corpo").value = p.corpo || "";
+    document.getElementById("finale").value = p.finale || "";
+    document.getElementById("abbinamenti").value = p.abbinamenti || "";
+    document.getElementById("note").value = p.note || "";
+    document.getElementById("editBox").style.display = "block";
+    document.getElementById("saveBtn").textContent = "Salva modifica";
+    showSection("home", document.querySelector('.navBtn[data-section="home"]'));
+    setMsg("Prodotto pronto da modificare.", "ok");
+  }
+
+  function annullaModifica(){
+    editIndex = null;
+    ["barcode","nome","birrificio","formato","qty","soglia","prezzo","abv","ibu","srm","gusto","aroma","corpo","finale","abbinamenti","note","searchStyle"].forEach(id => {
+      document.getElementById(id).value = "";
+    });
+    document.getElementById("stile").value = "";
+    document.getElementById("foto").value = "";
+    document.getElementById("editBox").style.display = "none";
+    document.getElementById("saveBtn").textContent = "Salva prodotto";
+    document.getElementById("autoAbvChip").textContent = "ABV: -";
+    document.getElementById("autoIbuChip").textContent = "IBU: -";
+    document.getElementById("autoSrmChip").textContent = "SRM: -";
+    document.getElementById("autoNotePreview").textContent = "Seleziona uno stile BJCP per compilare automaticamente le specifiche.";
+    setMsg("");
+    setScan("");
+    popolaStili();
+  }
+
+  function salvaProdotto(){
+    const barcode = document.getElementById("barcode").value.trim();
+    const nome = document.getElementById("nome").value.trim();
+    const birrificio = document.getElementById("birrificio").value.trim();
+    const formato = document.getElementById("formato").value.trim();
+    const stile = document.getElementById("stile").value.trim();
+    const qty = parseInt(document.getElementById("qty").value || "0", 10);
+    const soglia = parseInt(document.getElementById("soglia").value || "0", 10);
+    const prezzo = parseFloat(document.getElementById("prezzo").value || "0");
+    const abv = document.getElementById("abv").value.trim();
+    const ibu = document.getElementById("ibu").value.trim();
+    const srm = document.getElementById("srm").value.trim();
+    const gusto = document.getElementById("gusto").value.trim();
+    const aroma = document.getElementById("aroma").value.trim();
+    const corpo = document.getElementById("corpo").value.trim();
+    const finale = document.getElementById("finale").value.trim();
+    const abbinamenti = document.getElementById("abbinamenti").value.trim();
+    const note = document.getElementById("note").value.trim();
+    const file = document.getElementById("foto").files[0];
+
+    if(!barcode){ setMsg("Inserisci o scansiona un barcode.", "warn"); return; }
+    if(!nome){ setMsg("Inserisci il nome prodotto.", "warn"); return; }
+
+    const salvaConFoto = (fotoData) => {
+      const idx = trovaPerBarcode(barcode);
 
       if(editIndex !== null){
-        if(file){
-          const reader = new FileReader();
-          reader.onload = function(){
-            salvaModificaCompleta({ barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, abv, ibu, srm, gusto, aroma, corpo, finale, abbinamenti, note, foto: reader.result });
-          };
-          reader.readAsDataURL(file);
-        } else {
-          salvaModificaCompleta({ barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, abv, ibu, srm, gusto, aroma, corpo, finale, abbinamenti, note, foto: prodotti[editIndex].foto || "" });
-        }
+        prodotti[editIndex] = {
+          ...prodotti[editIndex],
+          barcode,nome,birrificio,formato,stile,
+          qty:Number(qty || 0),
+          soglia:Number(soglia || 0),
+          prezzo:Number(prezzo || 0),
+          abv,ibu,srm,gusto,aroma,corpo,finale,abbinamenti,note,
+          foto: fotoData || prodotti[editIndex].foto || ""
+        };
+        registraMovimento("MODIFICA", prodotti[editIndex], 0);
+        salvaDati();
+        annullaModifica();
+        refreshAll();
+        setMsg("Prodotto modificato correttamente.", "ok");
         return;
       }
 
-      const idx = trovaPerBarcode(barcode);
-
-      if(file){
-        const reader = new FileReader();
-        reader.onload = function(){
-          completaSalvataggioNuovo(idx, { barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, abv, ibu, srm, gusto, aroma, corpo, finale, abbinamenti, note, foto: reader.result });
-        };
-        reader.readAsDataURL(file);
-      } else {
-        let fotoEsistente = "";
-        if(idx >= 0) fotoEsistente = prodotti[idx].foto || "";
-        completaSalvataggioNuovo(idx, { barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, abv, ibu, srm, gusto, aroma, corpo, finale, abbinamenti, note, foto: fotoEsistente });
-      }
-    }
-
-    function salvaModificaCompleta(data){
-      prodotti[editIndex] = {
-        ...prodotti[editIndex],
-        barcode:data.barcode,
-        nome:data.nome,
-        birrificio:data.birrificio,
-        formato:data.formato,
-        stile:data.stile,
-        qty:Number(data.qty || 0),
-        soglia:Number(data.soglia || 0),
-        prezzo:Number(data.prezzo || 0),
-        abv:data.abv,
-        ibu:data.ibu,
-        srm:data.srm,
-        gusto:data.gusto,
-        aroma:data.aroma,
-        corpo:data.corpo,
-        finale:data.finale,
-        abbinamenti:data.abbinamenti,
-        note:data.note,
-        foto:data.foto || prodotti[editIndex].foto || ""
-      };
-      registraMovimento("MODIFICA", prodotti[editIndex], 0);
-      salvaDati();
-      annullaModifica();
-      refreshAll();
-      setMsg("Prodotto modificato correttamente.", "ok");
-    }
-
-    function completaSalvataggioNuovo(idx, data){
       if(idx >= 0){
         prodotti[idx] = {
           ...prodotti[idx],
-          nome:data.nome,
-          birrificio:data.birrificio,
-          formato:data.formato,
-          stile:data.stile,
-          soglia:Number(data.soglia || 0),
-          prezzo:Number(data.prezzo || 0),
-          abv:data.abv,
-          ibu:data.ibu,
-          srm:data.srm,
-          gusto:data.gusto,
-          aroma:data.aroma,
-          corpo:data.corpo,
-          finale:data.finale,
-          abbinamenti:data.abbinamenti,
-          note:data.note,
-          foto:data.foto || prodotti[idx].foto || "",
-          qty:Number(prodotti[idx].qty || 0) + Number(data.qty || 0)
+          nome,birrificio,formato,stile,
+          soglia:Number(soglia || 0),
+          prezzo:Number(prezzo || 0),
+          abv,ibu,srm,gusto,aroma,corpo,finale,abbinamenti,note,
+          foto: fotoData || prodotti[idx].foto || "",
+          qty:Number(prodotti[idx].qty || 0) + Number(qty || 0)
         };
-        registraMovimento("CARICO", prodotti[idx], Number(data.qty || 0));
+        registraMovimento("CARICO", prodotti[idx], Number(qty || 0));
         setMsg("Prodotto aggiornato. Quantità aumentata.", "ok");
       } else {
         const nuovo = {
-          barcode:data.barcode,
-          nome:data.nome,
-          birrificio:data.birrificio,
-          formato:data.formato,
-          stile:data.stile,
-          qty:Number(data.qty || 0),
-          soglia:Number(data.soglia || 0),
-          prezzo:Number(data.prezzo || 0),
-          abv:data.abv,
-          ibu:data.ibu,
-          srm:data.srm,
-          gusto:data.gusto,
-          aroma:data.aroma,
-          corpo:data.corpo,
-          finale:data.finale,
-          abbinamenti:data.abbinamenti,
-          note:data.note,
-          foto:data.foto || ""
+          barcode,nome,birrificio,formato,stile,
+          qty:Number(qty || 0),
+          soglia:Number(soglia || 0),
+          prezzo:Number(prezzo || 0),
+          abv,ibu,srm,gusto,aroma,corpo,finale,abbinamenti,note,
+          foto: fotoData || ""
         };
         prodotti.push(nuovo);
-        registraMovimento("NUOVO", nuovo, Number(data.qty || 0));
+        registraMovimento("NUOVO", nuovo, Number(qty || 0));
         setMsg("Prodotto salvato nel magazzino.", "ok");
       }
+
       salvaDati();
       refreshAll();
+    };
+
+    if(file){
+      const reader = new FileReader();
+      reader.onload = () => salvaConFoto(reader.result);
+      reader.readAsDataURL(file);
+    } else {
+      salvaConFoto("");
+    }
+  }
+
+  function carico(i){
+    prodotti[i].qty = Number(prodotti[i].qty || 0) + 1;
+    registraMovimento("CARICO", prodotti[i], 1);
+    salvaDati();
+    refreshAll();
+  }
+
+  function scarico(i){
+    prodotti[i].qty = Math.max(0, Number(prodotti[i].qty || 0) - 1);
+    registraMovimento("SCARICO", prodotti[i], 1);
+    salvaDati();
+    refreshAll();
+  }
+
+  function eliminaProdotto(i){
+    const p = prodotti[i];
+    if(!confirm("Eliminare " + p.nome + "?")) return;
+    registraMovimento("ELIMINATO", p, Number(p.qty || 0));
+    prodotti.splice(i,1);
+    salvaDati();
+    refreshAll();
+  }
+
+  function popolaBirrificiCatalogo(){
+    const select = document.getElementById("catalogBrewery");
+    const old = select.value;
+    const breweries = [...new Set(prodotti.map(p => String(p.birrificio || "").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"it"));
+    select.innerHTML = `<option value="">Tutti i birrifici</option>`;
+    breweries.forEach(b => {
+      const o = document.createElement("option");
+      o.value = b;
+      o.textContent = b;
+      select.appendChild(o);
+    });
+    if(breweries.includes(old)) select.value = old;
+  }
+
+  function renderBreweryChips(){
+    const row = document.getElementById("breweryChips");
+    const breweries = [...new Set(prodotti.map(p => String(p.birrificio || "").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"it"));
+    if(breweries.length === 0){
+      row.innerHTML = `<div class="small">Nessun birrificio ancora salvato.</div>`;
+      return;
+    }
+    row.innerHTML = `
+      <button class="chip" onclick="setBreweryChip('')">Tutti</button>
+      ${breweries.map(b => `<button class="chip" onclick="setBreweryChip('${escapeHtml(b)}')">${escapeHtml(b)}</button>`).join("")}
+    `;
+  }
+
+  function setBreweryChip(name){
+    breweryFilterChip = name;
+    document.getElementById("catalogBrewery").value = name;
+    renderCatalogo();
+  }
+
+  function beep(){
+    try{
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "square";
+      osc.frequency.value = 880;
+      gain.gain.value = 0.04;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.07);
+    } catch(e){}
+  }
+
+  function flashCatalogItem(index){
+    const el = document.getElementById("catalog-item-" + index);
+    if(!el) return;
+    el.classList.add("flash");
+    setTimeout(() => el.classList.remove("flash"), 180);
+  }
+
+  function addToCassaHardcore(i){
+    cassa.push({
+      barcode: prodotti[i].barcode,
+      nome: prodotti[i].nome,
+      prezzo: Number(prodotti[i].prezzo || 0)
+    });
+    beep();
+    flashCatalogItem(i);
+    renderCassa();
+  }
+
+  function renderCatalogo(){
+    const box = document.getElementById("catalogoGrid");
+    let items = [...prodotti];
+    const q = document.getElementById("catalogSearch").value.trim().toLowerCase();
+    const style = document.getElementById("catalogStyle").value;
+    const brewery = document.getElementById("catalogBrewery").value || breweryFilterChip;
+
+    if(q){
+      items = items.filter(p =>
+        String(p.nome||"").toLowerCase().includes(q) ||
+        String(p.birrificio||"").toLowerCase().includes(q) ||
+        String(p.stile||"").toLowerCase().includes(q)
+      );
+    }
+    if(style) items = items.filter(p => String(p.stile||"") === style);
+    if(brewery) items = items.filter(p => String(p.birrificio||"") === brewery);
+
+    if(items.length === 0){
+      box.innerHTML = `<div class="emptyBox">Nessun prodotto nel catalogo.</div>`;
+      return;
     }
 
-    function carico(i){
-      prodotti[i].qty = Number(prodotti[i].qty || 0) + 1;
-      registraMovimento("CARICO", prodotti[i], 1);
-      salvaDati();
-      refreshAll();
-    }
-
-    function scarico(i){
-      prodotti[i].qty = Math.max(0, Number(prodotti[i].qty || 0) - 1);
-      registraMovimento("SCARICO", prodotti[i], 1);
-      salvaDati();
-      refreshAll();
-    }
-
-    function eliminaProdotto(i){
-      const p = prodotti[i];
-      if(!confirm("Eliminare " + p.nome + "?")) return;
-      registraMovimento("ELIMINATO", p, Number(p.qty || 0));
-      prodotti.splice(i,1);
-      salvaDati();
-      refreshAll();
-    }
-
-    function beep(){
-      try{
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = "square";
-        osc.frequency.value = 880;
-        gain.gain.value = 0.04;
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.07);
-      } catch(e){}
-    }
-
-    function flashCatalogItem(index){
-      const el = document.getElementById("catalog-item-" + index);
-      if(!el) return;
-      el.classList.add("flash");
-      setTimeout(() => el.classList.remove("flash"), 180);
-    }
-
-    function addToCassaHardcore(i){
-      cassa.push({
-        barcode: prodotti[i].barcode,
-        nome: prodotti[i].nome,
-        prezzo: Number(prodotti[i].prezzo || 0)
-      });
-      beep();
-      flashCatalogItem(i);
-      renderCassa();
-    }
-
-    function updateStats(){
-      document.getElementById("statProdotti").textContent = prodotti.length;
-      document.getElementById("statPezzi").textContent = prodotti.reduce((a,p)=>a+Number(p.qty||0),0);
-      document.getElementById("statScorte").textContent = prodotti.filter(p => Number(p.qty||0) <= Number(p.soglia||0)).length;
-      document.getElementById("statMovimenti").textContent = movimenti.length;
-
-      const incasso = vendite.reduce((a,v)=>a+Number(v.totale||0),0);
-      const venduti = vendite.reduce((a,v)=>a+Number(v.pezzi||0),0);
-      document.getElementById("statIncasso").textContent = incasso.toFixed(2);
-      document.getElementById("statVenduti").textContent = venduti;
-    }
-
-    function renderCatalogo(){
-      const box = document.getElementById("catalogoGrid");
-      let items = [...prodotti];
-      const q = document.getElementById("catalogSearch").value.trim().toLowerCase();
-      const style = document.getElementById("catalogStyle").value;
-      const brewery = document.getElementById("catalogBrewery").value || breweryFilterChip;
-
-      if(q){
-        items = items.filter(p =>
-          String(p.nome||"").toLowerCase().includes(q) ||
-          String(p.birrificio||"").toLowerCase().includes(q) ||
-          String(p.stile||"").toLowerCase().includes(q)
-        );
-      }
-
-      if(style){
-        items = items.filter(p => String(p.stile||"") === style);
-      }
-
-      if(brewery){
-        items = items.filter(p => String(p.birrificio||"") === brewery);
-      }
-
-      if(items.length === 0){
-        box.innerHTML = `<div class="emptyBox">Nessun prodotto nel catalogo.</div>`;
-        return;
-      }
-
-      box.innerHTML = items.map(p => {
-        const i = prodotti.findIndex(x => x.barcode === p.barcode);
-        const bg = getLuxuryGradient(p);
-        return `
-          <div id="catalog-item-${i}" class="catalogItem" onclick="addToCassaHardcore(${i})" style="background:${bg}">
-            ${p.foto ? `<img src="${p.foto}" alt="${escapeHtml(p.nome)}">` : ""}
-            <div class="catalogName">${escapeHtml(p.nome || "Senza nome")}</div>
-            <div class="catalogMeta">
-              ${p.birrificio ? escapeHtml(p.birrificio) + "<br>" : ""}
-              ${p.stile ? escapeHtml(p.stile) + "<br>" : ""}
-              ${p.gusto ? escapeHtml(p.gusto) + "<br>" : ""}
-              € ${Number(p.prezzo || 0).toFixed(2)}
-            </div>
-            <div class="quickHint">Tocca per aggiungere in cassa</div>
+    box.innerHTML = items.map(p => {
+      const i = prodotti.findIndex(x => x.barcode === p.barcode);
+      const bg = getLuxuryGradient(p);
+      return `
+        <div id="catalog-item-${i}" class="catalogItem" onclick="addToCassaHardcore(${i})" style="background:${bg}">
+          ${p.foto ? `<img src="${p.foto}" alt="${escapeHtml(p.nome)}">` : ""}
+          <div class="catalogName">${escapeHtml(p.nome || "Senza nome")}</div>
+          <div class="catalogMeta">
+            ${p.birrificio ? escapeHtml(p.birrificio) + "<br>" : ""}
+            ${p.stile ? escapeHtml(p.stile) + "<br>" : ""}
+            ${p.gusto ? escapeHtml(p.gusto) + "<br>" : ""}
+            € ${Number(p.prezzo || 0).toFixed(2)}
           </div>
-        `;
-      }).join("");
+          <div class="quickHint">Tocca per aggiungere in cassa</div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  function renderMagazzino(){
+    const lista = document.getElementById("lista");
+    let items = [...prodotti];
+    const search = document.getElementById("search").value.trim().toLowerCase();
+    const filterScorte = document.getElementById("filterScorte").value;
+    const sortBy = document.getElementById("sortBy").value;
+
+    if(search){
+      items = items.filter(p =>
+        String(p.nome||"").toLowerCase().includes(search) ||
+        String(p.birrificio||"").toLowerCase().includes(search) ||
+        String(p.stile||"").toLowerCase().includes(search) ||
+        String(p.barcode||"").toLowerCase().includes(search)
+      );
     }
 
-    function renderMagazzino(){
-      const lista = document.getElementById("lista");
-      let items = [...prodotti];
-      const search = document.getElementById("search").value.trim().toLowerCase();
-      const filterScorte = document.getElementById("filterScorte").value;
-      const sortBy = document.getElementById("sortBy").value;
+    if(filterScorte === "basse"){
+      items = items.filter(p => Number(p.qty||0) <= Number(p.soglia||0));
+    }
 
-      if(search){
-        items = items.filter(p =>
-          String(p.nome||"").toLowerCase().includes(search) ||
-          String(p.birrificio||"").toLowerCase().includes(search) ||
-          String(p.stile||"").toLowerCase().includes(search) ||
-          String(p.barcode||"").toLowerCase().includes(search)
-        );
-      }
+    if(sortBy === "nome"){
+      items.sort((a,b)=>String(a.nome||"").localeCompare(String(b.nome||""), "it"));
+    } else if(sortBy === "qtyAsc"){
+      items.sort((a,b)=>Number(a.qty||0)-Number(b.qty||0));
+    } else if(sortBy === "qtyDesc"){
+      items.sort((a,b)=>Number(b.qty||0)-Number(a.qty||0));
+    }
 
-      if(filterScorte === "basse"){
-        items = items.filter(p => Number(p.qty||0) <= Number(p.soglia||0));
-      }
+    if(items.length === 0){
+      lista.innerHTML = `<div class="emptyBox">Nessun prodotto trovato.</div>`;
+      return;
+    }
 
-      if(sortBy === "nome"){
-        items.sort((a,b)=>String(a.nome||"").localeCompare(String(b.nome||""), "it"));
-      } else if(sortBy === "qtyAsc"){
-        items.sort((a,b)=>Number(a.qty||0)-Number(b.qty||0));
-      } else if(sortBy === "qtyDesc"){
-        items.sort((a,b)=>Number(b.qty||0)-Number(a.qty||0));
-      }
-
-      if(items.length === 0){
-        lista.innerHTML = `<div class="emptyBox">Nessun prodotto trovato.</div>`;
-      } else {
-        lista.innerHTML = items.map(p => {
-          const realIndex = prodotti.findIndex(x => x.barcode === p.barcode);
-          const bassa = Number(p.qty||0) <= Number(p.soglia||0);
-          const bg = getLuxuryGradient(p);
-          return `
-            <div class="product" style="background:${bg}">
-              ${p.foto ? `<img class="productImage" src="${p.foto}" alt="${escapeHtml(p.nome)}">` : ""}
-              <div class="productHeader">
-                <div style="flex:1;">
-                  <div class="productName">${escapeHtml(p.nome || "Senza nome")}</div>
-                  <div class="productMeta">
-                    Barcode: ${escapeHtml(p.barcode || "-")}<br>
-                    ${p.birrificio ? "Birrificio: " + escapeHtml(p.birrificio) + "<br>" : ""}
-                    ${p.stile ? "BJCP: " + escapeHtml(p.stile) + "<br>" : ""}
-                    ${p.formato ? "Formato: " + escapeHtml(p.formato) + "<br>" : ""}
-                    Prezzo: € ${Number(p.prezzo || 0).toFixed(2)}<br>
-                    ABV: ${escapeHtml(p.abv || "-")}<br>
-                    IBU: ${escapeHtml(p.ibu || "-")}<br>
-                    SRM: ${escapeHtml(p.srm || "-")}<br>
-                    Gusto: ${escapeHtml(p.gusto || "-")}<br>
-                    Aroma: ${escapeHtml(p.aroma || "-")}<br>
-                    Corpo: ${escapeHtml(p.corpo || "-")}<br>
-                    Finale: ${escapeHtml(p.finale || "-")}<br>
-                    Abbinamenti: ${escapeHtml(p.abbinamenti || "-")}<br>
-                    ${p.note ? "Note: " + escapeHtml(p.note) + "<br>" : ""}
-                    Scorta minima: ${Number(p.soglia||0)}
-                  </div>
-                </div>
-                <div class="badge">${bassa ? "OK LOW" : "OK"}</div>
-              </div>
-
-              <div class="qtyPriceRow">
-                <div class="infoBox">
-                  <div class="infoLabel">Quantità</div>
-                  <div class="infoValue">${Number(p.qty||0)}</div>
-                </div>
-                <div class="infoBox">
-                  <div class="infoLabel">Prezzo</div>
-                  <div class="infoValue">€ ${Number(p.prezzo || 0).toFixed(2)}</div>
-                </div>
-              </div>
-
-              <div class="productActions">
-                <button class="btn btn-green" onclick="carico(${realIndex})">+1 Carico</button>
-                <button class="btn btn-orange" onclick="scarico(${realIndex})">-1 Scarico</button>
-                <button class="btn btn-blue" onclick="entraInModalitaModifica(${realIndex})">Modifica</button>
-                <button class="btn btn-red" onclick="eliminaProdotto(${realIndex})">Elimina</button>
+    lista.innerHTML = items.map(p => {
+      const realIndex = prodotti.findIndex(x => x.barcode === p.barcode);
+      const bassa = Number(p.qty||0) <= Number(p.soglia||0);
+      const bg = getLuxuryGradient(p);
+      return `
+        <div class="product" style="background:${bg}">
+          ${p.foto ? `<img class="productImage" src="${p.foto}" alt="${escapeHtml(p.nome)}">` : ""}
+          <div class="productHeader">
+            <div style="flex:1;">
+              <div class="productName">${escapeHtml(p.nome || "Senza nome")}</div>
+              <div class="productMeta">
+                Barcode: ${escapeHtml(p.barcode || "-")}<br>
+                ${p.birrificio ? "Birrificio: " + escapeHtml(p.birrificio) + "<br>" : ""}
+                ${p.stile ? "BJCP: " + escapeHtml(p.stile) + "<br>" : ""}
+                ${p.formato ? "Formato: " + escapeHtml(p.formato) + "<br>" : ""}
+                Prezzo: € ${Number(p.prezzo || 0).toFixed(2)}<br>
+                ABV: ${escapeHtml(p.abv || "-")}<br>
+                IBU: ${escapeHtml(p.ibu || "-")}<br>
+                SRM: ${escapeHtml(p.srm || "-")}<br>
+                Gusto: ${escapeHtml(p.gusto || "-")}<br>
+                Aroma: ${escapeHtml(p.aroma || "-")}<br>
+                Corpo: ${escapeHtml(p.corpo || "-")}<br>
+                Finale: ${escapeHtml(p.finale || "-")}<br>
+                Abbinamenti: ${escapeHtml(p.abbinamenti || "-")}<br>
+                ${p.note ? "Note: " + escapeHtml(p.note) + "<br>" : ""}
+                Scorta minima: ${Number(p.soglia||0)}
               </div>
             </div>
-          `;
-        }).join("");
-      }
+            <div class="badge">${bassa ? "OK LOW" : "OK"}</div>
+          </div>
+
+          <div class="qtyPriceRow">
+            <div class="infoBox">
+              <div class="infoLabel">Quantità</div>
+              <div class="infoValue">${Number(p.qty||0)}</div>
+            </div>
+            <div class="infoBox">
+              <div class="infoLabel">Prezzo</div>
+              <div class="infoValue">€ ${Number(p.prezzo || 0).toFixed(2)}</div>
+            </div>
+          </div>
+
+          <div class="productActions">
+            <button class="btn btn-green" onclick="carico(${realIndex})">+1 Carico</button>
+            <button class="btn btn-orange" onclick="scarico(${realIndex})">-1 Scarico</button>
+            <button class="btn btn-blue" onclick="entraInModalitaModifica(${realIndex})">Modifica</button>
+            <button class="btn btn-red" onclick="eliminaProdotto(${realIndex})">Elimina</button>
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  function aggiungiDaBarcode(){
+    const barcode = document.getElementById("barcode").value.trim();
+    if(!barcode){ alert("Scansiona o inserisci un barcode."); return; }
+    const idx = trovaPerBarcode(barcode);
+    if(idx < 0){ alert("Prodotto non trovato nel magazzino."); return; }
+    cassa.push({
+      barcode: prodotti[idx].barcode,
+      nome: prodotti[idx].nome,
+      prezzo: Number(prodotti[idx].prezzo || 0)
+    });
+    renderCassa();
+  }
+
+  function comprimiCassa(){
+    const m = {};
+    cassa.forEach(item => {
+      const key = item.barcode + "||" + item.nome + "||" + item.prezzo;
+      if(!m[key]) m[key] = { ...item, count: 0 };
+      m[key].count += 1;
+    });
+    return Object.values(m);
+  }
+
+  function svuotaCassa(){
+    cassa = [];
+    renderCassa();
+    document.getElementById("restoBox").textContent = "";
+  }
+
+  function renderCassa(){
+    const box = document.getElementById("cassaLista");
+    const tot = cassa.reduce((a,p)=>a+Number(p.prezzo||0),0);
+    document.getElementById("totaleCassa").textContent = tot.toFixed(2);
+
+    if(cassa.length === 0){
+      box.innerHTML = `<div class="emptyBox">Nessun articolo in cassa.</div>`;
+      return;
     }
 
-    async function lookupProxy(barcode){
-      if(!PROXY_URL) return null;
-      try{
-        const res = await fetch(`${PROXY_URL}/lookup?barcode=${encodeURIComponent(barcode)}`);
-        if(!res.ok) return null;
-        const data = await res.json();
-        if(!data.ok || !data.found || !data.product) return null;
-        return data.product;
-      } catch(e){
-        return null;
-      }
+    box.innerHTML = comprimiCassa().map(p => `
+      <div class="cassaItem">
+        <div>
+          <div class="cassaName">${escapeHtml(p.nome)}</div>
+          <div class="small">Barcode: ${escapeHtml(p.barcode)}</div>
+        </div>
+        <div class="cassaQty">x${p.count}</div>
+        <div class="cassaPrice">€ ${(Number(p.prezzo||0) * p.count).toFixed(2)}</div>
+      </div>
+    `).join("");
+  }
+
+  function calcolaResto(){
+    const totale = cassa.reduce((a,p)=>a+Number(p.prezzo||0),0);
+    const pagato = parseFloat(document.getElementById("pagato").value || "0");
+    const resto = pagato - totale;
+    document.getElementById("restoBox").textContent = "Resto: € " + resto.toFixed(2);
+  }
+
+  function chiudiVendita(){
+    if(cassa.length === 0){
+      alert("La cassa è vuota.");
+      return;
     }
 
-    async function cercaProdottoOnline(barcode){
-      setScan("Cerco prodotto...");
+    let totale = 0;
+    let pezzi = 0;
 
-      // Primo livello: proxy, se un giorno ci sarà
-      const proxyProduct = await lookupProxy(barcode);
-      if(proxyProduct){
-        document.getElementById("nome").value = proxyProduct.name || "";
-        document.getElementById("birrificio").value = proxyProduct.brand || "";
-        document.getElementById("formato").value = proxyProduct.quantity || "";
-        document.getElementById("qty").value = "1";
-
-        if(proxyProduct.style && BJCP_DATA[proxyProduct.style]){
-          applyBJCPStyle(proxyProduct.style, {
-            abv: proxyProduct.abv || undefined,
-            ibu: proxyProduct.ibu || undefined
-          });
-        } else {
-          const smart = inferStyleFromText(proxyProduct.name || "", proxyProduct.brand || "");
-          if(smart && smart.stile) applyBJCPStyle(smart.stile, smart);
-        }
-
-        if(proxyProduct.description){
-          document.getElementById("note").value = proxyProduct.description;
-        }
-
-        setScan("Prodotto trovato tramite proxy.", "ok");
-        return true;
-      }
-
-      // Secondo livello: Open Food Facts diretto
-      try{
-        const url = `https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(barcode)}.json`;
-        const res = await fetch(url);
-        const data = await res.json();
-
-        if(data && data.product){
-          const nome =
-            data.product.product_name_it ||
-            data.product.product_name ||
-            data.product.generic_name_it ||
-            data.product.generic_name ||
-            "";
-
-          const marca = data.product.brands || "";
-          const qtyTxt = data.product.quantity || "";
-
-          if(nome){
-            document.getElementById("nome").value = nome;
-            document.getElementById("birrificio").value = marca;
-            document.getElementById("formato").value = qtyTxt;
-            document.getElementById("qty").value = "1";
-
-            const smart = inferStyleFromText(nome, marca);
-
-            if(smart && smart.stile){
-              applyBJCPStyle(smart.stile, smart);
-              setScan("Birra riconosciuta automaticamente.", "ok");
-            } else {
-              setScan("Prodotto trovato. Scegli lo stile BJCP.", "warn");
-            }
-            return true;
-          }
-        }
-
-        setScan("Prodotto non trovato online.", "warn");
-        return false;
-      } catch(e){
-        setScan("Ricerca online non riuscita.", "dangerText");
-        return false;
-      }
-    }
-
-    async function gestisciBarcodeLetto(barcode){
-      document.getElementById("barcode").value = barcode;
-      const idx = trovaPerBarcode(barcode);
-
+    cassa.forEach(item => {
+      totale += Number(item.prezzo || 0);
+      pezzi += 1;
+      const idx = trovaPerBarcode(item.barcode);
       if(idx >= 0){
-        const p = prodotti[idx];
-        document.getElementById("nome").value = p.nome || "";
-        document.getElementById("birrificio").value = p.birrificio || "";
-        document.getElementById("formato").value = p.formato || "";
-        document.getElementById("stile").value = p.stile || "";
-        document.getElementById("qty").value = p.qty || 0;
-        document.getElementById("soglia").value = p.soglia || 0;
-        document.getElementById("prezzo").value = p.prezzo || 0;
-        document.getElementById("abv").value = p.abv || "";
-        document.getElementById("ibu").value = p.ibu || "";
-        document.getElementById("srm").value = p.srm || "";
-        document.getElementById("gusto").value = p.gusto || "";
-        document.getElementById("aroma").value = p.aroma || "";
-        document.getElementById("corpo").value = p.corpo || "";
-        document.getElementById("finale").value = p.finale || "";
-        document.getElementById("abbinamenti").value = p.abbinamenti || "";
-        document.getElementById("note").value = p.note || "";
-        setScan("Prodotto già presente nel tuo magazzino.", "ok");
-        return;
+        prodotti[idx].qty = Math.max(0, Number(prodotti[idx].qty || 0) - 1);
+        registraMovimento("VENDITA", prodotti[idx], 1);
       }
+    });
 
-      await cercaProdottoOnline(barcode);
-    }
+    vendite.unshift({ data: nowString(), totale, pezzi });
+    cassa = [];
+    salvaDati();
+    refreshAll();
+    document.getElementById("pagato").value = "";
+    document.getElementById("restoBox").textContent = "Vendita chiusa.";
+  }
 
-    async function startScanner(){
-      if(scannerAttivo){
-        setScan("Scanner già attivo.");
-        return;
-      }
-      const reader = document.getElementById("reader");
-      reader.style.display = "block";
-      setScan("Avvio fotocamera...");
-      html5QrCode = new Html5Qrcode("reader");
-      scannerAttivo = true;
+  function updateStats(){
+    document.getElementById("statProdotti").textContent = prodotti.length;
+    document.getElementById("statPezzi").textContent = prodotti.reduce((a,p)=>a+Number(p.qty||0),0);
+    document.getElementById("statScorte").textContent = prodotti.filter(p => Number(p.qty||0) <= Number(p.soglia||0)).length;
+    document.getElementById("statMovimenti").textContent = movimenti.length;
 
+    const incasso = vendite.reduce((a,v)=>a+Number(v.totale||0),0);
+    const venduti = vendite.reduce((a,v)=>a+Number(v.pezzi||0),0);
+    document.getElementById("statIncasso").textContent = incasso.toFixed(2);
+    document.getElementById("statVenduti").textContent = venduti;
+  }
+
+  function downloadBackup(){
+    const data = { prodotti, movimenti, vendite, exportedAt: nowString() };
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "xa-magazzino-ultra-backup.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function restoreBackup(event){
+    const file = event.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e){
       try{
-        await html5QrCode.start(
-          { facingMode: "environment" },
-          { fps: 10, qrbox: 250 },
-          async (decodedText) => {
-            await stopScanner();
-            await gestisciBarcodeLetto(decodedText);
-          },
-          () => {}
-        );
-        setScan("Inquadra il barcode.");
+        const data = JSON.parse(e.target.result);
+        prodotti = Array.isArray(data.prodotti) ? data.prodotti : [];
+        movimenti = Array.isArray(data.movimenti) ? data.movimenti : [];
+        vendite = Array.isArray(data.vendite) ? data.vendite : [];
+        salvaDati();
+        refreshAll();
+        setMsg("Backup ripristinato.", "ok");
       } catch(err){
-        reader.style.display = "none";
-        scannerAttivo = false;
-        setScan("Fotocamera non disponibile.", "dangerText");
+        setMsg("File backup non valido.", "dangerText");
       }
-    }
+    };
+    reader.readAsText(file);
+  }
 
-    async function stopScanner(){
-      const reader = document.getElementById("reader");
-      if(html5QrCode && scannerAttivo){
-        try{
-          await html5QrCode.stop();
-          await html5QrCode.clear();
-        } catch(e){}
-      }
-      scannerAttivo = false;
-      reader.style.display = "none";
-    }
-
-    function aggiungiDaBarcode(){
-      const barcode = document.getElementById("barcode").value.trim();
-      if(!barcode){ alert("Scansiona o inserisci un barcode."); return; }
-      const idx = trovaPerBarcode(barcode);
-      if(idx < 0){ alert("Prodotto non trovato nel magazzino."); return; }
-      cassa.push({
-        barcode: prodotti[idx].barcode,
-        nome: prodotti[idx].nome,
-        prezzo: Number(prodotti[idx].prezzo || 0)
-      });
-      renderCassa();
-    }
-
-    function comprimiCassa(){
-      const m = {};
-      cassa.forEach(item => {
-        const key = item.barcode + "||" + item.nome + "||" + item.prezzo;
-        if(!m[key]) m[key] = { ...item, count: 0 };
-        m[key].count += 1;
-      });
-      return Object.values(m);
-    }
-
-    function svuotaCassa(){
-      cassa = [];
-      renderCassa();
-      document.getElementById("restoBox").textContent = "";
-    }
-
-    function renderCassa(){
-      const box = document.getElementById("cassaLista");
-      const tot = cassa.reduce((a,p)=>a+Number(p.prezzo||0),0);
-      document.getElementById("totaleCassa").textContent = tot.toFixed(2);
-
-      if(cassa.length === 0){
-        box.innerHTML = `<div class="emptyBox">Nessun articolo in cassa.</div>`;
-        return;
-      }
-
-      box.innerHTML = comprimiCassa().map(p => `
-        <div class="cassaItem">
-          <div>
-            <div class="cassaName">${escapeHtml(p.nome)}</div>
-            <div class="small">Barcode: ${escapeHtml(p.barcode)}</div>
-          </div>
-          <div class="cassaQty">x${p.count}</div>
-          <div class="cassaPrice">€ ${(Number(p.prezzo||0) * p.count).toFixed(2)}</div>
+  function toggleMovimenti(){
+    const card = document.getElementById("movimentiCard");
+    card.style.display = card.style.display === "none" ? "block" : "none";
+    const mov = document.getElementById("movimentiLista");
+    if(movimenti.length === 0){
+      mov.innerHTML = `<div class="emptyBox">Nessun movimento.</div>`;
+    } else {
+      mov.innerHTML = movimenti.map(m => `
+        <div class="movement">
+          <b>${escapeHtml(m.tipo)}</b> · ${escapeHtml(m.nome)}<br>
+          Barcode: ${escapeHtml(m.barcode)}<br>
+          Quantità: ${escapeHtml(m.quantita)}<br>
+          <span class="small">${escapeHtml(m.data)}</span>
         </div>
       `).join("");
     }
+  }
 
-    function calcolaResto(){
-      const totale = cassa.reduce((a,p)=>a+Number(p.prezzo||0),0);
-      const pagato = parseFloat(document.getElementById("pagato").value || "0");
-      const resto = pagato - totale;
-      document.getElementById("restoBox").textContent = "Resto: € " + resto.toFixed(2);
-    }
-
-    function chiudiVendita(){
-      if(cassa.length === 0){
-        alert("La cassa è vuota.");
-        return;
-      }
-
-      let totale = 0;
-      let pezzi = 0;
-
-      cassa.forEach(item => {
-        totale += Number(item.prezzo || 0);
-        pezzi += 1;
-        const idx = trovaPerBarcode(item.barcode);
-        if(idx >= 0){
-          prodotti[idx].qty = Math.max(0, Number(prodotti[idx].qty || 0) - 1);
-          registraMovimento("VENDITA", prodotti[idx], 1);
-        }
-      });
-
-      vendite.unshift({ data: nowString(), totale, pezzi });
-      cassa = [];
-      salvaDati();
-      refreshAll();
-      document.getElementById("pagato").value = "";
-      document.getElementById("restoBox").textContent = "Vendita chiusa.";
-    }
-
-    function downloadBackup(){
-      const data = { prodotti, movimenti, vendite, exportedAt: nowString() };
-      const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "xa-magazzino-backup.json";
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    function restoreBackup(event){
-      const file = event.target.files[0];
-      if(!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e){
-        try{
-          const data = JSON.parse(e.target.result);
-          prodotti = Array.isArray(data.prodotti) ? data.prodotti : [];
-          movimenti = Array.isArray(data.movimenti) ? data.movimenti : [];
-          vendite = Array.isArray(data.vendite) ? data.vendite : [];
-          salvaDati();
-          refreshAll();
-          setMsg("Backup ripristinato.", "ok");
-        } catch(err){
-          setMsg("File backup non valido.", "dangerText");
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    function toggleMovimenti(){
-      const card = document.getElementById("movimentiCard");
-      card.style.display = card.style.display === "none" ? "block" : "none";
-      const mov = document.getElementById("movimentiLista");
-      if(movimenti.length === 0){
-        mov.innerHTML = `<div class="emptyBox">Nessun movimento.</div>`;
-      } else {
-        mov.innerHTML = movimenti.map(m => `
-          <div class="movement">
-            <b>${escapeHtml(m.tipo)}</b> · ${escapeHtml(m.nome)}<br>
-            Barcode: ${escapeHtml(m.barcode)}<br>
-            Quantità: ${escapeHtml(m.quantita)}<br>
-            <span class="small">${escapeHtml(m.data)}</span>
-          </div>
-        `).join("");
-      }
-    }
-
-    function resetMagazzino(){
-      if(!confirm("Vuoi cancellare tutto il magazzino?")) return;
-      prodotti = [];
-      movimenti = [];
-      vendite = [];
-      cassa = [];
-      breweryFilterChip = "";
-      editIndex = null;
-      salvaDati();
-      refreshAll();
-      annullaModifica();
-      setMsg("Magazzino azzerato.", "warn");
-    }
-
-    function refreshAll(){
-      updateStats();
-      popolaBirrificiCatalogo();
-      renderBreweryChips();
-      renderCatalogo();
-      renderMagazzino();
-      renderCassa();
-    }
-
-    popolaStili();
+  function resetMagazzino(){
+    if(!confirm("Vuoi cancellare tutto il magazzino?")) return;
+    prodotti = [];
+    movimenti = [];
+    vendite = [];
+    cassa = [];
+    breweryFilterChip = "";
+    editIndex = null;
+    salvaDati();
     refreshAll();
-  </script>
+    annullaModifica();
+    setMsg("Magazzino azzerato.", "warn");
+  }
+
+  function refreshAll(){
+    updateStats();
+    popolaBirrificiCatalogo();
+    renderBreweryChips();
+    renderCatalogo();
+    renderMagazzino();
+    renderCassa();
+  }
+
+  popolaStili();
+  refreshAll();
+</script>
 </body>
 </html>
