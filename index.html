@@ -1,1 +1,101 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XA Magazzino PRO</title>
 
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#111111">
+
+<style>
+body{
+  background:#0f1115;
+  color:white;
+  font-family:sans-serif;
+  padding:10px;
+}
+.card{
+  background:#1a1d23;
+  padding:10px;
+  border-radius:12px;
+  margin-bottom:10px;
+}
+img{
+  width:100%;
+  border-radius:10px;
+}
+input,button{
+  padding:10px;
+  margin:5px 0;
+  width:100%;
+}
+</style>
+
+</head>
+
+<body>
+
+<h2>XA Magazzino PRO</h2>
+
+<div class="card">
+  <h3>Nuovo prodotto</h3>
+  <input type="text" id="nome" placeholder="Nome prodotto">
+  <input type="number" id="qty" placeholder="Quantità">
+  <input type="file" id="foto">
+  <button onclick="salva()">Salva</button>
+</div>
+
+<div id="lista"></div>
+
+<script>
+
+let prodotti = JSON.parse(localStorage.getItem("prodotti")||"[]");
+
+function salva(){
+  let nome = document.getElementById("nome").value;
+  let qty = document.getElementById("qty").value;
+  let file = document.getElementById("foto").files[0];
+
+  if(!nome) return alert("Inserisci nome");
+
+  let reader = new FileReader();
+  reader.onload = function(){
+    prodotti.push({
+      nome,
+      qty,
+      foto: reader.result
+    });
+    localStorage.setItem("prodotti", JSON.stringify(prodotti));
+    mostra();
+  };
+
+  if(file){
+    reader.readAsDataURL(file);
+  } else {
+    prodotti.push({nome, qty});
+    localStorage.setItem("prodotti", JSON.stringify(prodotti));
+    mostra();
+  }
+}
+
+function mostra(){
+  let html = "";
+  prodotti.forEach(p=>{
+    html += `
+    <div class="card">
+      <b>${p.nome}</b><br>
+      Qty: ${p.qty}<br>
+      ${p.foto ? `<img src="${p.foto}">` : ""}
+    </div>
+    `;
+  });
+  document.getElementById("lista").innerHTML = html;
+}
+
+mostra();
+
+</script>
+
+</body>
+</html>
