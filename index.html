@@ -1,1137 +1,181 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>XA Magazzino PRO SHOP</title>
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#111111" />
-  <script src="https://unpkg.com/html5-qrcode"></script>
-  <style>
-    :root{
-      --bg:#0a0f14;
-      --panel:#141b24;
-      --panel2:#1b2430;
-      --line:#2a3647;
-      --text:#f3f6fb;
-      --muted:#aab4c3;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XA Magazzino APP</title>
 
-      --gold:#d3af68;
-      --green:#43c66d;
-      --blue:#5aa4ff;
-      --cyan:#41d2e7;
-      --orange:#ffad3b;
-      --red:#e05b5b;
-      --violet:#a26cff;
+<style>
+:root{
+  --bg:#0b0f14;
+  --card:#161d27;
+  --text:#ffffff;
+  --muted:#9aa7b5;
 
-      --lager:#b98d32;
-      --ipa:#d26e2b;
-      --stout:#5a5f73;
-      --sour:#b24ad1;
-      --belgian:#2f9f7d;
-      --defaultCard:#223043;
-    }
+  --green:#43c66d;
+  --red:#e05b5b;
+  --blue:#5aa4ff;
+  --orange:#ffad3b;
 
-    *{box-sizing:border-box}
+  --neon:#ff3b3b; /* CAMBIA QUI COLORE */
+}
 
-    body{
-      margin:0;
-      background:linear-gradient(180deg,#0a0f14 0%, #0d131b 100%);
-      color:var(--text);
-      font-family:Arial,sans-serif;
-      padding:14px;
-    }
+/* NEON LATERALE */
+body::before,
+body::after{
+  content:"";
+  position:fixed;
+  top:0;
+  width:6px;
+  height:100%;
+  background:var(--neon);
+  box-shadow:0 0 15px var(--neon),0 0 30px var(--neon);
+  z-index:999;
+}
+body::before{left:0;}
+body::after{right:0;}
 
-    .app{
-      max-width:1100px;
-      margin:0 auto;
-    }
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial;
+}
 
-    h1,h2,h3,p{margin:0}
+/* PAGINE */
+.page{
+  display:none;
+  padding:16px;
+  padding-bottom:90px;
+}
+.active{
+  display:block;
+}
 
-    .hero{
-      margin-bottom:14px;
-      padding:16px;
-      border-radius:20px;
-      background:linear-gradient(135deg,#131b25 0%, #1a2330 100%);
-      border:1px solid var(--line);
-      box-shadow:0 10px 24px rgba(0,0,0,.25);
-    }
+/* CARD */
+.card{
+  background:var(--card);
+  padding:14px;
+  border-radius:16px;
+  margin-bottom:12px;
+}
 
-    .hero h1{
-      font-size:34px;
-      line-height:1;
-      letter-spacing:.3px;
-      margin-bottom:8px;
-    }
+/* GRID CATALOGO */
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
 
-    .hero p{
-      color:var(--muted);
-      font-size:15px;
-    }
+.item{
+  background:var(--card);
+  border-radius:16px;
+  padding:10px;
+  text-align:center;
+}
 
-    .stats{
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:10px;
-      margin:14px 0;
-    }
+.item img{
+  width:100%;
+  height:120px;
+  object-fit:cover;
+  border-radius:12px;
+}
 
-    .stat{
-      background:linear-gradient(180deg,#141b24,#18222d);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:14px;
-      box-shadow:0 8px 18px rgba(0,0,0,.18);
-    }
+/* BOTTONI */
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  font-weight:bold;
+  margin-top:6px;
+}
 
-    .stat .label{
-      color:var(--muted);
-      font-size:13px;
-      margin-bottom:8px;
-      text-transform:uppercase;
-      letter-spacing:.6px;
-    }
+.green{background:var(--green);}
+.red{background:var(--red);}
+.blue{background:var(--blue);}
+.orange{background:var(--orange);}
 
-    .stat .value{
-      font-size:34px;
-      font-weight:800;
-    }
+/* MENU */
+.menu{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  display:flex;
+  background:#111;
+  border-top:1px solid #222;
+}
 
-    .card{
-      background:linear-gradient(180deg,#141b24,#18212d);
-      border:1px solid var(--line);
-      border-radius:20px;
-      padding:14px;
-      margin-bottom:12px;
-      box-shadow:0 8px 18px rgba(0,0,0,.18);
-    }
+.menu button{
+  flex:1;
+  background:none;
+  color:white;
+  font-size:12px;
+}
 
-    .sectionTitle{
-      font-size:24px;
-      margin-bottom:10px;
-      font-weight:800;
-    }
-
-    .field{
-      margin-top:10px;
-    }
-
-    .field label{
-      display:block;
-      font-size:13px;
-      color:var(--muted);
-      margin:0 0 6px 2px;
-      font-weight:800;
-      text-transform:uppercase;
-      letter-spacing:.6px;
-    }
-
-    input, select, button{
-      width:100%;
-      padding:14px;
-      border-radius:15px;
-      border:1px solid var(--line);
-      font-size:18px;
-    }
-
-    input, select{
-      background:#f2f5f9;
-      color:#111;
-    }
-
-    button{
-      background:#edf0f4;
-      color:#111;
-      font-weight:800;
-      cursor:pointer;
-    }
-
-    .btn{
-      border-width:2px;
-      box-shadow:0 0 0 1px rgba(255,255,255,.03) inset, 0 4px 10px rgba(0,0,0,.15);
-    }
-
-    .btn-gold{ border-color:var(--gold); }
-    .btn-green{ border-color:var(--green); }
-    .btn-blue{ border-color:var(--blue); }
-    .btn-cyan{ border-color:var(--cyan); }
-    .btn-orange{ border-color:var(--orange); }
-    .btn-red{ border-color:var(--red); }
-    .btn-violet{ border-color:var(--violet); }
-
-    .toolbar2{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-      margin-top:10px;
-    }
-
-    .productActions{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-      margin-top:12px;
-    }
-
-    .small{
-      font-size:14px;
-      color:var(--muted);
-      margin-top:8px;
-      line-height:1.35;
-    }
-
-    .ok{ color:#8de29f; }
-    .warn{ color:#ffd27a; }
-    .dangerText{ color:#ff9d9d; }
-
-    #reader{
-      display:none;
-      margin-top:10px;
-      background:#000;
-      border-radius:14px;
-      overflow:hidden;
-      min-height:80px;
-    }
-
-    .inventoryGrid{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:14px;
-    }
-
-    .product{
-      position:relative;
-      border-radius:22px;
-      padding:14px;
-      border:2px solid rgba(255,255,255,.06);
-      box-shadow:0 10px 18px rgba(0,0,0,.20);
-      overflow:hidden;
-    }
-
-    .product::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,0));
-      pointer-events:none;
-    }
-
-    .productHeader{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      align-items:flex-start;
-    }
-
-    .productName{
-      font-size:28px;
-      font-weight:900;
-      line-height:1.05;
-      margin-bottom:8px;
-      word-break:break-word;
-    }
-
-    .productMeta{
-      font-size:16px;
-      color:#eef2f8;
-      line-height:1.45;
-    }
-
-    .badge{
-      padding:7px 11px;
-      border-radius:999px;
-      font-size:12px;
-      font-weight:800;
-      background:rgba(0,0,0,.18);
-      border:1px solid rgba(255,255,255,.14);
-      white-space:nowrap;
-    }
-
-    .qtyPriceRow{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-      margin-top:12px;
-    }
-
-    .infoBox{
-      padding:12px;
-      border-radius:16px;
-      background:rgba(0,0,0,.16);
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    .infoLabel{
-      font-size:12px;
-      color:#eef2f8;
-      opacity:.85;
-      text-transform:uppercase;
-      letter-spacing:.6px;
-      margin-bottom:4px;
-    }
-
-    .infoValue{
-      font-size:34px;
-      font-weight:900;
-      line-height:1;
-    }
-
-    .priceValue{
-      font-size:30px;
-      font-weight:900;
-      line-height:1;
-    }
-
-    .productImage{
-      width:100%;
-      max-height:220px;
-      object-fit:cover;
-      border-radius:16px;
-      margin-bottom:12px;
-      border:1px solid rgba(255,255,255,.08);
-      background:#111;
-    }
-
-    .movement{
-      background:#1b2430;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:10px;
-      margin-top:8px;
-      font-size:15px;
-    }
-
-    .cassaItem{
-      background:#1b2430;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:10px;
-      margin-top:8px;
-      font-size:16px;
-    }
-
-    .totale{
-      font-size:30px;
-      font-weight:900;
-      margin-top:12px;
-    }
-
-    .hidden{
-      display:none;
-    }
-
-    .hint{
-      color:var(--muted);
-      font-size:13px;
-      margin-top:6px;
-    }
-
-    .emptyBox{
-      padding:16px;
-      border-radius:16px;
-      border:1px dashed var(--line);
-      color:var(--muted);
-      text-align:center;
-      background:rgba(255,255,255,.02);
-    }
-
-    @media (min-width:900px){
-      .inventoryGrid{
-        grid-template-columns:1fr 1fr;
-      }
-    }
-
-    @media (max-width:700px){
-      .stats,
-      .toolbar2,
-      .productActions,
-      .qtyPriceRow{
-        grid-template-columns:1fr 1fr;
-      }
-    }
-  </style>
+</style>
 </head>
+
 <body>
-  <div class="app">
 
-    <div class="hero">
-      <h1>XA Magazzino</h1>
-      <p>Layout mobile perfetto • magazzino a card professionali • BJCP separato • cassa • statistiche</p>
+<!-- HOME -->
+<div id="home" class="page active">
+  <h2>Home</h2>
+  <div class="card">Prodotti: 0</div>
+  <div class="card">Scorte basse: 0</div>
+</div>
+
+<!-- CATALOGO -->
+<div id="catalogo" class="page">
+  <h2>Catalogo</h2>
+  <div class="grid">
+
+    <div class="item">
+      <img src="https://images.unsplash.com/photo-beer1" />
+      <div>IPA</div>
     </div>
 
-    <div class="stats">
-      <div class="stat">
-        <div class="label">Prodotti</div>
-        <div class="value" id="statProdotti">0</div>
-      </div>
-      <div class="stat">
-        <div class="label">Pezzi totali</div>
-        <div class="value" id="statPezzi">0</div>
-      </div>
-      <div class="stat">
-        <div class="label">Scorte basse</div>
-        <div class="value" id="statScorte">0</div>
-      </div>
-      <div class="stat">
-        <div class="label">Movimenti</div>
-        <div class="value" id="statMovimenti">0</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="sectionTitle">Scanner e inserimento prodotto</div>
-
-      <div class="field">
-        <label for="barcode">Barcode</label>
-        <input id="barcode" placeholder="Scansiona o inserisci barcode" />
-      </div>
-
-      <div class="toolbar2">
-        <button class="btn btn-gold" onclick="startScanner()">📷 Scanner</button>
-        <button class="btn btn-red" onclick="stopScanner()">■ Stop scanner</button>
-      </div>
-
-      <div id="reader"></div>
-      <div id="scanStatus" class="small"></div>
-
-      <div class="field">
-        <label for="nome">Nome prodotto</label>
-        <input id="nome" placeholder="Es. Das Helle" />
-      </div>
-
-      <div class="field">
-        <label for="birrificio">Birrificio</label>
-        <input id="birrificio" placeholder="Es. Schwaben Bräu" />
-      </div>
-
-      <div class="field">
-        <label for="formato">Formato</label>
-        <input id="formato" placeholder="Es. 0,5 l / 33 cl" />
-      </div>
-
-      <div class="field">
-        <label for="searchStyle">Cerca stile BJCP</label>
-        <input id="searchStyle" placeholder="Scrivi per cercare lo stile" oninput="filtraStili()" />
-      </div>
-
-      <div class="field">
-        <label for="stile">Stile BJCP</label>
-        <select id="stile">
-          <option value="">Seleziona stile BJCP</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label for="qty">Quantità</label>
-        <input id="qty" type="number" placeholder="Es. 1" />
-      </div>
-
-      <div class="field">
-        <label for="soglia">Scorta minima</label>
-        <input id="soglia" type="number" placeholder="Es. 6" />
-      </div>
-
-      <div class="field">
-        <label for="prezzo">Prezzo €</label>
-        <input id="prezzo" type="number" step="0.01" placeholder="Es. 5.00" />
-      </div>
-
-      <div class="field">
-        <label for="foto">Foto etichetta</label>
-        <input type="file" id="foto" accept="image/*" />
-      </div>
-
-      <div class="toolbar2">
-        <button class="btn btn-green" onclick="salvaProdotto()">Salva prodotto</button>
-        <button class="btn btn-cyan" onclick="svuotaCampi()">Svuota campi</button>
-      </div>
-
-      <div id="messageBox" class="small"></div>
-    </div>
-
-    <div class="card">
-      <div class="sectionTitle">Strumenti</div>
-      <div class="toolbar2">
-        <button class="btn btn-violet" onclick="downloadBackup()">Backup JSON</button>
-        <button class="btn btn-blue" onclick="document.getElementById('restoreFile').click()">Ripristina backup</button>
-      </div>
-      <input id="restoreFile" type="file" accept=".json,application/json" class="hidden" onchange="restoreBackup(event)" />
-      <div class="toolbar2">
-        <button class="btn btn-blue" onclick="toggleMovimenti()">Mostra/Nascondi movimenti</button>
-        <button class="btn btn-red" onclick="resetMagazzino()">Reset magazzino</button>
-      </div>
-      <div class="hint">Il reset cancella prodotti, movimenti e vendite dal telefono.</div>
-    </div>
-
-    <div class="card">
-      <div class="sectionTitle">Ricerca e filtri</div>
-
-      <div class="field">
-        <label for="search">Ricerca prodotti</label>
-        <input id="search" placeholder="Cerca nome, birrificio, stile, barcode" oninput="mostra()" />
-      </div>
-
-      <div class="field">
-        <label for="filterScorte">Filtro scorte</label>
-        <select id="filterScorte" onchange="mostra()">
-          <option value="tutte">Tutte le scorte</option>
-          <option value="basse">Solo scorte basse</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label for="sortBy">Ordina prodotti</label>
-        <select id="sortBy" onchange="mostra()">
-          <option value="nome">Ordina: nome</option>
-          <option value="qtyAsc">Ordina: quantità crescente</option>
-          <option value="qtyDesc">Ordina: quantità decrescente</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="sectionTitle">Magazzino</div>
-      <div id="lista" class="inventoryGrid"></div>
-    </div>
-
-    <div class="card">
-      <div class="sectionTitle">Cassa</div>
-
-      <div class="toolbar2">
-        <button class="btn btn-gold" onclick="aggiungiDaBarcode()">Aggiungi da barcode</button>
-        <button class="btn btn-red" onclick="svuotaCassa()">Svuota cassa</button>
-      </div>
-
-      <div id="cassaLista"></div>
-
-      <div class="totale">Totale: € <span id="totaleCassa">0.00</span></div>
-
-      <div class="field">
-        <label for="pagato">Contanti ricevuti</label>
-        <input id="pagato" type="number" step="0.01" placeholder="Es. 20.00" />
-      </div>
-
-      <div class="toolbar2">
-        <button class="btn btn-orange" onclick="calcolaResto()">Calcola resto</button>
-        <button class="btn btn-green" onclick="chiudiVendita()">Chiudi vendita</button>
-      </div>
-
-      <div id="restoBox" class="small"></div>
-    </div>
-
-    <div class="card">
-      <div class="sectionTitle">Statistiche vendita</div>
-      <div class="stats">
-        <div class="stat">
-          <div class="label">Incasso totale</div>
-          <div class="value" id="statIncasso">0</div>
-        </div>
-        <div class="stat">
-          <div class="label">Pezzi venduti</div>
-          <div class="value" id="statVenduti">0</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card hidden" id="movimentiCard">
-      <div class="sectionTitle">Storico movimenti</div>
-      <div id="movimentiLista"></div>
+    <div class="item">
+      <img src="https://images.unsplash.com/photo-1527169402691-feff5539e52c" />
+      <div>Lager</div>
     </div>
 
   </div>
+</div>
+
+<!-- MAGAZZINO -->
+<div id="magazzino" class="page">
+  <h2>Magazzino</h2>
+  <div class="card">Lista prodotti...</div>
+</div>
+
+<!-- CASSA -->
+<div id="cassa" class="page">
+  <h2>Cassa</h2>
+  <div class="card">Totale: €0</div>
+</div>
+
+<!-- STATS -->
+<div id="stats" class="page">
+  <h2>Statistiche</h2>
+  <div class="card">Vendite...</div>
+</div>
+
+<!-- MENU -->
+<div class="menu">
+  <button onclick="show('home')">Home</button>
+  <button onclick="show('catalogo')">Catalogo</button>
+  <button onclick="show('magazzino')">Magazzino</button>
+  <button onclick="show('cassa')">Cassa</button>
+  <button onclick="show('stats')">Stats</button>
+</div>
+
+<script>
+function show(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+</script>
 
-  <script>
-    const stiliBJCP = [
-      "1A American Light Lager","1B American Lager","1C Cream Ale","1D American Wheat Beer",
-      "2A International Pale Lager","2B International Amber Lager","2C International Dark Lager",
-      "3A Czech Pale Lager","3B Czech Premium Pale Lager","3C Czech Amber Lager","3D Czech Dark Lager",
-      "4A Munich Helles","4B Festbier","4C Helles Bock",
-      "5A German Leichtbier","5B Kölsch","5C German Helles Exportbier","5D German Pils",
-      "6A Märzen","6B Rauchbier","6C Dunkles Bock",
-      "7A Vienna Lager","7B Altbier","7C Kellerbier",
-      "8A Munich Dunkel","8B Schwarzbier",
-      "9A Doppelbock","9B Eisbock","9C Baltic Porter",
-      "10A Weissbier","10B Dunkles Weissbier","10C Weizenbock",
-      "11A Ordinary Bitter","11B Best Bitter","11C Strong Bitter",
-      "12A British Golden Ale","12B Australian Sparkling Ale","12C English IPA",
-      "13A Dark Mild","13B British Brown Ale","13C English Porter",
-      "14A Scottish Light","14B Scottish Heavy","14C Scottish Export","14D Irish Red Ale",
-      "15A Irish Stout","15B Irish Extra Stout","15C Sweet Stout","15D Oatmeal Stout","15E Tropical Stout","15F Foreign Extra Stout",
-      "16A Sweet Stout","16B Oatmeal Stout","16C Tropical Stout","16D Foreign Extra Stout",
-      "17A British Strong Ale","17B Old Ale","17C Wee Heavy","17D English Barleywine",
-      "18A Blonde Ale","18B American Pale Ale",
-      "19A American Amber Ale","19B California Common",
-      "20A American Porter","20B American Stout","20C Imperial Stout",
-      "21A American IPA","21B Specialty IPA",
-      "22A Double IPA","22B American Strong Ale","22C American Barleywine","22D Wheatwine",
-      "23A Berliner Weisse","23B Flanders Red Ale","23C Oud Bruin","23D Lambic","23E Gueuze","23F Fruit Lambic",
-      "24A Witbier","24B Belgian Pale Ale","24C Bière de Garde",
-      "25A Belgian Blond Ale","25B Saison","25C Belgian Golden Strong Ale",
-      "26A Belgian Single","26B Belgian Dubbel","26C Belgian Tripel","26D Belgian Dark Strong Ale",
-      "27A Historical Beer","27B Kentucky Common","27C Kellerbier","27D Pre-Prohibition Lager","27E Pre-Prohibition Porter",
-      "28A Brett Beer","28B Mixed-Fermentation Sour Beer","28C Wild Specialty Beer",
-      "29A Fruit Beer","29B Fruit and Spice Beer","29C Specialty Fruit Beer",
-      "30A Spice, Herb, or Vegetable Beer","30B Autumn Seasonal Beer","30C Winter Seasonal Beer",
-      "31A Alternative Grain Beer","31B Alternative Sugar Beer","31C Classic Style Smoked Beer","31D Specialty Smoked Beer",
-      "32A Wood-Aged Beer","32B Specialty Wood-Aged Beer",
-      "33A Specialty Beer",
-      "34A Clone Beer","34B Mixed-Style Beer","34C Experimental Beer"
-    ];
-
-    let prodotti = JSON.parse(localStorage.getItem("prodotti_xa_max")) || [];
-    let movimenti = JSON.parse(localStorage.getItem("movimenti_xa_max")) || [];
-    let vendite = JSON.parse(localStorage.getItem("vendite_xa_max")) || [];
-    let cassa = [];
-    let html5QrCode = null;
-    let scannerAttivo = false;
-
-    function salvaDati(){
-      localStorage.setItem("prodotti_xa_max", JSON.stringify(prodotti));
-      localStorage.setItem("movimenti_xa_max", JSON.stringify(movimenti));
-      localStorage.setItem("vendite_xa_max", JSON.stringify(vendite));
-    }
-
-    function setMsg(text, type=""){
-      const box = document.getElementById("messageBox");
-      box.className = "small " + type;
-      box.textContent = text;
-    }
-
-    function setScan(text, type=""){
-      const box = document.getElementById("scanStatus");
-      box.className = "small " + type;
-      box.textContent = text;
-    }
-
-    function nowString(){
-      return new Date().toLocaleString("it-IT");
-    }
-
-    function escapeHtml(text){
-      return String(text || "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
-
-    function getStyleColor(stile){
-      const s = String(stile || "").toLowerCase();
-      if(s.includes("lager") || s.includes("pils") || s.includes("helles") || s.includes("märzen")) return "var(--lager)";
-      if(s.includes("ipa") || s.includes("pale ale") || s.includes("amber ale") || s.includes("double ipa")) return "var(--ipa)";
-      if(s.includes("stout") || s.includes("porter") || s.includes("schwarzbier")) return "var(--stout)";
-      if(s.includes("sour") || s.includes("lambic") || s.includes("gueuze") || s.includes("berliner weisse") || s.includes("oud bruin") || s.includes("fruit")) return "var(--sour)";
-      if(s.includes("belgian") || s.includes("saison") || s.includes("tripel") || s.includes("dubbel") || s.includes("witbier")) return "var(--belgian)";
-      return "var(--defaultCard)";
-    }
-
-    function popolaStili(lista){
-      const select = document.getElementById("stile");
-      const valoreAttuale = select.value;
-      select.innerHTML = `<option value="">Seleziona stile BJCP</option>`;
-      lista.forEach(stile => {
-        const option = document.createElement("option");
-        option.value = stile;
-        option.textContent = stile;
-        select.appendChild(option);
-      });
-      if(lista.includes(valoreAttuale)) select.value = valoreAttuale;
-    }
-
-    function filtraStili(){
-      const q = document.getElementById("searchStyle").value.trim().toLowerCase();
-      if(!q){
-        popolaStili(stiliBJCP);
-        return;
-      }
-      const filtrati = stiliBJCP.filter(s => s.toLowerCase().includes(q));
-      popolaStili(filtrati);
-    }
-
-    function trovaPerBarcode(barcode){
-      return prodotti.findIndex(p => String(p.barcode || "").trim() === String(barcode || "").trim());
-    }
-
-    function svuotaCampi(){
-      document.getElementById("barcode").value = "";
-      document.getElementById("nome").value = "";
-      document.getElementById("birrificio").value = "";
-      document.getElementById("formato").value = "";
-      document.getElementById("stile").value = "";
-      document.getElementById("qty").value = "";
-      document.getElementById("soglia").value = "";
-      document.getElementById("prezzo").value = "";
-      document.getElementById("foto").value = "";
-      document.getElementById("searchStyle").value = "";
-      popolaStili(stiliBJCP);
-      setMsg("");
-      setScan("");
-    }
-
-    function registraMovimento(tipo, prodotto, quantita){
-      movimenti.unshift({
-        data: nowString(),
-        tipo,
-        nome: prodotto.nome || "",
-        barcode: prodotto.barcode || "",
-        quantita
-      });
-      if(movimenti.length > 300) movimenti = movimenti.slice(0,300);
-    }
-
-    function salvaProdotto(){
-      const barcode = document.getElementById("barcode").value.trim();
-      const nome = document.getElementById("nome").value.trim();
-      const birrificio = document.getElementById("birrificio").value.trim();
-      const formato = document.getElementById("formato").value.trim();
-      const stile = document.getElementById("stile").value.trim();
-      const qty = parseInt(document.getElementById("qty").value || "0", 10);
-      const soglia = parseInt(document.getElementById("soglia").value || "0", 10);
-      const prezzo = parseFloat(document.getElementById("prezzo").value || "0");
-      const file = document.getElementById("foto").files[0];
-
-      if(!barcode){
-        setMsg("Inserisci o scansiona un barcode.", "warn");
-        return;
-      }
-      if(!nome){
-        setMsg("Inserisci il nome prodotto.", "warn");
-        return;
-      }
-
-      const idx = trovaPerBarcode(barcode);
-
-      if(file){
-        const reader = new FileReader();
-        reader.onload = function(){
-          completaSalvataggio(idx, {
-            barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, foto: reader.result
-          });
-        };
-        reader.readAsDataURL(file);
-      } else {
-        let fotoEsistente = "";
-        if(idx >= 0) fotoEsistente = prodotti[idx].foto || "";
-        completaSalvataggio(idx, {
-          barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, foto: fotoEsistente
-        });
-      }
-    }
-
-    function completaSalvataggio(idx, data){
-      if(idx >= 0){
-        prodotti[idx].nome = data.nome;
-        prodotti[idx].birrificio = data.birrificio;
-        prodotti[idx].formato = data.formato;
-        prodotti[idx].stile = data.stile;
-        prodotti[idx].soglia = data.soglia;
-        prodotti[idx].prezzo = Number(data.prezzo || 0);
-        prodotti[idx].foto = data.foto || prodotti[idx].foto || "";
-        prodotti[idx].qty = Number(prodotti[idx].qty || 0) + Number(data.qty || 0);
-        registraMovimento("CARICO", prodotti[idx], Number(data.qty || 0));
-        setMsg("Prodotto aggiornato. Quantità aumentata.", "ok");
-      } else {
-        const nuovo = {
-          barcode:data.barcode,
-          nome:data.nome,
-          birrificio:data.birrificio,
-          formato:data.formato,
-          stile:data.stile,
-          qty:Number(data.qty || 0),
-          soglia:Number(data.soglia || 0),
-          prezzo:Number(data.prezzo || 0),
-          foto:data.foto || ""
-        };
-        prodotti.push(nuovo);
-        registraMovimento("NUOVO", nuovo, Number(data.qty || 0));
-        setMsg("Prodotto salvato nel magazzino.", "ok");
-      }
-
-      salvaDati();
-      mostra();
-    }
-
-    function carico(i){
-      prodotti[i].qty = Number(prodotti[i].qty || 0) + 1;
-      registraMovimento("CARICO", prodotti[i], 1);
-      salvaDati();
-      mostra();
-    }
-
-    function scarico(i){
-      prodotti[i].qty = Math.max(0, Number(prodotti[i].qty || 0) - 1);
-      registraMovimento("SCARICO", prodotti[i], 1);
-      salvaDati();
-      mostra();
-    }
-
-    function eliminaProdotto(i){
-      const p = prodotti[i];
-      if(!confirm("Eliminare " + p.nome + "?")) return;
-      registraMovimento("ELIMINATO", p, Number(p.qty || 0));
-      prodotti.splice(i,1);
-      salvaDati();
-      mostra();
-    }
-
-    function modificaQty(i){
-      const p = prodotti[i];
-      const val = prompt("Nuova quantità per " + p.nome, p.qty || 0);
-      if(val === null) return;
-      const nuova = Math.max(0, parseInt(val || "0", 10));
-      const differenza = nuova - Number(p.qty || 0);
-      p.qty = nuova;
-      registraMovimento("MODIFICA", p, differenza);
-      salvaDati();
-      mostra();
-    }
-
-    function updateStats(){
-      document.getElementById("statProdotti").textContent = prodotti.length;
-      document.getElementById("statPezzi").textContent = prodotti.reduce((a,p)=>a+Number(p.qty||0),0);
-      document.getElementById("statScorte").textContent = prodotti.filter(p => Number(p.qty||0) <= Number(p.soglia||0)).length;
-      document.getElementById("statMovimenti").textContent = movimenti.length;
-
-      const incasso = vendite.reduce((a,v)=>a+Number(v.totale||0),0);
-      const venduti = vendite.reduce((a,v)=>a+Number(v.pezzi||0),0);
-      document.getElementById("statIncasso").textContent = incasso.toFixed(2);
-      document.getElementById("statVenduti").textContent = venduti;
-    }
-
-    function mostra(){
-      const lista = document.getElementById("lista");
-      const mov = document.getElementById("movimentiLista");
-
-      let items = [...prodotti];
-      const search = document.getElementById("search").value.trim().toLowerCase();
-      const filterScorte = document.getElementById("filterScorte").value;
-      const sortBy = document.getElementById("sortBy").value;
-
-      if(search){
-        items = items.filter(p =>
-          String(p.nome||"").toLowerCase().includes(search) ||
-          String(p.birrificio||"").toLowerCase().includes(search) ||
-          String(p.stile||"").toLowerCase().includes(search) ||
-          String(p.barcode||"").toLowerCase().includes(search)
-        );
-      }
-
-      if(filterScorte === "basse"){
-        items = items.filter(p => Number(p.qty||0) <= Number(p.soglia||0));
-      }
-
-      if(sortBy === "nome"){
-        items.sort((a,b)=>String(a.nome||"").localeCompare(String(b.nome||""), "it"));
-      } else if(sortBy === "qtyAsc"){
-        items.sort((a,b)=>Number(a.qty||0)-Number(b.qty||0));
-      } else if(sortBy === "qtyDesc"){
-        items.sort((a,b)=>Number(b.qty||0)-Number(a.qty||0));
-      }
-
-      if(items.length === 0){
-        lista.innerHTML = `<div class="emptyBox">Nessun prodotto trovato.</div>`;
-      } else {
-        let html = "";
-        items.forEach((p) => {
-          const realIndex = prodotti.findIndex(x => x.barcode === p.barcode);
-          const bassa = Number(p.qty||0) <= Number(p.soglia||0);
-          const color = getStyleColor(p.stile);
-          html += `
-            <div class="product" style="background:linear-gradient(180deg, ${color} 0%, rgba(20,27,36,.96) 34%);">
-              <div>
-                ${p.foto ? `<img class="productImage" src="${p.foto}" alt="${escapeHtml(p.nome)}">` : ""}
-                <div class="productHeader">
-                  <div style="flex:1;">
-                    <div class="productName">${escapeHtml(p.nome || "Senza nome")}</div>
-                    <div class="productMeta">
-                      Barcode: ${escapeHtml(p.barcode || "-")}<br>
-                      ${p.birrificio ? "Birrificio: " + escapeHtml(p.birrificio) + "<br>" : ""}
-                      ${p.stile ? "BJCP: " + escapeHtml(p.stile) + "<br>" : ""}
-                      ${p.formato ? "Formato: " + escapeHtml(p.formato) + "<br>" : ""}
-                      Prezzo impostato: € ${Number(p.prezzo || 0).toFixed(2)}<br>
-                      Scorta minima: ${Number(p.soglia||0)}
-                    </div>
-                  </div>
-                  <div class="badge">${bassa ? "Scorta bassa" : "OK"}</div>
-                </div>
-
-                <div class="qtyPriceRow">
-                  <div class="infoBox">
-                    <div class="infoLabel">Quantità</div>
-                    <div class="infoValue">${Number(p.qty||0)}</div>
-                  </div>
-                  <div class="infoBox">
-                    <div class="infoLabel">Prezzo</div>
-                    <div class="priceValue">€ ${Number(p.prezzo || 0).toFixed(2)}</div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="productActions">
-                <button class="btn btn-green" onclick="carico(${realIndex})">+1 Carico</button>
-                <button class="btn btn-orange" onclick="scarico(${realIndex})">-1 Scarico</button>
-                <button class="btn btn-blue" onclick="modificaQty(${realIndex})">Modifica</button>
-                <button class="btn btn-red" onclick="eliminaProdotto(${realIndex})">Elimina</button>
-              </div>
-            </div>
-          `;
-        });
-        lista.innerHTML = html;
-      }
-
-      if(movimenti.length === 0){
-        mov.innerHTML = `<div class="emptyBox">Nessun movimento.</div>`;
-      } else {
-        mov.innerHTML = movimenti.map(m => `
-          <div class="movement">
-            <b>${escapeHtml(m.tipo)}</b> · ${escapeHtml(m.nome)}<br>
-            Barcode: ${escapeHtml(m.barcode)}<br>
-            Quantità: ${escapeHtml(m.quantita)}<br>
-            <span class="small">${escapeHtml(m.data)}</span>
-          </div>
-        `).join("");
-      }
-
-      mostraCassa();
-      updateStats();
-    }
-
-    async function cercaProdottoOnline(barcode){
-      setScan("Cerco prodotto online...");
-      try{
-        const url = `https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(barcode)}.json`;
-        const res = await fetch(url);
-        const data = await res.json();
-
-        if(data && data.product){
-          const nome =
-            data.product.product_name_it ||
-            data.product.product_name ||
-            data.product.generic_name_it ||
-            data.product.generic_name ||
-            "";
-
-          const marca = data.product.brands || "";
-          const qtyTxt = data.product.quantity || "";
-
-          if(nome){
-            document.getElementById("nome").value = nome;
-            document.getElementById("birrificio").value = marca;
-            document.getElementById("formato").value = qtyTxt;
-            document.getElementById("qty").value = "1";
-            setScan("Prodotto trovato online.", "ok");
-            return true;
-          }
-        }
-
-        document.getElementById("qty").value = "1";
-        setScan("Prodotto non trovato online. Inseriscilo a mano.", "warn");
-        return false;
-      } catch(e){
-        document.getElementById("qty").value = "1";
-        setScan("Ricerca online non riuscita. Inserisci a mano.", "warn");
-        return false;
-      }
-    }
-
-    async function gestisciBarcodeLetto(barcode){
-      document.getElementById("barcode").value = barcode;
-
-      const idx = trovaPerBarcode(barcode);
-
-      if(idx >= 0){
-        const p = prodotti[idx];
-        document.getElementById("nome").value = p.nome || "";
-        document.getElementById("birrificio").value = p.birrificio || "";
-        document.getElementById("formato").value = p.formato || "";
-        document.getElementById("stile").value = p.stile || "";
-        document.getElementById("qty").value = "1";
-        document.getElementById("soglia").value = p.soglia || 0;
-        document.getElementById("prezzo").value = p.prezzo || 0;
-        setScan("Prodotto già presente nel tuo magazzino.", "ok");
-        return;
-      }
-
-      await cercaProdottoOnline(barcode);
-    }
-
-    async function startScanner(){
-      if(scannerAttivo){
-        setScan("Scanner già attivo.");
-        return;
-      }
-
-      const reader = document.getElementById("reader");
-      reader.style.display = "block";
-      setScan("Avvio fotocamera...");
-
-      html5QrCode = new Html5Qrcode("reader");
-      scannerAttivo = true;
-
-      try{
-        await html5QrCode.start(
-          { facingMode: "environment" },
-          { fps: 10, qrbox: 250 },
-          async (decodedText) => {
-            await stopScanner();
-            await gestisciBarcodeLetto(decodedText);
-          },
-          () => {}
-        );
-        setScan("Inquadra il barcode.");
-      } catch(err){
-        reader.style.display = "none";
-        scannerAttivo = false;
-        setScan("Fotocamera non disponibile.", "dangerText");
-      }
-    }
-
-    async function stopScanner(){
-      const reader = document.getElementById("reader");
-      if(html5QrCode && scannerAttivo){
-        try{
-          await html5QrCode.stop();
-          await html5QrCode.clear();
-        } catch(e){}
-      }
-      scannerAttivo = false;
-      reader.style.display = "none";
-    }
-
-    function aggiungiDaBarcode(){
-      const barcode = document.getElementById("barcode").value.trim();
-      if(!barcode){
-        alert("Scansiona o inserisci un barcode.");
-        return;
-      }
-      const idx = trovaPerBarcode(barcode);
-      if(idx < 0){
-        alert("Prodotto non trovato nel magazzino.");
-        return;
-      }
-      cassa.push({
-        barcode: prodotti[idx].barcode,
-        nome: prodotti[idx].nome,
-        prezzo: Number(prodotti[idx].prezzo || 0)
-      });
-      mostraCassa();
-    }
-
-    function svuotaCassa(){
-      cassa = [];
-      mostraCassa();
-      document.getElementById("restoBox").textContent = "";
-    }
-
-    function mostraCassa(){
-      const box = document.getElementById("cassaLista");
-      const tot = cassa.reduce((a,p)=>a+Number(p.prezzo||0),0);
-      document.getElementById("totaleCassa").textContent = tot.toFixed(2);
-
-      if(cassa.length === 0){
-        box.innerHTML = `<div class="emptyBox">Nessun articolo in cassa.</div>`;
-        return;
-      }
-
-      box.innerHTML = cassa.map((p)=>`
-        <div class="cassaItem">
-          <b>${escapeHtml(p.nome)}</b><br>
-          € ${Number(p.prezzo||0).toFixed(2)}
-        </div>
-      `).join("");
-    }
-
-    function calcolaResto(){
-      const totale = cassa.reduce((a,p)=>a+Number(p.prezzo||0),0);
-      const pagato = parseFloat(document.getElementById("pagato").value || "0");
-      const resto = pagato - totale;
-      document.getElementById("restoBox").textContent = "Resto: € " + resto.toFixed(2);
-    }
-
-    function chiudiVendita(){
-      if(cassa.length === 0){
-        alert("La cassa è vuota.");
-        return;
-      }
-
-      let totale = 0;
-      let pezzi = 0;
-
-      cassa.forEach(item => {
-        totale += Number(item.prezzo || 0);
-        pezzi += 1;
-        const idx = trovaPerBarcode(item.barcode);
-        if(idx >= 0){
-          prodotti[idx].qty = Math.max(0, Number(prodotti[idx].qty || 0) - 1);
-          registraMovimento("VENDITA", prodotti[idx], 1);
-        }
-      });
-
-      vendite.unshift({
-        data: nowString(),
-        totale,
-        pezzi
-      });
-
-      cassa = [];
-      salvaDati();
-      mostra();
-      document.getElementById("pagato").value = "";
-      document.getElementById("restoBox").textContent = "Vendita chiusa.";
-    }
-
-    function downloadBackup(){
-      const data = { prodotti, movimenti, vendite, exportedAt: nowString() };
-      const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "xa-magazzino-backup.json";
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    function restoreBackup(event){
-      const file = event.target.files[0];
-      if(!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(e){
-        try{
-          const data = JSON.parse(e.target.result);
-          prodotti = Array.isArray(data.prodotti) ? data.prodotti : [];
-          movimenti = Array.isArray(data.movimenti) ? data.movimenti : [];
-          vendite = Array.isArray(data.vendite) ? data.vendite : [];
-          salvaDati();
-          mostra();
-          setMsg("Backup ripristinato.", "ok");
-        } catch(err){
-          setMsg("File backup non valido.", "dangerText");
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    function toggleMovimenti(){
-      document.getElementById("movimentiCard").classList.toggle("hidden");
-    }
-
-    function resetMagazzino(){
-      if(!confirm("Vuoi cancellare tutto il magazzino?")) return;
-      prodotti = [];
-      movimenti = [];
-      vendite = [];
-      cassa = [];
-      salvaDati();
-      mostra();
-      svuotaCampi();
-      setMsg("Magazzino azzerato.", "warn");
-    }
-
-    popolaStili(stiliBJCP);
-    mostra();
-  </script>
 </body>
 </html>
