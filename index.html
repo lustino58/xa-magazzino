@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>XA Magazzino ULTRA PRO ONLINE</title>
+  <title>XA Magazzino PRO</title>
   <meta name="theme-color" content="#111111" />
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
@@ -186,6 +186,7 @@
       color:var(--muted);
       margin-top:8px;
       line-height:1.35;
+      white-space:pre-wrap;
     }
     .ok{ color:#8de29f; }
     .warn{ color:#ffd27a; }
@@ -233,6 +234,7 @@
       font-weight:800;
       color:var(--text);
       width:auto;
+      cursor:pointer;
     }
 
     .catalogGrid{
@@ -522,7 +524,7 @@
 
   <div class="hero">
     <h1>XA Magazzino</h1>
-    <p>ULTRA PRO ONLINE • ricerca online vera • Open Food Facts + Wikipedia • memoria prezzi • riconoscimento tedesco</p>
+    <p>Scanner • BJCP automatico • memoria prezzi • gusto rapido • aroma rapido • abbinamenti rapidi</p>
   </div>
 
   <section id="section-home" class="section active">
@@ -546,9 +548,8 @@
         <input id="barcode" placeholder="Scansiona o inserisci barcode" />
       </div>
 
-      <div class="toolbar3">
+      <div class="toolbar2">
         <button class="btn btn-gold" onclick="startScanner()">📷 Scanner</button>
-        <button class="btn btn-violet" onclick="ricercaApprofonditaOnline()">Ricerca approfondita</button>
         <button class="btn btn-red" onclick="stopScanner()">■ Stop scanner</button>
       </div>
 
@@ -628,9 +629,29 @@
         <textarea id="gusto" placeholder="Es. maltata, pane, poco amara"></textarea>
       </div>
 
+      <div class="chipRow">
+        <button type="button" class="chip" onclick="addTag('gusto','maltata')">maltata</button>
+        <button type="button" class="chip" onclick="addTag('gusto','amara')">amara</button>
+        <button type="button" class="chip" onclick="addTag('gusto','secca')">secca</button>
+        <button type="button" class="chip" onclick="addTag('gusto','agrumata')">agrumata</button>
+        <button type="button" class="chip" onclick="addTag('gusto','tropicale')">tropicale</button>
+        <button type="button" class="chip" onclick="addTag('gusto','speziata')">speziata</button>
+        <button type="button" class="chip" onclick="addTag('gusto','tostata')">tostata</button>
+      </div>
+
       <div class="field">
         <label for="aroma">Aroma</label>
         <textarea id="aroma" placeholder="Es. floreale, erbaceo, agrumato"></textarea>
+      </div>
+
+      <div class="chipRow">
+        <button type="button" class="chip" onclick="addTag('aroma','floreale')">floreale</button>
+        <button type="button" class="chip" onclick="addTag('aroma','erbaceo')">erbaceo</button>
+        <button type="button" class="chip" onclick="addTag('aroma','agrumato')">agrumato</button>
+        <button type="button" class="chip" onclick="addTag('aroma','banana')">banana</button>
+        <button type="button" class="chip" onclick="addTag('aroma','chiodo di garofano')">garofano</button>
+        <button type="button" class="chip" onclick="addTag('aroma','luppolato')">luppolato</button>
+        <button type="button" class="chip" onclick="addTag('aroma','pepato')">pepato</button>
       </div>
 
       <div class="field">
@@ -648,9 +669,19 @@
         <textarea id="abbinamenti" placeholder="Es. salumi, formaggi, fritti, carne"></textarea>
       </div>
 
+      <div class="chipRow">
+        <button type="button" class="chip" onclick="addTag('abbinamenti','salumi')">salumi</button>
+        <button type="button" class="chip" onclick="addTag('abbinamenti','formaggi')">formaggi</button>
+        <button type="button" class="chip" onclick="addTag('abbinamenti','fritti')">fritti</button>
+        <button type="button" class="chip" onclick="addTag('abbinamenti','pizza')">pizza</button>
+        <button type="button" class="chip" onclick="addTag('abbinamenti','hamburger')">hamburger</button>
+        <button type="button" class="chip" onclick="addTag('abbinamenti','pesce')">pesce</button>
+        <button type="button" class="chip" onclick="addTag('abbinamenti','carni grigliate')">carni grigliate</button>
+      </div>
+
       <div class="field">
         <label for="note">Note extra</label>
-        <textarea id="note" placeholder="Note del negozio o del birrificio"></textarea>
+        <textarea id="note" placeholder="Note del negozio"></textarea>
       </div>
 
       <div class="field">
@@ -791,8 +822,6 @@
 </nav>
 
 <script>
-  const WIKI_LANGS = ["it", "en"];
-
   const BJCP_DATA = {
     "4A Munich Helles": { abv:"4.7–5.4", ibu:"16–22", srm:"3–5", gusto:"Maltata, pane fresco, delicatamente dolce, poco amara.", aroma:"Pane, miele leggero, cereale pulito, luppolo delicato.", corpo:"Leggero-medio", finale:"Pulito, morbido, scorrevole", abbinamenti:"Salumi, wurstel, pretzel, fritti, formaggi dolci" },
     "5D German Pils": { abv:"4.4–5.2", ibu:"22–40", srm:"2–5", gusto:"Secca, croccante, più amara di una Helles.", aroma:"Erbaceo, speziato, floreale, cereale chiaro.", corpo:"Leggero", finale:"Secco, netto, pulito", abbinamenti:"Fritti, pizza bianca, pesce, snack salati" },
@@ -844,10 +873,10 @@
     ["#9aa3ad", "#4e5864", "#101722"]
   ];
 
-  let prodotti = JSON.parse(localStorage.getItem("prodotti_xa_online")) || [];
-  let movimenti = JSON.parse(localStorage.getItem("movimenti_xa_online")) || [];
-  let vendite = JSON.parse(localStorage.getItem("vendite_xa_online")) || [];
-  let memoryPrezzi = JSON.parse(localStorage.getItem("memory_prezzi_xa_online")) || {};
+  let prodotti = JSON.parse(localStorage.getItem("prodotti_xa_pro")) || [];
+  let movimenti = JSON.parse(localStorage.getItem("movimenti_xa_pro")) || [];
+  let vendite = JSON.parse(localStorage.getItem("vendite_xa_pro")) || [];
+  let memoryPrezzi = JSON.parse(localStorage.getItem("memory_prezzi_xa_pro")) || {};
   let cassa = [];
   let html5QrCode = null;
   let scannerAttivo = false;
@@ -862,10 +891,10 @@
   }
 
   function salvaDati(){
-    localStorage.setItem("prodotti_xa_online", JSON.stringify(prodotti));
-    localStorage.setItem("movimenti_xa_online", JSON.stringify(movimenti));
-    localStorage.setItem("vendite_xa_online", JSON.stringify(vendite));
-    localStorage.setItem("memory_prezzi_xa_online", JSON.stringify(memoryPrezzi));
+    localStorage.setItem("prodotti_xa_pro", JSON.stringify(prodotti));
+    localStorage.setItem("movimenti_xa_pro", JSON.stringify(movimenti));
+    localStorage.setItem("vendite_xa_pro", JSON.stringify(vendite));
+    localStorage.setItem("memory_prezzi_xa_pro", JSON.stringify(memoryPrezzi));
   }
 
   function setMsg(text, type=""){
@@ -917,6 +946,20 @@
       .replace(/[\u0300-\u036f]/g, "")
       .replace(/[^a-z0-9%]+/g, " ")
       .trim();
+  }
+
+  function addTag(fieldId, tag){
+    const el = document.getElementById(fieldId);
+    if(!el) return;
+    const current = (el.value || "").trim();
+    if(!current){
+      el.value = tag;
+      return;
+    }
+    const parts = current.split(",").map(x => x.trim()).filter(Boolean);
+    if(parts.includes(tag)) return;
+    parts.push(tag);
+    el.value = parts.join(", ");
   }
 
   function aggiornaPrezzoMemoria(barcode, nome, birrificio, prezzo){
@@ -1021,10 +1064,7 @@
 
   function inferGermanStyle(nome, birrificio){
     const t = normalizeKey(`${nome || ""} ${birrificio || ""}`);
-
-    if(t.includes("weissbier") || t.includes("weizen") || t.includes("hefeweizen") || t.includes("weiss") || t.includes("weisse")) {
-      return { stile:"10A Weissbier" };
-    }
+    if(t.includes("weissbier") || t.includes("weizen") || t.includes("hefeweizen") || t.includes("weiss") || t.includes("weisse")) return { stile:"10A Weissbier" };
     if(t.includes("dunkel") || t.includes("dunkles")) return { stile:"8A Munich Dunkel" };
     if(t.includes("helles") || t.includes("bayrisch hell") || t.includes("bavarian hell") || t.includes("hell lager") || t.includes("munich helles")) return { stile:"4A Munich Helles" };
     if(t.includes(" hell ") || t.startsWith("hell ") || t.endsWith(" hell")) return { stile:"4A Munich Helles" };
@@ -1036,14 +1076,11 @@
 
   function inferStyleFromText(nome, birrificio){
     const t = normalizeKey(`${nome || ""} ${birrificio || ""}`);
-
     for (const key in BEER_DB){
       if(t.includes(normalizeKey(key))) return BEER_DB[key];
     }
-
     const german = inferGermanStyle(nome, birrificio);
     if(german) return german;
-
     if(t.includes("double ipa") || t.includes("dipa")) return { stile:"22A Double IPA" };
     if(t.includes("ipa")) return { stile:"21A American IPA" };
     if(t.includes("tripel")) return { stile:"26C Belgian Tripel" };
@@ -1059,37 +1096,6 @@
 
   function trovaPerBarcode(barcode){
     return prodotti.findIndex(p => String(p.barcode || "").trim() === String(barcode || "").trim());
-  }
-
-  function trovaProdottoSimile(nome, birrificio){
-    const key = normalizeKey(`${nome || ""} ${birrificio || ""}`);
-    const nomeOnly = normalizeKey(nome);
-    let best = null;
-    let bestScore = 0;
-
-    prodotti.forEach(p => {
-      const pKey = normalizeKey(`${p.nome || ""} ${p.birrificio || ""}`);
-      const pNome = normalizeKey(p.nome || "");
-      let score = 0;
-
-      if(key && pKey === key) score += 100;
-      if(nomeOnly && pNome === nomeOnly) score += 80;
-
-      const tokens = nomeOnly.split(" ").filter(w => w.length > 3);
-      tokens.forEach(t => {
-        if(pNome.includes(t)) score += 8;
-        if(pKey.includes(t)) score += 4;
-      });
-
-      if(normalizeKey(birrificio) && normalizeKey(p.birrificio) === normalizeKey(birrificio)) score += 10;
-
-      if(score > bestScore){
-        bestScore = score;
-        best = p;
-      }
-    });
-
-    return bestScore >= 20 ? best : null;
   }
 
   function registraMovimento(tipo, prodotto, quantita){
@@ -1132,106 +1138,8 @@
     return false;
   }
 
-  function applicaDatiDaProdottoSimile(simile){
-    if(!simile) return false;
-    if(simile.stile) document.getElementById("stile").value = simile.stile;
-    if(simile.abv) document.getElementById("abv").value = simile.abv;
-    if(simile.ibu) document.getElementById("ibu").value = simile.ibu;
-    if(simile.srm) document.getElementById("srm").value = simile.srm;
-    if(simile.gusto) document.getElementById("gusto").value = simile.gusto;
-    if(simile.aroma) document.getElementById("aroma").value = simile.aroma;
-    if(simile.corpo) document.getElementById("corpo").value = simile.corpo;
-    if(simile.finale) document.getElementById("finale").value = simile.finale;
-    if(simile.abbinamenti) document.getElementById("abbinamenti").value = simile.abbinamenti;
-    if(simile.note) document.getElementById("note").value = simile.note;
-    if(simile.prezzo && Number(simile.prezzo) > 0){
-      document.getElementById("prezzo").value = Number(simile.prezzo).toFixed(2);
-      mostraPrezzoMemoria(simile.prezzo);
-    }
-    return true;
-  }
-
-  async function wikiSearchTitle(query, lang){
-    const url = `https://${lang}.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(query)}&limit=5&namespace=0&format=json&origin=*`;
-    const res = await fetch(url);
-    const data = await res.json();
-    if(Array.isArray(data) && Array.isArray(data[1]) && data[1].length){
-      return data[1][0];
-    }
-    return null;
-  }
-
-  async function wikiExtract(title, lang){
-    const url = `https://${lang}.wikipedia.org/w/api.php?action=query&prop=extracts&exintro=1&explaintext=1&titles=${encodeURIComponent(title)}&format=json&origin=*`;
-    const res = await fetch(url);
-    const data = await res.json();
-    const pages = data?.query?.pages || {};
-    const first = Object.values(pages)[0];
-    return first?.extract || "";
-  }
-
-  function extractABVFromText(text){
-    const patterns = [
-      /(\d{1,2}[.,]\d)\s*%/i,
-      /(\d{1,2})\s*%/i,
-      /(\d{1,2}[.,]\d)\s*(?:abv|alc|alcol)/i,
-      /(?:abv|alc|alcol)[^\d]{0,8}(\d{1,2}[.,]?\d?)/i
-    ];
-    for(const rx of patterns){
-      const m = text.match(rx);
-      if(m && m[1]) return m[1].replace(",", ".");
-    }
-    return "";
-  }
-
-  function enrichFromText(text){
-    const t = normalizeKey(text);
-    const out = {};
-
-    if(!document.getElementById("stile").value){
-      const styleGuess = inferStyleFromText(text, text);
-      if(styleGuess?.stile){
-        out.stile = styleGuess.stile;
-      }
-    }
-
-    const abv = extractABVFromText(text);
-    if(abv) out.abv = abv;
-
-    const gustoBits = [];
-    const aromaBits = [];
-    let corpo = "";
-    let finale = "";
-
-    if(t.includes("malt") || t.includes("maltata") || t.includes("malty")) gustoBits.push("maltata");
-    if(t.includes("pane") || t.includes("bread") || t.includes("biscuit")) gustoBits.push("pane/biscotto");
-    if(t.includes("caramel") || t.includes("caramello")) gustoBits.push("caramello");
-    if(t.includes("hop") || t.includes("luppolo")) aromaBits.push("luppolo");
-    if(t.includes("floral") || t.includes("floreale")) aromaBits.push("floreale");
-    if(t.includes("herbal") || t.includes("erbace")) aromaBits.push("erbaceo");
-    if(t.includes("citrus") || t.includes("agrum")) aromaBits.push("agrumato");
-    if(t.includes("banana")) aromaBits.push("banana");
-    if(t.includes("clove") || t.includes("garofano")) aromaBits.push("chiodo di garofano");
-    if(t.includes("toast") || t.includes("tost")) gustoBits.push("tostata");
-    if(t.includes("coffee") || t.includes("caffe")) gustoBits.push("caffè");
-    if(t.includes("chocolate") || t.includes("cioccol")) gustoBits.push("cioccolato");
-    if(t.includes("dry") || t.includes("secco")) finale = "secco";
-    if(t.includes("smooth") || t.includes("morbido")) finale = finale ? finale + ", morbido" : "morbido";
-    if(t.includes("light bodied") || t.includes("light body") || t.includes("leggero")) corpo = "leggero";
-    if(t.includes("medium body") || t.includes("medio corpo") || t.includes("medium-bodied")) corpo = "medio";
-    if(t.includes("full bodied") || t.includes("corpo pieno") || t.includes("full-bodied")) corpo = "pieno";
-
-    if(gustoBits.length) out.gusto = [...new Set(gustoBits)].join(", ");
-    if(aromaBits.length) out.aroma = [...new Set(aromaBits)].join(", ");
-    if(corpo) out.corpo = corpo;
-    if(finale) out.finale = finale;
-
-    return out;
-  }
-
   async function cercaProdottoOnline(barcode){
     setScan("Cerco prodotto...");
-
     const product = await lookupOpenFoodFacts(barcode);
     if(product){
       document.getElementById("nome").value = product.name || "";
@@ -1243,92 +1151,14 @@
         applyBJCPStyle(smart.stile, smart);
         setScan("Prodotto trovato e stile riconosciuto.", "ok");
       } else {
-        setScan("Prodotto trovato. Premi Ricerca approfondita.", "warn");
+        setScan("Prodotto trovato. Completa i dati se serve.", "warn");
       }
       applicaPrezzoMemorizzato(barcode, product.name || "", product.brand || "");
       return true;
     }
-
     setScan("Prodotto non trovato online.", "warn");
     mostraPrezzoMemoria(null);
     return false;
-  }
-
-  async function ricercaApprofonditaOnline(){
-    const nome = document.getElementById("nome").value.trim();
-    const birrificio = document.getElementById("birrificio").value.trim();
-    const barcode = document.getElementById("barcode").value.trim();
-
-    if(!nome){
-      setScan("Prima scannerizza o inserisci il nome prodotto.", "warn");
-      return;
-    }
-
-    setScan("Ricerca online vera in corso...");
-
-    applicaPrezzoMemorizzato(barcode, nome, birrificio);
-
-    const simile = trovaProdottoSimile(nome, birrificio);
-    if(simile){
-      applicaDatiDaProdottoSimile(simile);
-    }
-
-    const smart = inferStyleFromText(nome, birrificio);
-    if(smart?.stile){
-      applyBJCPStyle(smart.stile, smart);
-    }
-
-    const queries = [
-      `${nome} ${birrificio} birra`,
-      `${nome} beer ${birrificio}`,
-      `${nome} ${birrificio}`
-    ];
-
-    let bestExtract = "";
-    let bestTitle = "";
-    let bestLang = "";
-
-    try{
-      for(const lang of WIKI_LANGS){
-        for(const q of queries){
-          const title = await wikiSearchTitle(q, lang);
-          if(title){
-            const extract = await wikiExtract(title, lang);
-            if(extract && extract.length > bestExtract.length){
-              bestExtract = extract;
-              bestTitle = title;
-              bestLang = lang;
-            }
-          }
-        }
-      }
-    } catch(e){
-      // continua comunque
-    }
-
-    if(bestExtract){
-      const enriched = enrichFromText(bestExtract);
-
-      if(enriched.stile && !document.getElementById("stile").value){
-        applyBJCPStyle(enriched.stile, enriched);
-      } else if(enriched.stile && document.getElementById("stile").value !== enriched.stile){
-        // lascia lo stile scelto, ma usa eventuali dati mancanti
-      }
-
-      if(enriched.abv && !document.getElementById("abv").value) document.getElementById("abv").value = enriched.abv;
-      if(enriched.gusto && !document.getElementById("gusto").value) document.getElementById("gusto").value = enriched.gusto;
-      if(enriched.aroma && !document.getElementById("aroma").value) document.getElementById("aroma").value = enriched.aroma;
-      if(enriched.corpo && !document.getElementById("corpo").value) document.getElementById("corpo").value = enriched.corpo;
-      if(enriched.finale && !document.getElementById("finale").value) document.getElementById("finale").value = enriched.finale;
-
-      const summary = `Fonte web: Wikipedia (${bestLang.toUpperCase()}) – ${bestTitle}\n\n${bestExtract}`;
-      document.getElementById("note").value = summary;
-
-      setScan("Ricerca online completata.", "ok");
-      return;
-    }
-
-    setScan("Ricerca online fatta, ma senza dettagli utili trovati.", "warn");
   }
 
   async function gestisciBarcodeLetto(barcode){
@@ -1432,7 +1262,8 @@
   function annullaModifica(){
     editIndex = null;
     ["barcode","nome","birrificio","formato","qty","soglia","prezzo","abv","ibu","srm","gusto","aroma","corpo","finale","abbinamenti","note","searchStyle"].forEach(id => {
-      document.getElementById(id).value = "";
+      const el = document.getElementById(id);
+      if(el) el.value = "";
     });
     document.getElementById("stile").value = "";
     document.getElementById("foto").value = "";
@@ -1853,7 +1684,7 @@
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "xa-magazzino-online-backup.json";
+    a.download = "xa-magazzino-pro-backup.json";
     a.click();
     URL.revokeObjectURL(url);
   }
