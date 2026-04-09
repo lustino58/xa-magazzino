@@ -1,162 +1,987 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>XA Magazzino PRO</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>XA Magazzino PRO MAX</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#111111" />
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --panel:#151b26;
+      --panel2:#1b2330;
+      --line:#273244;
+      --text:#f5f7fb;
+      --muted:#aeb7c6;
 
-<script src="https://unpkg.com/html5-qrcode"></script>
+      --gold:#d1b06a;
+      --green:#49c774;
+      --blue:#5aa9ff;
+      --cyan:#45d0e3;
+      --orange:#ffae42;
+      --red:#e05d5d;
+      --violet:#a16eff;
+      --whiteBtn:#eceef3;
+    }
 
-<style>
-body{background:#0c0f14;color:white;font-family:Arial;padding:15px}
-input,button,select{width:100%;padding:12px;margin:5px 0;border-radius:10px;border:none}
-button{background:#d1b06a;color:black;font-weight:bold}
-.card{background:#1a1f2b;padding:10px;margin:8px 0;border-radius:10px}
-h2{margin-top:20px}
-</style>
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:Arial,sans-serif;
+      padding:16px;
+    }
+
+    .app{
+      max-width:980px;
+      margin:0 auto;
+    }
+
+    h1,h2,h3,p{
+      margin:0;
+    }
+
+    .hero{
+      margin-bottom:14px;
+    }
+
+    .hero h1{
+      font-size:34px;
+      line-height:1;
+      margin-bottom:8px;
+    }
+
+    .hero p{
+      color:var(--muted);
+      font-size:16px;
+    }
+
+    .grid{
+      display:grid;
+      gap:12px;
+    }
+
+    .stats{
+      grid-template-columns:repeat(2,1fr);
+      margin:14px 0;
+    }
+
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:14px;
+      margin-bottom:12px;
+      box-shadow:0 0 0 1px rgba(255,255,255,0.02) inset;
+    }
+
+    .stat{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+    }
+
+    .stat .label{
+      color:var(--muted);
+      font-size:14px;
+      margin-bottom:8px;
+    }
+
+    .stat .value{
+      font-size:34px;
+      font-weight:700;
+    }
+
+    .sectionTitle{
+      font-size:22px;
+      margin-bottom:10px;
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .row3{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:10px;
+    }
+
+    input, select, button{
+      width:100%;
+      padding:14px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      font-size:17px;
+      margin-top:8px;
+    }
+
+    input, select{
+      background:#f1f3f7;
+      color:#111;
+    }
+
+    button{
+      background:var(--whiteBtn);
+      color:#111;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .btn{
+      border-width:2px;
+      box-shadow:0 0 0 1px rgba(255,255,255,0.04) inset;
+    }
+
+    .btn-gold{ border-color:var(--gold); }
+    .btn-green{ border-color:var(--green); }
+    .btn-blue{ border-color:var(--blue); }
+    .btn-cyan{ border-color:var(--cyan); }
+    .btn-orange{ border-color:var(--orange); }
+    .btn-red{ border-color:var(--red); }
+    .btn-violet{ border-color:var(--violet); }
+
+    .small{
+      font-size:14px;
+      color:var(--muted);
+      margin-top:8px;
+    }
+
+    .ok{ color:#8ee0a3; }
+    .warn{ color:#ffd27a; }
+    .dangerText{ color:#ff9d9d; }
+
+    #reader{
+      display:none;
+      margin-top:10px;
+      background:#000;
+      border-radius:12px;
+      overflow:hidden;
+    }
+
+    .toolbar{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .product{
+      background:var(--panel2);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:12px;
+      margin-top:10px;
+    }
+
+    .productTop{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+    }
+
+    .productName{
+      font-size:22px;
+      font-weight:700;
+    }
+
+    .badge{
+      background:#121926;
+      border:1px solid var(--line);
+      color:var(--muted);
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:13px;
+      white-space:nowrap;
+    }
+
+    .qtyBig{
+      font-size:28px;
+      font-weight:700;
+      margin-top:8px;
+    }
+
+    .actions{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:8px;
+      margin-top:10px;
+    }
+
+    .actions button{
+      padding:12px 8px;
+      font-size:16px;
+    }
+
+    .movement{
+      background:var(--panel2);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px;
+      margin-top:8px;
+      font-size:15px;
+    }
+
+    .hidden{
+      display:none;
+    }
+
+    .hint{
+      color:var(--muted);
+      font-size:14px;
+      margin-top:6px;
+    }
+
+    .productImage{
+      width:100%;
+      max-width:180px;
+      border-radius:12px;
+      display:block;
+      margin-bottom:10px;
+      border:1px solid var(--line);
+    }
+
+    .cassaItem{
+      background:var(--panel2);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px;
+      margin-top:8px;
+    }
+
+    .totale{
+      font-size:30px;
+      font-weight:700;
+      margin-top:10px;
+    }
+
+    @media (max-width:700px){
+      .row,.row3,.toolbar,.actions,.stats{
+        grid-template-columns:1fr 1fr;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <div class="app">
 
-<h1>XA Magazzino + Cassa</h1>
+    <div class="hero">
+      <h1>XA Magazzino</h1>
+      <p>Scanner barcode • BJCP separato • foto etichetta • cassa • statistiche</p>
+    </div>
 
-<!-- SCANNER -->
-<div class="card">
-<input id="barcode" placeholder="Barcode">
-<button onclick="startScanner()">📷 Scanner</button>
-<div id="reader"></div>
-</div>
+    <div class="stats grid">
+      <div class="stat">
+        <div class="label">Prodotti</div>
+        <div class="value" id="statProdotti">0</div>
+      </div>
+      <div class="stat">
+        <div class="label">Pezzi totali</div>
+        <div class="value" id="statPezzi">0</div>
+      </div>
+      <div class="stat">
+        <div class="label">Scorte basse</div>
+        <div class="value" id="statScorte">0</div>
+      </div>
+      <div class="stat">
+        <div class="label">Movimenti</div>
+        <div class="value" id="statMovimenti">0</div>
+      </div>
+    </div>
 
-<!-- INSERIMENTO -->
-<div class="card">
-<input id="nome" placeholder="Nome prodotto">
-<input id="prezzo" type="number" placeholder="Prezzo €">
-<input id="qty" type="number" placeholder="Quantità">
+    <div class="card">
+      <div class="sectionTitle">Scanner e inserimento prodotto</div>
 
-<select id="stile">
-<option>Seleziona stile BJCP</option>
-<option>21A American IPA</option>
-<option>18B American Pale Ale</option>
-<option>25B Saison</option>
-<option>26C Tripel</option>
-<option>15A Irish Stout</option>
-</select>
+      <input id="barcode" placeholder="Barcode" />
+      <div class="toolbar">
+        <button class="btn btn-gold" onclick="startScanner()">📷 Scanner</button>
+        <button class="btn btn-red" onclick="stopScanner()">■ Stop scanner</button>
+      </div>
+      <div id="reader"></div>
+      <div id="scanStatus" class="small"></div>
 
-<input type="file" id="foto">
+      <input id="nome" placeholder="Nome prodotto" />
+      <div class="row">
+        <input id="birrificio" placeholder="Birrificio" />
+        <input id="formato" placeholder="Formato" />
+      </div>
 
-<button onclick="salva()">Salva prodotto</button>
-</div>
+      <input id="searchStyle" placeholder="Cerca stile BJCP" oninput="filtraStili()" />
 
-<!-- MAGAZZINO -->
-<h2>Magazzino</h2>
-<div id="lista"></div>
+      <select id="stile">
+        <option value="">Seleziona stile BJCP</option>
+      </select>
 
-<!-- CASSA -->
-<h2>Cassa</h2>
-<div class="card">
-<button onclick="aggiungiCassa()">➕ Aggiungi da barcode</button>
-<div id="cassa"></div>
-<h3>Totale: € <span id="totale">0</span></h3>
+      <div class="row3">
+        <input id="qty" type="number" placeholder="Quantità" />
+        <input id="soglia" type="number" placeholder="Scorta minima" />
+        <input id="prezzo" type="number" step="0.01" placeholder="Prezzo €" />
+      </div>
 
-<input id="pagato" type="number" placeholder="Contanti ricevuti">
-<button onclick="calcolaResto()">Calcola resto</button>
-<div id="resto"></div>
+      <input type="file" id="foto" accept="image/*" />
 
-<button onclick="chiudiScontrino()">Chiudi vendita</button>
-</div>
+      <div class="toolbar">
+        <button class="btn btn-green" onclick="salvaProdotto()">Salva prodotto</button>
+        <button class="btn btn-cyan" onclick="svuotaCampi()">Svuota campi</button>
+      </div>
 
-<!-- STATISTICHE -->
-<h2>Statistiche</h2>
-<div class="card">
-Totale venduto: € <span id="incasso">0</span><br>
-Pezzi venduti: <span id="pezzi">0</span>
-</div>
+      <div id="messageBox" class="small"></div>
+    </div>
 
-<script>
+    <div class="card">
+      <div class="sectionTitle">Strumenti</div>
+      <div class="toolbar">
+        <button class="btn btn-violet" onclick="downloadBackup()">Backup JSON</button>
+        <button class="btn btn-blue" onclick="document.getElementById('restoreFile').click()">Ripristina backup</button>
+      </div>
+      <input id="restoreFile" type="file" accept=".json,application/json" class="hidden" onchange="restoreBackup(event)" />
+      <div class="toolbar">
+        <button class="btn btn-blue" onclick="toggleMovimenti()">Mostra/Nascondi movimenti</button>
+        <button class="btn btn-red" onclick="resetMagazzino()">Reset magazzino</button>
+      </div>
+      <div class="hint">Il reset cancella prodotti e movimenti dal telefono.</div>
+    </div>
 
-let prodotti = JSON.parse(localStorage.getItem("prodotti")) || [];
-let cassa = [];
-let incasso = localStorage.getItem("incasso") || 0;
-let pezzi = localStorage.getItem("pezzi") || 0;
+    <div class="card">
+      <div class="sectionTitle">Ricerca e filtri</div>
+      <input id="search" placeholder="Cerca nome, birrificio, stile, barcode" oninput="mostra()" />
+      <div class="row">
+        <select id="filterScorte" onchange="mostra()">
+          <option value="tutte">Tutte le scorte</option>
+          <option value="basse">Solo scorte basse</option>
+        </select>
+        <select id="sortBy" onchange="mostra()">
+          <option value="nome">Ordina: nome</option>
+          <option value="qtyAsc">Ordina: quantità crescente</option>
+          <option value="qtyDesc">Ordina: quantità decrescente</option>
+        </select>
+      </div>
+    </div>
 
-function salva(){
-let nome=document.getElementById("nome").value;
-let prezzo=parseFloat(document.getElementById("prezzo").value);
-let qty=parseInt(document.getElementById("qty").value);
-let barcode=document.getElementById("barcode").value;
+    <div class="card">
+      <div class="sectionTitle">Magazzino</div>
+      <div id="lista"></div>
+    </div>
 
-prodotti.push({nome,prezzo,qty,barcode});
-localStorage.setItem("prodotti",JSON.stringify(prodotti));
-mostra();
-}
+    <div class="card">
+      <div class="sectionTitle">Cassa</div>
+      <div class="toolbar">
+        <button class="btn btn-gold" onclick="aggiungiDaBarcode()">Aggiungi da barcode</button>
+        <button class="btn btn-red" onclick="svuotaCassa()">Svuota cassa</button>
+      </div>
+      <div id="cassaLista"></div>
+      <div class="totale">Totale: € <span id="totaleCassa">0.00</span></div>
+      <input id="pagato" type="number" step="0.01" placeholder="Contanti ricevuti" />
+      <div class="toolbar">
+        <button class="btn btn-orange" onclick="calcolaResto()">Calcola resto</button>
+        <button class="btn btn-green" onclick="chiudiVendita()">Chiudi vendita</button>
+      </div>
+      <div id="restoBox" class="small"></div>
+    </div>
 
-function mostra(){
-let html="";
-prodotti.forEach(p=>{
-html+=`<div class="card">
-${p.nome} €${p.prezzo} Qty:${p.qty}
-</div>`;
-});
-document.getElementById("lista").innerHTML=html;
-}
+    <div class="card">
+      <div class="sectionTitle">Statistiche vendita</div>
+      <div class="row">
+        <div class="stat">
+          <div class="label">Incasso totale</div>
+          <div class="value" id="statIncasso">0</div>
+        </div>
+        <div class="stat">
+          <div class="label">Pezzi venduti</div>
+          <div class="value" id="statVenduti">0</div>
+        </div>
+      </div>
+    </div>
 
-function aggiungiCassa(){
-let code=document.getElementById("barcode").value;
-let p=prodotti.find(x=>x.barcode==code);
-if(!p)return alert("Non trovato");
+    <div class="card hidden" id="movimentiCard">
+      <div class="sectionTitle">Storico movimenti</div>
+      <div id="movimentiLista"></div>
+    </div>
 
-cassa.push(p);
-mostraCassa();
-}
+  </div>
 
-function mostraCassa(){
-let tot=0;
-let html="";
-cassa.forEach(p=>{
-tot+=p.prezzo;
-html+=`${p.nome} €${p.prezzo}<br>`;
-});
-document.getElementById("cassa").innerHTML=html;
-document.getElementById("totale").innerText=tot.toFixed(2);
-}
+  <script>
+    const stiliBJCP = [
+      "1A American Light Lager","1B American Lager","1C Cream Ale","1D American Wheat Beer",
+      "2A International Pale Lager","2B International Amber Lager","2C International Dark Lager",
+      "3A Czech Pale Lager","3B Czech Premium Pale Lager","3C Czech Amber Lager","3D Czech Dark Lager",
+      "4A Munich Helles","4B Festbier","4C Helles Bock",
+      "5A German Leichtbier","5B Kölsch","5C German Helles Exportbier","5D German Pils",
+      "6A Märzen","6B Rauchbier","6C Dunkles Bock",
+      "7A Vienna Lager","7B Altbier","7C Kellerbier",
+      "8A Munich Dunkel","8B Schwarzbier",
+      "9A Doppelbock","9B Eisbock","9C Baltic Porter",
+      "10A Weissbier","10B Dunkles Weissbier","10C Weizenbock",
+      "11A Ordinary Bitter","11B Best Bitter","11C Strong Bitter",
+      "12A British Golden Ale","12B Australian Sparkling Ale","12C English IPA",
+      "13A Dark Mild","13B British Brown Ale","13C English Porter",
+      "14A Scottish Light","14B Scottish Heavy","14C Scottish Export","14D Irish Red Ale",
+      "15A Irish Stout","15B Irish Extra Stout","15C Sweet Stout","15D Oatmeal Stout","15E Tropical Stout","15F Foreign Extra Stout",
+      "16A Sweet Stout","16B Oatmeal Stout","16C Tropical Stout","16D Foreign Extra Stout",
+      "17A British Strong Ale","17B Old Ale","17C Wee Heavy","17D English Barleywine",
+      "18A Blonde Ale","18B American Pale Ale",
+      "19A American Amber Ale","19B California Common",
+      "20A American Porter","20B American Stout","20C Imperial Stout",
+      "21A American IPA","21B Specialty IPA",
+      "22A Double IPA","22B American Strong Ale","22C American Barleywine","22D Wheatwine",
+      "23A Berliner Weisse","23B Flanders Red Ale","23C Oud Bruin","23D Lambic","23E Gueuze","23F Fruit Lambic",
+      "24A Witbier","24B Belgian Pale Ale","24C Bière de Garde",
+      "25A Belgian Blond Ale","25B Saison","25C Belgian Golden Strong Ale",
+      "26A Belgian Single","26B Belgian Dubbel","26C Belgian Tripel","26D Belgian Dark Strong Ale",
+      "27A Historical Beer","27B Kentucky Common","27C Kellerbier","27D Pre-Prohibition Lager","27E Pre-Prohibition Porter",
+      "28A Brett Beer","28B Mixed-Fermentation Sour Beer","28C Wild Specialty Beer",
+      "29A Fruit Beer","29B Fruit and Spice Beer","29C Specialty Fruit Beer",
+      "30A Spice, Herb, or Vegetable Beer","30B Autumn Seasonal Beer","30C Winter Seasonal Beer",
+      "31A Alternative Grain Beer","31B Alternative Sugar Beer","31C Classic Style Smoked Beer","31D Specialty Smoked Beer",
+      "32A Wood-Aged Beer","32B Specialty Wood-Aged Beer",
+      "33A Specialty Beer",
+      "34A Clone Beer","34B Mixed-Style Beer","34C Experimental Beer"
+    ];
 
-function calcolaResto(){
-let tot=parseFloat(document.getElementById("totale").innerText);
-let pagato=parseFloat(document.getElementById("pagato").value);
-document.getElementById("resto").innerText="Resto: €"+(pagato-tot).toFixed(2);
-}
+    let prodotti = JSON.parse(localStorage.getItem("prodotti_xa_max")) || [];
+    let movimenti = JSON.parse(localStorage.getItem("movimenti_xa_max")) || [];
+    let vendite = JSON.parse(localStorage.getItem("vendite_xa_max")) || [];
+    let cassa = [];
+    let html5QrCode = null;
+    let scannerAttivo = false;
 
-function chiudiScontrino(){
-let tot=parseFloat(document.getElementById("totale").innerText);
-incasso=parseFloat(incasso)+tot;
-pezzi+=cassa.length;
+    function salvaDati(){
+      localStorage.setItem("prodotti_xa_max", JSON.stringify(prodotti));
+      localStorage.setItem("movimenti_xa_max", JSON.stringify(movimenti));
+      localStorage.setItem("vendite_xa_max", JSON.stringify(vendite));
+    }
 
-localStorage.setItem("incasso",incasso);
-localStorage.setItem("pezzi",pezzi);
+    function setMsg(text, type=""){
+      const box = document.getElementById("messageBox");
+      box.className = "small " + type;
+      box.textContent = text;
+    }
 
-cassa=[];
-mostraCassa();
-aggiornaStats();
-}
+    function setScan(text, type=""){
+      const box = document.getElementById("scanStatus");
+      box.className = "small " + type;
+      box.textContent = text;
+    }
 
-function aggiornaStats(){
-document.getElementById("incasso").innerText=incasso;
-document.getElementById("pezzi").innerText=pezzi;
-}
+    function nowString(){
+      return new Date().toLocaleString("it-IT");
+    }
 
-function startScanner(){
-const scanner=new Html5Qrcode("reader");
-scanner.start({facingMode:"environment"},{fps:10,qrbox:250},
-(decodedText)=>{
-document.getElementById("barcode").value=decodedText;
-scanner.stop();
-});
-}
+    function escapeHtml(text){
+      return String(text || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
 
-mostra();
-aggiornaStats();
+    function popolaStili(lista){
+      const select = document.getElementById("stile");
+      const valoreAttuale = select.value;
+      select.innerHTML = `<option value="">Seleziona stile BJCP</option>`;
+      lista.forEach(stile => {
+        const option = document.createElement("option");
+        option.value = stile;
+        option.textContent = stile;
+        select.appendChild(option);
+      });
+      if(lista.includes(valoreAttuale)) select.value = valoreAttuale;
+    }
 
-</script>
+    function filtraStili(){
+      const q = document.getElementById("searchStyle").value.trim().toLowerCase();
+      if(!q){
+        popolaStili(stiliBJCP);
+        return;
+      }
+      const filtrati = stiliBJCP.filter(s => s.toLowerCase().includes(q));
+      popolaStili(filtrati);
+    }
 
+    function trovaPerBarcode(barcode){
+      return prodotti.findIndex(p => String(p.barcode || "").trim() === String(barcode || "").trim());
+    }
+
+    function svuotaCampi(){
+      document.getElementById("barcode").value = "";
+      document.getElementById("nome").value = "";
+      document.getElementById("birrificio").value = "";
+      document.getElementById("formato").value = "";
+      document.getElementById("stile").value = "";
+      document.getElementById("qty").value = "";
+      document.getElementById("soglia").value = "";
+      document.getElementById("prezzo").value = "";
+      document.getElementById("foto").value = "";
+      document.getElementById("searchStyle").value = "";
+      popolaStili(stiliBJCP);
+      setMsg("");
+      setScan("");
+    }
+
+    function registraMovimento(tipo, prodotto, quantita){
+      movimenti.unshift({
+        data: nowString(),
+        tipo,
+        nome: prodotto.nome || "",
+        barcode: prodotto.barcode || "",
+        quantita
+      });
+      if(movimenti.length > 300){
+        movimenti = movimenti.slice(0,300);
+      }
+    }
+
+    function salvaProdotto(){
+      const barcode = document.getElementById("barcode").value.trim();
+      const nome = document.getElementById("nome").value.trim();
+      const birrificio = document.getElementById("birrificio").value.trim();
+      const formato = document.getElementById("formato").value.trim();
+      const stile = document.getElementById("stile").value.trim();
+      const qty = parseInt(document.getElementById("qty").value || "0", 10);
+      const soglia = parseInt(document.getElementById("soglia").value || "0", 10);
+      const prezzo = parseFloat(document.getElementById("prezzo").value || "0");
+      const file = document.getElementById("foto").files[0];
+
+      if(!barcode){
+        setMsg("Inserisci o scansiona un barcode.", "warn");
+        return;
+      }
+      if(!nome){
+        setMsg("Inserisci il nome prodotto.", "warn");
+        return;
+      }
+
+      const idx = trovaPerBarcode(barcode);
+
+      if(file){
+        const reader = new FileReader();
+        reader.onload = function(){
+          completaSalvataggio(idx, {
+            barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, foto: reader.result
+          });
+        };
+        reader.readAsDataURL(file);
+      } else {
+        let fotoEsistente = "";
+        if(idx >= 0) fotoEsistente = prodotti[idx].foto || "";
+        completaSalvataggio(idx, {
+          barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, foto: fotoEsistente
+        });
+      }
+    }
+
+    function completaSalvataggio(idx, data){
+      if(idx >= 0){
+        prodotti[idx].nome = data.nome;
+        prodotti[idx].birrificio = data.birrificio;
+        prodotti[idx].formato = data.formato;
+        prodotti[idx].stile = data.stile;
+        prodotti[idx].soglia = data.soglia;
+        prodotti[idx].prezzo = Number(data.prezzo || 0);
+        prodotti[idx].foto = data.foto || prodotti[idx].foto || "";
+        prodotti[idx].qty = Number(prodotti[idx].qty || 0) + Number(data.qty || 0);
+        registraMovimento("CARICO", prodotti[idx], Number(data.qty || 0));
+        setMsg("Prodotto aggiornato. Quantità aumentata.", "ok");
+      } else {
+        const nuovo = {
+          barcode: data.barcode,
+          nome: data.nome,
+          birrificio: data.birrificio,
+          formato: data.formato,
+          stile: data.stile,
+          qty: Number(data.qty || 0),
+          soglia: Number(data.soglia || 0),
+          prezzo: Number(data.prezzo || 0),
+          foto: data.foto || ""
+        };
+        prodotti.push(nuovo);
+        registraMovimento("NUOVO", nuovo, Number(data.qty || 0));
+        setMsg("Prodotto salvato nel magazzino.", "ok");
+      }
+
+      salvaDati();
+      mostra();
+    }
+
+    function carico(i){
+      prodotti[i].qty = Number(prodotti[i].qty || 0) + 1;
+      registraMovimento("CARICO", prodotti[i], 1);
+      salvaDati();
+      mostra();
+    }
+
+    function scarico(i){
+      prodotti[i].qty = Math.max(0, Number(prodotti[i].qty || 0) - 1);
+      registraMovimento("SCARICO", prodotti[i], 1);
+      salvaDati();
+      mostra();
+    }
+
+    function eliminaProdotto(i){
+      const p = prodotti[i];
+      if(!confirm("Eliminare " + p.nome + "?")) return;
+      registraMovimento("ELIMINATO", p, Number(p.qty || 0));
+      prodotti.splice(i,1);
+      salvaDati();
+      mostra();
+    }
+
+    function modificaQty(i){
+      const p = prodotti[i];
+      const val = prompt("Nuova quantità per " + p.nome, p.qty || 0);
+      if(val === null) return;
+      const nuova = Math.max(0, parseInt(val || "0", 10));
+      const differenza = nuova - Number(p.qty || 0);
+      p.qty = nuova;
+      registraMovimento("MODIFICA", p, differenza);
+      salvaDati();
+      mostra();
+    }
+
+    function updateStats(){
+      document.getElementById("statProdotti").textContent = prodotti.length;
+      document.getElementById("statPezzi").textContent = prodotti.reduce((a,p)=>a+Number(p.qty||0),0);
+      document.getElementById("statScorte").textContent = prodotti.filter(p => Number(p.qty||0) <= Number(p.soglia||0)).length;
+      document.getElementById("statMovimenti").textContent = movimenti.length;
+
+      const incasso = vendite.reduce((a,v)=>a+Number(v.totale||0),0);
+      const venduti = vendite.reduce((a,v)=>a+Number(v.pezzi||0),0);
+      document.getElementById("statIncasso").textContent = incasso.toFixed(2);
+      document.getElementById("statVenduti").textContent = venduti;
+    }
+
+    function mostra(){
+      const lista = document.getElementById("lista");
+      const mov = document.getElementById("movimentiLista");
+
+      let items = [...prodotti];
+      const search = document.getElementById("search").value.trim().toLowerCase();
+      const filterScorte = document.getElementById("filterScorte").value;
+      const sortBy = document.getElementById("sortBy").value;
+
+      if(search){
+        items = items.filter(p =>
+          String(p.nome||"").toLowerCase().includes(search) ||
+          String(p.birrificio||"").toLowerCase().includes(search) ||
+          String(p.stile||"").toLowerCase().includes(search) ||
+          String(p.barcode||"").toLowerCase().includes(search)
+        );
+      }
+
+      if(filterScorte === "basse"){
+        items = items.filter(p => Number(p.qty||0) <= Number(p.soglia||0));
+      }
+
+      if(sortBy === "nome"){
+        items.sort((a,b)=>String(a.nome||"").localeCompare(String(b.nome||""), "it"));
+      } else if(sortBy === "qtyAsc"){
+        items.sort((a,b)=>Number(a.qty||0)-Number(b.qty||0));
+      } else if(sortBy === "qtyDesc"){
+        items.sort((a,b)=>Number(b.qty||0)-Number(a.qty||0));
+      }
+
+      if(items.length === 0){
+        lista.innerHTML = `<div class="small">Nessun prodotto trovato.</div>`;
+      } else {
+        let html = "";
+        items.forEach((p) => {
+          const realIndex = prodotti.findIndex(x => x.barcode === p.barcode);
+          const bassa = Number(p.qty||0) <= Number(p.soglia||0);
+          html += `
+            <div class="product">
+              ${p.foto ? `<img class="productImage" src="${p.foto}" alt="${escapeHtml(p.nome)}">` : ""}
+              <div class="productTop">
+                <div>
+                  <div class="productName">${escapeHtml(p.nome || "Senza nome")}</div>
+                  <div class="small">
+                    Barcode: ${escapeHtml(p.barcode || "-")}<br>
+                    ${p.birrificio ? "Birrificio: " + escapeHtml(p.birrificio) + "<br>" : ""}
+                    ${p.stile ? "BJCP: " + escapeHtml(p.stile) + "<br>" : ""}
+                    ${p.formato ? "Formato: " + escapeHtml(p.formato) + "<br>" : ""}
+                    Prezzo: € ${Number(p.prezzo || 0).toFixed(2)}<br>
+                    Scorta minima: ${Number(p.soglia||0)}
+                  </div>
+                </div>
+                <div class="badge">${bassa ? "Scorta bassa" : "OK"}</div>
+              </div>
+              <div class="qtyBig">Quantità: ${Number(p.qty||0)}</div>
+              <div class="actions">
+                <button class="btn btn-green" onclick="carico(${realIndex})">+1</button>
+                <button class="btn btn-orange" onclick="scarico(${realIndex})">-1</button>
+                <button class="btn btn-blue" onclick="modificaQty(${realIndex})">Modifica</button>
+                <button class="btn btn-red" onclick="eliminaProdotto(${realIndex})">Elimina</button>
+              </div>
+            </div>
+          `;
+        });
+        lista.innerHTML = html;
+      }
+
+      if(movimenti.length === 0){
+        mov.innerHTML = `<div class="small">Nessun movimento.</div>`;
+      } else {
+        mov.innerHTML = movimenti.map(m => `
+          <div class="movement">
+            <b>${escapeHtml(m.tipo)}</b> · ${escapeHtml(m.nome)}<br>
+            Barcode: ${escapeHtml(m.barcode)}<br>
+            Quantità: ${escapeHtml(m.quantita)}<br>
+            <span class="small">${escapeHtml(m.data)}</span>
+          </div>
+        `).join("");
+      }
+
+      mostraCassa();
+      updateStats();
+    }
+
+    async function cercaProdottoOnline(barcode){
+      setScan("Cerco prodotto online...");
+      try{
+        const url = `https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(barcode)}.json`;
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if(data && data.product){
+          const nome =
+            data.product.product_name_it ||
+            data.product.product_name ||
+            data.product.generic_name_it ||
+            data.product.generic_name ||
+            "";
+
+          const marca = data.product.brands || "";
+          const qtyTxt = data.product.quantity || "";
+
+          if(nome){
+            document.getElementById("nome").value = nome;
+            document.getElementById("birrificio").value = marca;
+            document.getElementById("formato").value = qtyTxt;
+            document.getElementById("qty").value = "1";
+            setScan("Prodotto trovato online.", "ok");
+            return true;
+          }
+        }
+
+        document.getElementById("qty").value = "1";
+        setScan("Prodotto non trovato online. Inseriscilo a mano.", "warn");
+        return false;
+      } catch(e){
+        document.getElementById("qty").value = "1";
+        setScan("Ricerca online non riuscita. Inserisci a mano.", "warn");
+        return false;
+      }
+    }
+
+    async function gestisciBarcodeLetto(barcode){
+      document.getElementById("barcode").value = barcode;
+
+      const idx = trovaPerBarcode(barcode);
+
+      if(idx >= 0){
+        const p = prodotti[idx];
+        document.getElementById("nome").value = p.nome || "";
+        document.getElementById("birrificio").value = p.birrificio || "";
+        document.getElementById("formato").value = p.formato || "";
+        document.getElementById("stile").value = p.stile || "";
+        document.getElementById("qty").value = "1";
+        document.getElementById("soglia").value = p.soglia || 0;
+        document.getElementById("prezzo").value = p.prezzo || 0;
+        setScan("Prodotto già presente nel tuo magazzino.", "ok");
+        return;
+      }
+
+      await cercaProdottoOnline(barcode);
+    }
+
+    async function startScanner(){
+      if(scannerAttivo){
+        setScan("Scanner già attivo.");
+        return;
+      }
+
+      const reader = document.getElementById("reader");
+      reader.style.display = "block";
+      setScan("Avvio fotocamera...");
+
+      html5QrCode = new Html5Qrcode("reader");
+      scannerAttivo = true;
+
+      try{
+        await html5QrCode.start(
+          { facingMode: "environment" },
+          { fps: 10, qrbox: 250 },
+          async (decodedText) => {
+            await stopScanner();
+            await gestisciBarcodeLetto(decodedText);
+          },
+          () => {}
+        );
+        setScan("Inquadra il barcode.");
+      } catch(err){
+        reader.style.display = "none";
+        scannerAttivo = false;
+        setScan("Fotocamera non disponibile.", "dangerText");
+      }
+    }
+
+    async function stopScanner(){
+      const reader = document.getElementById("reader");
+      if(html5QrCode && scannerAttivo){
+        try{
+          await html5QrCode.stop();
+          await html5QrCode.clear();
+        } catch(e){}
+      }
+      scannerAttivo = false;
+      reader.style.display = "none";
+    }
+
+    function aggiungiDaBarcode(){
+      const barcode = document.getElementById("barcode").value.trim();
+      if(!barcode){
+        alert("Scansiona o inserisci un barcode.");
+        return;
+      }
+      const idx = trovaPerBarcode(barcode);
+      if(idx < 0){
+        alert("Prodotto non trovato nel magazzino.");
+        return;
+      }
+      cassa.push({
+        barcode: prodotti[idx].barcode,
+        nome: prodotti[idx].nome,
+        prezzo: Number(prodotti[idx].prezzo || 0)
+      });
+      mostraCassa();
+    }
+
+    function svuotaCassa(){
+      cassa = [];
+      mostraCassa();
+      document.getElementById("restoBox").textContent = "";
+    }
+
+    function mostraCassa(){
+      const box = document.getElementById("cassaLista");
+      const tot = cassa.reduce((a,p)=>a+Number(p.prezzo||0),0);
+      document.getElementById("totaleCassa").textContent = tot.toFixed(2);
+
+      if(cassa.length === 0){
+        box.innerHTML = `<div class="small">Nessun articolo in cassa.</div>`;
+        return;
+      }
+
+      box.innerHTML = cassa.map((p,i)=>`
+        <div class="cassaItem">
+          <b>${escapeHtml(p.nome)}</b><br>
+          € ${Number(p.prezzo||0).toFixed(2)}
+        </div>
+      `).join("");
+    }
+
+    function calcolaResto(){
+      const totale = cassa.reduce((a,p)=>a+Number(p.prezzo||0),0);
+      const pagato = parseFloat(document.getElementById("pagato").value || "0");
+      const resto = pagato - totale;
+      document.getElementById("restoBox").textContent = "Resto: € " + resto.toFixed(2);
+    }
+
+    function chiudiVendita(){
+      if(cassa.length === 0){
+        alert("La cassa è vuota.");
+        return;
+      }
+
+      let totale = 0;
+      let pezzi = 0;
+
+      cassa.forEach(item => {
+        totale += Number(item.prezzo || 0);
+        pezzi += 1;
+        const idx = trovaPerBarcode(item.barcode);
+        if(idx >= 0){
+          prodotti[idx].qty = Math.max(0, Number(prodotti[idx].qty || 0) - 1);
+          registraMovimento("VENDITA", prodotti[idx], 1);
+        }
+      });
+
+      vendite.unshift({
+        data: nowString(),
+        totale,
+        pezzi
+      });
+
+      cassa = [];
+      salvaDati();
+      mostra();
+      document.getElementById("pagato").value = "";
+      document.getElementById("restoBox").textContent = "Vendita chiusa.";
+    }
+
+    function downloadBackup(){
+      const data = {
+        prodotti,
+        movimenti,
+        vendite,
+        exportedAt: nowString()
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "xa-magazzino-backup.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function restoreBackup(event){
+      const file = event.target.files[0];
+      if(!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e){
+        try{
+          const data = JSON.parse(e.target.result);
+          prodotti = Array.isArray(data.prodotti) ? data.prodotti : [];
+          movimenti = Array.isArray(data.movimenti) ? data.movimenti : [];
+          vendite = Array.isArray(data.vendite) ? data.vendite : [];
+          salvaDati();
+          mostra();
+          setMsg("Backup ripristinato.", "ok");
+        } catch(err){
+          setMsg("File backup non valido.", "dangerText");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function toggleMovimenti(){
+      document.getElementById("movimentiCard").classList.toggle("hidden");
+    }
+
+    function resetMagazzino(){
+      if(!confirm("Vuoi cancellare tutto il magazzino?")) return;
+      prodotti = [];
+      movimenti = [];
+      vendite = [];
+      cassa = [];
+      salvaDati();
+      mostra();
+      svuotaCampi();
+      setMsg("Magazzino azzerato.", "warn");
+    }
+
+    popolaStili(stiliBJCP);
+    mostra();
+  </script>
 </body>
 </html>
