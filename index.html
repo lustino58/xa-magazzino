@@ -3,148 +3,325 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>XA Magazzino Pro</title>
+  <title>XA Magazzino PRO MAX</title>
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#111111" />
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
-    body {
-      background: #0f1115;
-      color: white;
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      margin: 0;
+    :root{
+      --bg:#0c0f14;
+      --panel:#171c26;
+      --panel2:#1f2633;
+      --line:#2a3344;
+      --text:#f4f6fb;
+      --muted:#aeb7c6;
+      --gold:#d1b06a;
+      --goldText:#161616;
+      --danger:#d45c5c;
+      --ok:#89d39a;
+      --warn:#f0c46a;
     }
-    h1 {
-      margin-top: 0;
-      font-size: 42px;
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:Arial,sans-serif;
+      padding:16px;
     }
-    .card {
-      background: #1a1f2b;
-      border-radius: 14px;
-      padding: 14px;
-      margin-bottom: 14px;
+    h1,h2,h3,p{margin:0}
+    .app{
+      max-width:900px;
+      margin:0 auto;
     }
-    input, button {
-      width: 100%;
-      padding: 14px;
-      margin: 6px 0;
-      border-radius: 10px;
-      border: none;
-      box-sizing: border-box;
-      font-size: 18px;
+    .hero{
+      margin-bottom:14px;
     }
-    input {
-      background: #f3f3f3;
-      color: #111;
+    .hero h1{
+      font-size:34px;
+      line-height:1;
+      margin-bottom:8px;
     }
-    button {
-      background: #e7e7e7;
-      color: #111;
-      font-weight: bold;
+    .hero p{
+      color:var(--muted);
+      font-size:16px;
     }
-    .gold {
-      background: #d7b56d;
+    .grid{
+      display:grid;
+      gap:12px;
     }
-    #reader {
-      margin-top: 10px;
-      display: none;
-      background: #000;
-      border-radius: 12px;
-      overflow: hidden;
+    .stats{
+      grid-template-columns:repeat(2,1fr);
+      margin:14px 0;
     }
-    .prodotto {
-      background: #222938;
-      border-radius: 12px;
-      padding: 12px;
-      margin-top: 10px;
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      margin-bottom:12px;
     }
-    .small {
-      color: #b8b8b8;
-      font-size: 14px;
-      margin-top: 4px;
+    .stat{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
     }
-    .row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
+    .stat .label{
+      color:var(--muted);
+      font-size:14px;
+      margin-bottom:8px;
     }
-    .danger {
-      background: #c74a4a;
-      color: white;
+    .stat .value{
+      font-size:34px;
+      font-weight:700;
     }
-    .ok {
-      color: #9fe29f;
-      font-size: 14px;
-      margin-top: 6px;
+    .row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
     }
-    .warn {
-      color: #ffd27a;
-      font-size: 14px;
-      margin-top: 6px;
+    .row3{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:10px;
+    }
+    input, button, select{
+      width:100%;
+      padding:14px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      font-size:18px;
+    }
+    input, select{
+      background:#f2f3f7;
+      color:#111;
+    }
+    button{
+      background:#e8e8e8;
+      color:#111;
+      font-weight:700;
+      cursor:pointer;
+    }
+    .gold{background:var(--gold); color:var(--goldText);}
+    .dark{background:var(--panel2); color:var(--text);}
+    .danger{background:var(--danger); color:#fff;}
+    .ghost{background:transparent; color:var(--text);}
+    .small{
+      font-size:14px;
+      color:var(--muted);
+      margin-top:8px;
+    }
+    .ok{color:var(--ok)}
+    .warn{color:var(--warn)}
+    .dangerText{color:#ff9e9e}
+    #reader{
+      display:none;
+      margin-top:10px;
+      background:#000;
+      border-radius:12px;
+      overflow:hidden;
+    }
+    .toolbar{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+    .product{
+      background:var(--panel2);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      margin-top:10px;
+    }
+    .productTop{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+    }
+    .productName{
+      font-size:22px;
+      font-weight:700;
+    }
+    .badge{
+      background:#111827;
+      border:1px solid var(--line);
+      color:var(--muted);
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:13px;
+      white-space:nowrap;
+    }
+    .qtyBig{
+      font-size:28px;
+      font-weight:700;
+      margin-top:8px;
+    }
+    .actions{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:8px;
+      margin-top:10px;
+    }
+    .actions button{
+      padding:12px 8px;
+      font-size:16px;
+    }
+    .movement{
+      background:var(--panel2);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px;
+      margin-top:8px;
+      font-size:15px;
+    }
+    .hidden{display:none}
+    .sectionTitle{
+      font-size:22px;
+      margin-bottom:10px;
+    }
+    .hint{
+      color:var(--muted);
+      font-size:14px;
+      margin-top:6px;
+    }
+    @media (max-width:700px){
+      .row,.row3,.actions,.toolbar,.stats{grid-template-columns:1fr 1fr}
     }
   </style>
 </head>
 <body>
-  <h1>XA Magazzino</h1>
+  <div class="app">
 
-  <div class="card">
-    <input id="barcode" placeholder="Barcode" />
-    <button class="gold" onclick="startScanner()">📷 Scanner</button>
-    <div id="reader"></div>
-    <div id="stato" class="small"></div>
-  </div>
-
-  <div class="card">
-    <input id="nome" placeholder="Nome prodotto" />
-    <input id="qty" type="number" placeholder="Quantità" />
-    <div class="row">
-      <button onclick="salva()">Salva prodotto</button>
-      <button onclick="svuotaCampi()">Svuota campi</button>
+    <div class="hero">
+      <h1>XA Magazzino</h1>
+      <p>Scanner barcode • magazzino reale • movimenti • backup</p>
     </div>
-    <div id="messaggio"></div>
-  </div>
 
-  <div class="card">
-    <h3>Magazzino</h3>
-    <div id="lista"></div>
+    <div class="stats grid">
+      <div class="stat">
+        <div class="label">Prodotti</div>
+        <div class="value" id="statProdotti">0</div>
+      </div>
+      <div class="stat">
+        <div class="label">Pezzi totali</div>
+        <div class="value" id="statPezzi">0</div>
+      </div>
+      <div class="stat">
+        <div class="label">Scorte basse</div>
+        <div class="value" id="statScorte">0</div>
+      </div>
+      <div class="stat">
+        <div class="label">Movimenti</div>
+        <div class="value" id="statMovimenti">0</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sectionTitle">Scanner e inserimento</div>
+
+      <input id="barcode" placeholder="Barcode" />
+      <div class="toolbar">
+        <button class="gold" onclick="startScanner()">📷 Scanner</button>
+        <button class="dark" onclick="stopScanner()">■ Stop scanner</button>
+      </div>
+      <div id="reader"></div>
+      <div id="scanStatus" class="small"></div>
+
+      <div style="height:10px"></div>
+
+      <input id="nome" placeholder="Nome prodotto" />
+      <div class="row">
+        <input id="birrificio" placeholder="Birrificio" />
+        <input id="stile" placeholder="Stile" />
+      </div>
+      <div class="row3">
+        <input id="formato" placeholder="Formato" />
+        <input id="qty" type="number" placeholder="Quantità" />
+        <input id="soglia" type="number" placeholder="Scorta minima" />
+      </div>
+
+      <div class="toolbar">
+        <button onclick="salvaProdotto()">Salva prodotto</button>
+        <button class="dark" onclick="svuotaCampi()">Svuota campi</button>
+      </div>
+
+      <div id="messageBox" class="small"></div>
+    </div>
+
+    <div class="card">
+      <div class="sectionTitle">Strumenti</div>
+      <div class="toolbar">
+        <button onclick="downloadBackup()">Backup JSON</button>
+        <button class="dark" onclick="document.getElementById('restoreFile').click()">Ripristina backup</button>
+      </div>
+      <input id="restoreFile" type="file" accept=".json,application/json" class="hidden" onchange="restoreBackup(event)" />
+      <div class="toolbar">
+        <button class="dark" onclick="toggleMovimenti()">Mostra/Nascondi movimenti</button>
+        <button class="danger" onclick="resetMagazzino()">Reset magazzino</button>
+      </div>
+      <div class="hint">Il reset cancella prodotti e movimenti dal telefono.</div>
+    </div>
+
+    <div class="card">
+      <div class="sectionTitle">Ricerca e filtri</div>
+      <input id="search" placeholder="Cerca nome, birrificio, stile, barcode" oninput="mostra()" />
+      <div class="row">
+        <select id="filterScorte" onchange="mostra()">
+          <option value="tutte">Tutte le scorte</option>
+          <option value="basse">Solo scorte basse</option>
+        </select>
+        <select id="sortBy" onchange="mostra()">
+          <option value="nome">Ordina: nome</option>
+          <option value="qtyAsc">Ordina: quantità crescente</option>
+          <option value="qtyDesc">Ordina: quantità decrescente</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sectionTitle">Magazzino</div>
+      <div id="lista"></div>
+    </div>
+
+    <div class="card hidden" id="movimentiCard">
+      <div class="sectionTitle">Storico movimenti</div>
+      <div id="movimentiLista"></div>
+    </div>
+
   </div>
 
   <script>
-    let prodotti = JSON.parse(localStorage.getItem("prodotti_xa")) || [];
+    let prodotti = JSON.parse(localStorage.getItem("prodotti_xa_max")) || [];
+    let movimenti = JSON.parse(localStorage.getItem("movimenti_xa_max")) || [];
     let html5QrCode = null;
     let scannerAttivo = false;
 
-    function salvaLocal() {
-      localStorage.setItem("prodotti_xa", JSON.stringify(prodotti));
+    function salvaDati(){
+      localStorage.setItem("prodotti_xa_max", JSON.stringify(prodotti));
+      localStorage.setItem("movimenti_xa_max", JSON.stringify(movimenti));
     }
 
-    function mostra() {
-      const lista = document.getElementById("lista");
-      if (prodotti.length === 0) {
-        lista.innerHTML = `<div class="small">Nessun prodotto salvato.</div>`;
-        return;
-      }
-
-      let html = "";
-      prodotti.forEach((p, i) => {
-        html += `
-          <div class="prodotto">
-            <b>${escapeHtml(p.nome || "Senza nome")}</b><br>
-            Barcode: ${escapeHtml(p.barcode || "-")}<br>
-            Quantità: ${Number(p.qty || 0)}
-            <div class="row" style="margin-top:8px;">
-              <button onclick="carico(${i})">+1 Carico</button>
-              <button onclick="scarico(${i})">-1 Scarico</button>
-            </div>
-          </div>
-        `;
-      });
-      lista.innerHTML = html;
+    function setMsg(text, type=""){
+      const box = document.getElementById("messageBox");
+      box.className = "small " + type;
+      box.textContent = text;
     }
 
-    function escapeHtml(text) {
-      return String(text)
+    function setScan(text, type=""){
+      const box = document.getElementById("scanStatus");
+      box.className = "small " + type;
+      box.textContent = text;
+    }
+
+    function nowString(){
+      return new Date().toLocaleString("it-IT");
+    }
+
+    function escapeHtml(text){
+      return String(text || "")
         .replaceAll("&", "&amp;")
         .replaceAll("<", "&lt;")
         .replaceAll(">", "&gt;")
@@ -152,75 +329,214 @@
         .replaceAll("'", "&#039;");
     }
 
-    function svuotaCampi() {
-      document.getElementById("barcode").value = "";
-      document.getElementById("nome").value = "";
-      document.getElementById("qty").value = "";
-      document.getElementById("messaggio").innerHTML = "";
-      document.getElementById("stato").innerText = "";
-    }
-
-    function trovaPerBarcode(barcode) {
+    function trovaPerBarcode(barcode){
       return prodotti.findIndex(p => String(p.barcode || "").trim() === String(barcode || "").trim());
     }
 
-    function salva() {
+    function svuotaCampi(){
+      document.getElementById("barcode").value = "";
+      document.getElementById("nome").value = "";
+      document.getElementById("birrificio").value = "";
+      document.getElementById("stile").value = "";
+      document.getElementById("formato").value = "";
+      document.getElementById("qty").value = "";
+      document.getElementById("soglia").value = "";
+      setMsg("");
+      setScan("");
+    }
+
+    function registraMovimento(tipo, prodotto, quantita){
+      movimenti.unshift({
+        data: nowString(),
+        tipo,
+        nome: prodotto.nome || "",
+        barcode: prodotto.barcode || "",
+        quantita
+      });
+      if(movimenti.length > 300){
+        movimenti = movimenti.slice(0,300);
+      }
+    }
+
+    function salvaProdotto(){
       const barcode = document.getElementById("barcode").value.trim();
       const nome = document.getElementById("nome").value.trim();
+      const birrificio = document.getElementById("birrificio").value.trim();
+      const stile = document.getElementById("stile").value.trim();
+      const formato = document.getElementById("formato").value.trim();
       const qty = parseInt(document.getElementById("qty").value || "0", 10);
-      const msg = document.getElementById("messaggio");
+      const soglia = parseInt(document.getElementById("soglia").value || "0", 10);
 
-      if (!barcode) {
-        msg.innerHTML = `<div class="warn">Inserisci o scansiona un barcode.</div>`;
+      if(!barcode){
+        setMsg("Inserisci o scansiona un barcode.", "warn");
         return;
       }
-
-      if (!nome) {
-        msg.innerHTML = `<div class="warn">Inserisci il nome prodotto.</div>`;
+      if(!nome){
+        setMsg("Inserisci il nome prodotto.", "warn");
         return;
       }
 
       const idx = trovaPerBarcode(barcode);
 
-      if (idx >= 0) {
+      if(idx >= 0){
         prodotti[idx].nome = nome;
+        prodotti[idx].birrificio = birrificio;
+        prodotti[idx].stile = stile;
+        prodotti[idx].formato = formato;
+        prodotti[idx].soglia = soglia;
         prodotti[idx].qty = Number(prodotti[idx].qty || 0) + Number(qty || 0);
-        msg.innerHTML = `<div class="ok">Prodotto aggiornato. Quantità aumentata.</div>`;
+        registraMovimento("CARICO", prodotti[idx], Number(qty || 0));
+        setMsg("Prodotto aggiornato. Quantità aumentata.", "ok");
       } else {
-        prodotti.push({
+        const nuovo = {
           barcode,
           nome,
-          qty: Number(qty || 0)
-        });
-        msg.innerHTML = `<div class="ok">Prodotto salvato nel magazzino.</div>`;
+          birrificio,
+          stile,
+          formato,
+          qty: Number(qty || 0),
+          soglia: Number(soglia || 0)
+        };
+        prodotti.push(nuovo);
+        registraMovimento("NUOVO", nuovo, Number(qty || 0));
+        setMsg("Prodotto salvato nel magazzino.", "ok");
       }
 
-      salvaLocal();
+      salvaDati();
       mostra();
     }
 
-    function carico(i) {
+    function carico(i){
       prodotti[i].qty = Number(prodotti[i].qty || 0) + 1;
-      salvaLocal();
+      registraMovimento("CARICO", prodotti[i], 1);
+      salvaDati();
       mostra();
     }
 
-    function scarico(i) {
+    function scarico(i){
       prodotti[i].qty = Math.max(0, Number(prodotti[i].qty || 0) - 1);
-      salvaLocal();
+      registraMovimento("SCARICO", prodotti[i], 1);
+      salvaDati();
       mostra();
     }
 
-    async function cercaProdottoOnline(barcode) {
-      const stato = document.getElementById("stato");
-      stato.innerText = "Cerco prodotto online...";
+    function eliminaProdotto(i){
+      const p = prodotti[i];
+      if(!confirm("Eliminare " + p.nome + "?")) return;
+      registraMovimento("ELIMINATO", p, Number(p.qty || 0));
+      prodotti.splice(i,1);
+      salvaDati();
+      mostra();
+    }
 
-      try {
+    function modificaQty(i){
+      const p = prodotti[i];
+      const val = prompt("Nuova quantità per " + p.nome, p.qty || 0);
+      if(val === null) return;
+      const nuova = Math.max(0, parseInt(val || "0", 10));
+      const differenza = nuova - Number(p.qty || 0);
+      p.qty = nuova;
+      registraMovimento("MODIFICA", p, differenza);
+      salvaDati();
+      mostra();
+    }
+
+    function updateStats(filteredList = prodotti){
+      document.getElementById("statProdotti").textContent = prodotti.length;
+      document.getElementById("statPezzi").textContent = prodotti.reduce((a,p)=>a+Number(p.qty||0),0);
+      document.getElementById("statScorte").textContent = prodotti.filter(p => Number(p.qty||0) <= Number(p.soglia||0)).length;
+      document.getElementById("statMovimenti").textContent = movimenti.length;
+    }
+
+    function mostra(){
+      const lista = document.getElementById("lista");
+      const mov = document.getElementById("movimentiLista");
+
+      let items = [...prodotti];
+      const search = document.getElementById("search").value.trim().toLowerCase();
+      const filterScorte = document.getElementById("filterScorte").value;
+      const sortBy = document.getElementById("sortBy").value;
+
+      if(search){
+        items = items.filter(p =>
+          String(p.nome||"").toLowerCase().includes(search) ||
+          String(p.birrificio||"").toLowerCase().includes(search) ||
+          String(p.stile||"").toLowerCase().includes(search) ||
+          String(p.barcode||"").toLowerCase().includes(search)
+        );
+      }
+
+      if(filterScorte === "basse"){
+        items = items.filter(p => Number(p.qty||0) <= Number(p.soglia||0));
+      }
+
+      if(sortBy === "nome"){
+        items.sort((a,b)=>String(a.nome||"").localeCompare(String(b.nome||""), "it"));
+      } else if(sortBy === "qtyAsc"){
+        items.sort((a,b)=>Number(a.qty||0)-Number(b.qty||0));
+      } else if(sortBy === "qtyDesc"){
+        items.sort((a,b)=>Number(b.qty||0)-Number(a.qty||0));
+      }
+
+      if(items.length === 0){
+        lista.innerHTML = `<div class="small">Nessun prodotto trovato.</div>`;
+      } else {
+        let html = "";
+        items.forEach((p) => {
+          const realIndex = prodotti.findIndex(x => x.barcode === p.barcode);
+          const bassa = Number(p.qty||0) <= Number(p.soglia||0);
+          html += `
+            <div class="product">
+              <div class="productTop">
+                <div>
+                  <div class="productName">${escapeHtml(p.nome || "Senza nome")}</div>
+                  <div class="small">
+                    Barcode: ${escapeHtml(p.barcode || "-")}<br>
+                    ${p.birrificio ? "Birrificio: " + escapeHtml(p.birrificio) + "<br>" : ""}
+                    ${p.stile ? "Stile: " + escapeHtml(p.stile) + "<br>" : ""}
+                    ${p.formato ? "Formato: " + escapeHtml(p.formato) + "<br>" : ""}
+                    Scorta minima: ${Number(p.soglia||0)}
+                  </div>
+                </div>
+                <div class="badge">${bassa ? "Scorta bassa" : "OK"}</div>
+              </div>
+              <div class="qtyBig">Quantità: ${Number(p.qty||0)}</div>
+              <div class="actions">
+                <button onclick="carico(${realIndex})">+1</button>
+                <button onclick="scarico(${realIndex})">-1</button>
+                <button class="dark" onclick="modificaQty(${realIndex})">Modifica</button>
+                <button class="danger" onclick="eliminaProdotto(${realIndex})">Elimina</button>
+              </div>
+            </div>
+          `;
+        });
+        lista.innerHTML = html;
+      }
+
+      if(movimenti.length === 0){
+        mov.innerHTML = `<div class="small">Nessun movimento.</div>`;
+      } else {
+        mov.innerHTML = movimenti.map(m => `
+          <div class="movement">
+            <b>${escapeHtml(m.tipo)}</b> · ${escapeHtml(m.nome)}<br>
+            Barcode: ${escapeHtml(m.barcode)}<br>
+            Quantità: ${escapeHtml(m.quantita)}<br>
+            <span class="small">${escapeHtml(m.data)}</span>
+          </div>
+        `).join("");
+      }
+
+      updateStats(items);
+    }
+
+    async function cercaProdottoOnline(barcode){
+      setScan("Cerco prodotto online...");
+      try{
         const url = `https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(barcode)}.json`;
         const res = await fetch(url);
         const data = await res.json();
 
-        if (data && data.product) {
+        if(data && data.product){
           const nome =
             data.product.product_name_it ||
             data.product.product_name ||
@@ -228,54 +544,66 @@
             data.product.generic_name ||
             "";
 
-          if (nome) {
+          const marca =
+            data.product.brands || "";
+
+          const qtyTxt =
+            data.product.quantity || "";
+
+          if(nome){
             document.getElementById("nome").value = nome;
-            stato.innerText = "Prodotto trovato online.";
+            document.getElementById("birrificio").value = marca;
+            document.getElementById("formato").value = qtyTxt;
+            document.getElementById("qty").value = "1";
+            setScan("Prodotto trovato online.", "ok");
             return true;
           }
         }
 
-        stato.innerText = "Prodotto non trovato online. Inseriscilo a mano.";
+        document.getElementById("qty").value = "1";
+        setScan("Prodotto non trovato online. Inseriscilo a mano.", "warn");
         return false;
-      } catch (e) {
-        stato.innerText = "Ricerca online non riuscita. Inserisci a mano.";
+      } catch(e){
+        document.getElementById("qty").value = "1";
+        setScan("Ricerca online non riuscita. Inserisci a mano.", "warn");
         return false;
       }
     }
 
-    async function gestisciBarcodeLetto(barcode) {
+    async function gestisciBarcodeLetto(barcode){
       document.getElementById("barcode").value = barcode;
 
       const idx = trovaPerBarcode(barcode);
-      const stato = document.getElementById("stato");
 
-      if (idx >= 0) {
-        document.getElementById("nome").value = prodotti[idx].nome || "";
+      if(idx >= 0){
+        const p = prodotti[idx];
+        document.getElementById("nome").value = p.nome || "";
+        document.getElementById("birrificio").value = p.birrificio || "";
+        document.getElementById("stile").value = p.stile || "";
+        document.getElementById("formato").value = p.formato || "";
         document.getElementById("qty").value = "1";
-        stato.innerText = "Prodotto già presente nel tuo magazzino.";
+        document.getElementById("soglia").value = p.soglia || 0;
+        setScan("Prodotto già presente nel tuo magazzino.", "ok");
         return;
       }
 
-      document.getElementById("qty").value = "1";
       await cercaProdottoOnline(barcode);
     }
 
-    async function startScanner() {
-      const reader = document.getElementById("reader");
-      const stato = document.getElementById("stato");
-
-      if (scannerAttivo) {
-        stato.innerText = "Scanner già attivo.";
+    async function startScanner(){
+      if(scannerAttivo){
+        setScan("Scanner già attivo.");
         return;
       }
 
+      const reader = document.getElementById("reader");
       reader.style.display = "block";
-      stato.innerText = "Avvio fotocamera...";
+      setScan("Avvio fotocamera...");
 
       html5QrCode = new Html5Qrcode("reader");
       scannerAttivo = true;
 
-      try {
+      try{
         await html5QrCode.start(
           { facingMode: "environment" },
           { fps: 10, qrbox: 250 },
@@ -285,24 +613,73 @@
           },
           () => {}
         );
-        stato.innerText = "Inquadra il barcode.";
-      } catch (err) {
-        scannerAttivo = false;
+        setScan("Inquadra il barcode.");
+      } catch(err){
         reader.style.display = "none";
-        stato.innerText = "Fotocamera non disponibile.";
+        scannerAttivo = false;
+        setScan("Fotocamera non disponibile.", "dangerText");
       }
     }
 
-    async function stopScanner() {
+    async function stopScanner(){
       const reader = document.getElementById("reader");
-      if (html5QrCode && scannerAttivo) {
-        try {
+      if(html5QrCode && scannerAttivo){
+        try{
           await html5QrCode.stop();
           await html5QrCode.clear();
-        } catch (e) {}
+        } catch(e){}
       }
       scannerAttivo = false;
       reader.style.display = "none";
+    }
+
+    function downloadBackup(){
+      const data = {
+        prodotti,
+        movimenti,
+        exportedAt: nowString()
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "xa-magazzino-backup.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function restoreBackup(event){
+      const file = event.target.files[0];
+      if(!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e){
+        try{
+          const data = JSON.parse(e.target.result);
+          prodotti = Array.isArray(data.prodotti) ? data.prodotti : [];
+          movimenti = Array.isArray(data.movimenti) ? data.movimenti : [];
+          salvaDati();
+          mostra();
+          setMsg("Backup ripristinato.", "ok");
+        } catch(err){
+          setMsg("File backup non valido.", "dangerText");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function toggleMovimenti(){
+      document.getElementById("movimentiCard").classList.toggle("hidden");
+    }
+
+    function resetMagazzino(){
+      if(!confirm("Vuoi cancellare tutto il magazzino?")) return;
+      prodotti = [];
+      movimenti = [];
+      salvaDati();
+      mostra();
+      svuotaCampi();
+      setMsg("Magazzino azzerato.", "warn");
     }
 
     mostra();
