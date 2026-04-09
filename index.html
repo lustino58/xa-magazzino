@@ -14,6 +14,7 @@
       --line:#2b3748;
       --text:#f4f7fb;
       --muted:#a8b4c4;
+
       --gold:#d3af68;
       --green:#43c66d;
       --blue:#5aa4ff;
@@ -21,20 +22,17 @@
       --orange:#ffad3b;
       --red:#e05b5b;
       --violet:#a26cff;
-      --lager:#b98d32;
-      --ipa:#d26e2b;
-      --stout:#5f6377;
-      --sour:#b24ad1;
-      --belgian:#2f9f7d;
-      --wheat:#5ea85d;
-      --defaultCard:#223043;
+
       --neon:#ff3b3b;
     }
 
     *{box-sizing:border-box}
+
     body{
       margin:0;
-      background:linear-gradient(180deg,var(--bg) 0%, var(--bg2) 100%);
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,.04), transparent 28%),
+        linear-gradient(180deg,var(--bg) 0%, var(--bg2) 100%);
       color:var(--text);
       font-family:Arial,sans-serif;
       padding:12px 12px 96px 12px;
@@ -48,7 +46,7 @@
       width:6px;
       height:100%;
       background:var(--neon);
-      box-shadow:0 0 8px var(--neon),0 0 15px var(--neon);
+      box-shadow:0 0 8px var(--neon),0 0 15px var(--neon),0 0 26px rgba(255,59,59,.5);
       z-index:999;
       pointer-events:none;
       opacity:.95;
@@ -62,27 +60,42 @@
     .hero{
       margin-bottom:12px;
       padding:16px;
-      border-radius:20px;
-      background:linear-gradient(135deg,#121b26 0%, #182330 100%);
-      border:1px solid var(--line);
-      box-shadow:0 10px 24px rgba(0,0,0,.25);
+      border-radius:24px;
+      background:linear-gradient(135deg,#121b26 0%, #1a2635 60%, #101720 100%);
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow:0 14px 30px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.05);
     }
-    .hero h1{font-size:32px;line-height:1;margin-bottom:8px}
-    .hero p{color:var(--muted);font-size:14px;line-height:1.4}
+
+    .hero h1{
+      font-size:32px;
+      line-height:1;
+      margin-bottom:8px;
+      letter-spacing:.3px;
+    }
+
+    .hero p{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.4;
+    }
 
     .section{display:none}
     .section.active{display:block}
 
     .card{
-      background:linear-gradient(180deg,#141d28,#17212d);
-      border:1px solid var(--line);
-      border-radius:20px;
+      background:linear-gradient(180deg,rgba(20,29,40,.96),rgba(23,33,45,.96));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:22px;
       padding:14px;
       margin-bottom:12px;
-      box-shadow:0 8px 18px rgba(0,0,0,.18);
+      box-shadow:0 10px 22px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.04);
     }
 
-    .sectionTitle{font-size:22px;margin-bottom:10px;font-weight:800}
+    .sectionTitle{
+      font-size:22px;
+      margin-bottom:10px;
+      font-weight:800;
+    }
 
     .stats{
       display:grid;
@@ -93,9 +106,10 @@
 
     .stat{
       background:linear-gradient(180deg,#141b24,#18222d);
-      border:1px solid var(--line);
+      border:1px solid rgba(255,255,255,.08);
       border-radius:18px;
       padding:14px;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
     }
 
     .stat .label{
@@ -106,6 +120,7 @@
       letter-spacing:.8px;
       font-weight:800;
     }
+
     .stat .value{
       font-size:30px;
       font-weight:900;
@@ -127,7 +142,7 @@
       width:100%;
       padding:14px;
       border-radius:15px;
-      border:1px solid var(--line);
+      border:1px solid rgba(255,255,255,.08);
       font-size:17px;
       font-family:inherit;
     }
@@ -151,8 +166,11 @@
 
     .btn{
       border-width:2px;
-      box-shadow:0 0 0 1px rgba(255,255,255,.03) inset, 0 4px 10px rgba(0,0,0,.15);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.04) inset,
+        0 6px 14px rgba(0,0,0,.16);
     }
+
     .btn-gold{ border-color:var(--gold); }
     .btn-green{ border-color:var(--green); }
     .btn-blue{ border-color:var(--blue); }
@@ -193,7 +211,7 @@
       padding:12px;
       border-radius:16px;
       background:rgba(255,255,255,.03);
-      border:1px solid var(--line);
+      border:1px solid rgba(255,255,255,.08);
     }
 
     .autoTitle{
@@ -216,7 +234,7 @@
       padding:8px 10px;
       border-radius:999px;
       background:#18222e;
-      border:1px solid var(--line);
+      border:1px solid rgba(255,255,255,.08);
       font-size:12px;
       font-weight:800;
       color:var(--text);
@@ -226,29 +244,46 @@
     .chip.active{
       border-color:var(--gold);
       color:#fff;
+      box-shadow:0 0 12px rgba(211,175,104,.18);
     }
 
     .catalogGrid{
       display:grid;
       grid-template-columns:repeat(2,1fr);
-      gap:10px;
+      gap:12px;
       margin-top:10px;
     }
 
     .catalogItem{
-      border-radius:18px;
+      border-radius:22px;
       padding:10px;
-      border:1px solid rgba(255,255,255,.08);
-      background:linear-gradient(180deg,#1b2430,#1d2937);
-      box-shadow:0 6px 14px rgba(0,0,0,.15);
+      border:1px solid rgba(255,255,255,.09);
+      box-shadow:
+        0 10px 20px rgba(0,0,0,.20),
+        inset 0 1px 0 rgba(255,255,255,.08);
       cursor:pointer;
       transition:transform .08s ease, box-shadow .12s ease, outline-color .12s ease;
       outline:0 solid transparent;
+      position:relative;
+      overflow:hidden;
     }
 
-    .catalogItem:active{ transform:scale(.98); }
+    .catalogItem::after,
+    .product::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(180deg, rgba(255,255,255,.10) 0%, transparent 22%, rgba(0,0,0,.08) 100%);
+      pointer-events:none;
+    }
+
+    .catalogItem:active{ transform:scale(.985); }
+
     .catalogItem.flash{
-      box-shadow:0 0 0 2px rgba(67,198,109,.85), 0 0 18px rgba(67,198,109,.45);
+      box-shadow:
+        0 0 0 2px rgba(67,198,109,.85),
+        0 0 18px rgba(67,198,109,.45),
+        0 12px 26px rgba(0,0,0,.22);
       outline:2px solid rgba(67,198,109,.75);
     }
 
@@ -256,10 +291,12 @@
       width:100%;
       height:110px;
       object-fit:cover;
-      border-radius:12px;
+      border-radius:14px;
       background:#111;
-      border:1px solid rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.10);
       margin-bottom:8px;
+      position:relative;
+      z-index:1;
     }
 
     .catalogName{
@@ -268,13 +305,17 @@
       line-height:1.1;
       margin-bottom:6px;
       word-break:break-word;
+      position:relative;
+      z-index:1;
     }
 
     .catalogMeta{
       font-size:13px;
-      color:var(--muted);
+      color:#e7ecf4;
       line-height:1.35;
       min-height:96px;
+      position:relative;
+      z-index:1;
     }
 
     .quickHint{
@@ -287,6 +328,8 @@
       background:rgba(67,198,109,.14);
       border:1px solid rgba(67,198,109,.35);
       text-align:center;
+      position:relative;
+      z-index:1;
     }
 
     .inventoryGrid{
@@ -297,11 +340,13 @@
 
     .product{
       position:relative;
-      border-radius:22px;
+      border-radius:24px;
       padding:14px;
-      border:2px solid rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
       overflow:hidden;
-      box-shadow:0 10px 18px rgba(0,0,0,.18);
+      box-shadow:
+        0 14px 26px rgba(0,0,0,.22),
+        inset 0 1px 0 rgba(255,255,255,.08);
     }
 
     .productHeader{
@@ -309,6 +354,8 @@
       justify-content:space-between;
       gap:10px;
       align-items:flex-start;
+      position:relative;
+      z-index:1;
     }
 
     .productName{
@@ -321,18 +368,19 @@
 
     .productMeta{
       font-size:15px;
-      color:#eef2f8;
+      color:#f3f6fb;
       line-height:1.45;
     }
 
     .badge{
-      padding:7px 11px;
+      padding:8px 12px;
       border-radius:999px;
       font-size:12px;
       font-weight:800;
-      background:rgba(0,0,0,.18);
+      background:rgba(0,0,0,.16);
       border:1px solid rgba(255,255,255,.14);
       white-space:nowrap;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
     }
 
     .qtyPriceRow{
@@ -340,19 +388,22 @@
       grid-template-columns:1fr 1fr;
       gap:10px;
       margin-top:12px;
+      position:relative;
+      z-index:1;
     }
 
     .infoBox{
       padding:12px;
-      border-radius:16px;
-      background:rgba(0,0,0,.16);
-      border:1px solid rgba(255,255,255,.08);
+      border-radius:18px;
+      background:rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
     }
 
     .infoLabel{
       font-size:12px;
       color:#eef2f8;
-      opacity:.85;
+      opacity:.88;
       text-transform:uppercase;
       letter-spacing:.6px;
       margin-bottom:4px;
@@ -370,8 +421,10 @@
       object-fit:cover;
       border-radius:16px;
       margin-bottom:12px;
-      border:1px solid rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.10);
       background:#111;
+      position:relative;
+      z-index:1;
     }
 
     .productActions{
@@ -379,11 +432,13 @@
       grid-template-columns:1fr 1fr;
       gap:10px;
       margin-top:12px;
+      position:relative;
+      z-index:1;
     }
 
     .movement{
       background:#1b2430;
-      border:1px solid var(--line);
+      border:1px solid rgba(255,255,255,.08);
       border-radius:14px;
       padding:10px;
       margin-top:8px;
@@ -396,7 +451,7 @@
       gap:10px;
       align-items:center;
       background:#1b2430;
-      border:1px solid var(--line);
+      border:1px solid rgba(255,255,255,.08);
       border-radius:14px;
       padding:10px;
       margin-top:8px;
@@ -404,6 +459,7 @@
     }
 
     .cassaName{font-weight:800}
+
     .cassaQty{
       padding:6px 10px;
       border-radius:999px;
@@ -412,6 +468,7 @@
       font-size:12px;
       font-weight:800;
     }
+
     .cassaPrice{
       font-weight:900;
       white-space:nowrap;
@@ -426,7 +483,7 @@
     .emptyBox{
       padding:16px;
       border-radius:16px;
-      border:1px dashed var(--line);
+      border:1px dashed rgba(255,255,255,.15);
       color:var(--muted);
       text-align:center;
       background:rgba(255,255,255,.02);
@@ -464,7 +521,7 @@
       padding:10px 10px calc(10px + env(safe-area-inset-bottom)) 10px;
       background:rgba(12,18,26,.96);
       backdrop-filter:blur(10px);
-      border-top:1px solid var(--line);
+      border-top:1px solid rgba(255,255,255,.08);
       display:grid;
       grid-template-columns:repeat(5,1fr);
       gap:8px;
@@ -474,18 +531,21 @@
     .navBtn{
       background:#151d27;
       color:var(--muted);
-      border:1px solid var(--line);
+      border:1px solid rgba(255,255,255,.08);
       border-radius:16px;
       padding:10px 6px;
       font-size:12px;
       font-weight:800;
       text-align:center;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
     }
 
     .navBtn.active{
       color:#fff;
       border-color:var(--gold);
-      box-shadow:0 0 0 1px rgba(255,255,255,.03) inset;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.03) inset,
+        0 0 14px rgba(211,175,104,.12);
     }
 
     .navIcon{
@@ -507,7 +567,7 @@
 
     <div class="hero">
       <h1>XA Magazzino</h1>
-      <p>Riconoscimento birra avanzato • BJCP auto pro • scheda gusto professionale • catalogo per birrificio • modifica completa</p>
+      <p>Luxury gradient • riconoscimento birra avanzato • BJCP auto pro • catalogo per birrificio • modifica completa</p>
     </div>
 
     <section id="section-home" class="section active">
@@ -940,6 +1000,21 @@
       "hoegaarden": { stile:"24A Witbier", abv:"4.9", ibu:"12–18", srm:"3" }
     };
 
+    const LUXURY_GRADIENTS = [
+      ["#d4af37", "#6f5620", "#101722"],
+      ["#c78b2d", "#7a4f17", "#101722"],
+      ["#cf6d2d", "#6d2f16", "#101722"],
+      ["#9e5b37", "#5d2e19", "#101722"],
+      ["#5e8fe6", "#25457a", "#101722"],
+      ["#3bb8c8", "#1f5d66", "#101722"],
+      ["#4bbf7d", "#1f5e42", "#101722"],
+      ["#7f63d8", "#3d2d72", "#101722"],
+      ["#b04acb", "#5d2270", "#101722"],
+      ["#b84b6f", "#64243a", "#101722"],
+      ["#d6d0a1", "#7c7650", "#101722"],
+      ["#9aa3ad", "#4e5864", "#101722"]
+    ];
+
     let prodotti = JSON.parse(localStorage.getItem("prodotti_xa_max")) || [];
     let movimenti = JSON.parse(localStorage.getItem("movimenti_xa_max")) || [];
     let vendite = JSON.parse(localStorage.getItem("vendite_xa_max")) || [];
@@ -987,26 +1062,21 @@
         .replaceAll("'","&#039;");
     }
 
-    function styleFamily(stile){
-      const s = String(stile || "").toLowerCase();
-      if(s.includes("lager") || s.includes("pils") || s.includes("helles")) return "Lager";
-      if(s.includes("ipa") || s.includes("ale")) return "Ale";
-      if(s.includes("stout") || s.includes("porter")) return "Scure";
-      if(s.includes("belgian") || s.includes("tripel") || s.includes("saison") || s.includes("witbier")) return "Belghe";
-      if(s.includes("weiss") || s.includes("wheat")) return "Wheat";
-      if(s.includes("berliner") || s.includes("fruit") || s.includes("sour")) return "Sour/Fruit";
-      return "Altro";
+    function stringHash(str){
+      let h = 0;
+      const s = String(str || "");
+      for(let i=0;i<s.length;i++){
+        h = ((h << 5) - h) + s.charCodeAt(i);
+        h |= 0;
+      }
+      return Math.abs(h);
     }
 
-    function getStyleColor(stile){
-      const f = styleFamily(stile);
-      if(f === "Lager") return "var(--lager)";
-      if(f === "Ale") return "var(--ipa)";
-      if(f === "Scure") return "var(--stout)";
-      if(f === "Belghe") return "var(--belgian)";
-      if(f === "Wheat") return "var(--wheat)";
-      if(f === "Sour/Fruit") return "var(--sour)";
-      return "var(--defaultCard)";
+    function getLuxuryGradient(item){
+      const key = `${item.nome || ""}|${item.barcode || ""}|${item.stile || ""}|${item.birrificio || ""}`;
+      const idx = stringHash(key) % LUXURY_GRADIENTS.length;
+      const g = LUXURY_GRADIENTS[idx];
+      return `linear-gradient(180deg, ${g[0]} 0%, ${g[1]} 32%, ${g[2]} 100%)`;
     }
 
     function popolaStili(){
@@ -1125,8 +1195,8 @@
         if(t.includes(key)) return BEER_DB[key];
       }
 
-      if(t.includes("ipa")) return { stile:"21A American IPA" };
       if(t.includes("double ipa") || t.includes("dipa")) return { stile:"22A Double IPA" };
+      if(t.includes("ipa")) return { stile:"21A American IPA" };
       if(t.includes("tripel")) return { stile:"26C Belgian Tripel" };
       if(t.includes("saison")) return { stile:"25B Saison" };
       if(t.includes("wit") || t.includes("blanche") || t.includes("hoegaarden")) return { stile:"24A Witbier" };
@@ -1433,11 +1503,9 @@
 
       box.innerHTML = items.map(p => {
         const i = prodotti.findIndex(x => x.barcode === p.barcode);
-        const color = getStyleColor(p.stile);
+        const bg = getLuxuryGradient(p);
         return `
-          <div id="catalog-item-${i}" class="catalogItem"
-               onclick="addToCassaHardcore(${i})"
-               style="background:linear-gradient(180deg, ${color} 0%, #1d2937 42%);">
+          <div id="catalog-item-${i}" class="catalogItem" onclick="addToCassaHardcore(${i})" style="background:${bg}">
             ${p.foto ? `<img src="${p.foto}" alt="${escapeHtml(p.nome)}">` : ""}
             <div class="catalogName">${escapeHtml(p.nome || "Senza nome")}</div>
             <div class="catalogMeta">
@@ -1486,9 +1554,9 @@
         lista.innerHTML = items.map(p => {
           const realIndex = prodotti.findIndex(x => x.barcode === p.barcode);
           const bassa = Number(p.qty||0) <= Number(p.soglia||0);
-          const color = getStyleColor(p.stile);
+          const bg = getLuxuryGradient(p);
           return `
-            <div class="product" style="background:linear-gradient(180deg, ${color} 0%, rgba(20,27,36,.96) 34%);">
+            <div class="product" style="background:${bg}">
               ${p.foto ? `<img class="productImage" src="${p.foto}" alt="${escapeHtml(p.nome)}">` : ""}
               <div class="productHeader">
                 <div style="flex:1;">
