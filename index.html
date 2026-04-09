@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>XA Magazzino App Pro</title>
+  <title>XA Magazzino Pro</title>
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#111111" />
   <script src="https://unpkg.com/html5-qrcode"></script>
@@ -14,7 +14,6 @@
       --line:#2b3748;
       --text:#f4f7fb;
       --muted:#a8b4c4;
-
       --gold:#d3af68;
       --green:#43c66d;
       --blue:#5aa4ff;
@@ -22,7 +21,6 @@
       --orange:#ffad3b;
       --red:#e05b5b;
       --violet:#a26cff;
-
       --neon:#ff3b3b;
     }
 
@@ -871,6 +869,10 @@
   </nav>
 
   <script>
+    // Se un giorno avrai il proxy vero, basta mettere il suo URL qui.
+    // Così com'è, se non esiste, l'app continua a funzionare lo stesso.
+    const PROXY_URL = "";
+
     const BJCP_DATA = {
       "4A Munich Helles": {
         abv:"4.7–5.4", ibu:"16–22", srm:"3–5",
@@ -1605,9 +1607,49 @@
       }
     }
 
+    async function lookupProxy(barcode){
+      if(!PROXY_URL) return null;
+      try{
+        const res = await fetch(`${PROXY_URL}/lookup?barcode=${encodeURIComponent(barcode)}`);
+        if(!res.ok) return null;
+        const data = await res.json();
+        if(!data.ok || !data.found || !data.product) return null;
+        return data.product;
+      } catch(e){
+        return null;
+      }
+    }
+
     async function cercaProdottoOnline(barcode){
       setScan("Cerco prodotto...");
 
+      // Primo livello: proxy, se un giorno ci sarà
+      const proxyProduct = await lookupProxy(barcode);
+      if(proxyProduct){
+        document.getElementById("nome").value = proxyProduct.name || "";
+        document.getElementById("birrificio").value = proxyProduct.brand || "";
+        document.getElementById("formato").value = proxyProduct.quantity || "";
+        document.getElementById("qty").value = "1";
+
+        if(proxyProduct.style && BJCP_DATA[proxyProduct.style]){
+          applyBJCPStyle(proxyProduct.style, {
+            abv: proxyProduct.abv || undefined,
+            ibu: proxyProduct.ibu || undefined
+          });
+        } else {
+          const smart = inferStyleFromText(proxyProduct.name || "", proxyProduct.brand || "");
+          if(smart && smart.stile) applyBJCPStyle(smart.stile, smart);
+        }
+
+        if(proxyProduct.description){
+          document.getElementById("note").value = proxyProduct.description;
+        }
+
+        setScan("Prodotto trovato tramite proxy.", "ok");
+        return true;
+      }
+
+      // Secondo livello: Open Food Facts diretto
       try{
         const url = `https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(barcode)}.json`;
         const res = await fetch(url);
