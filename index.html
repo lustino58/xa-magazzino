@@ -3,123 +3,114 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>XA Magazzino PRO MAX</title>
+  <title>XA Magazzino PRO SHOP</title>
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#111111" />
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
     :root{
-      --bg:#0b0f14;
-      --panel:#151b26;
-      --panel2:#1b2330;
-      --line:#273244;
-      --text:#f5f7fb;
-      --muted:#aeb7c6;
+      --bg:#0a0f14;
+      --panel:#141b24;
+      --panel2:#1b2430;
+      --line:#2a3647;
+      --text:#f3f6fb;
+      --muted:#aab4c3;
 
-      --gold:#d1b06a;
-      --green:#49c774;
-      --blue:#5aa9ff;
-      --cyan:#45d0e3;
-      --orange:#ffae42;
-      --red:#e05d5d;
-      --violet:#a16eff;
-      --whiteBtn:#eceef3;
+      --gold:#d3af68;
+      --green:#43c66d;
+      --blue:#5aa4ff;
+      --cyan:#41d2e7;
+      --orange:#ffad3b;
+      --red:#e05b5b;
+      --violet:#a26cff;
+
+      --lager:#caa24b;
+      --ipa:#e28743;
+      --stout:#5d5d72;
+      --sour:#c85ee0;
+      --belgian:#54b79a;
+      --defaultCard:#223043;
     }
 
     *{box-sizing:border-box}
 
     body{
       margin:0;
-      background:var(--bg);
+      background:linear-gradient(180deg,#0a0f14 0%, #0d131b 100%);
       color:var(--text);
       font-family:Arial,sans-serif;
-      padding:16px;
+      padding:14px;
     }
 
     .app{
-      max-width:980px;
+      max-width:1100px;
       margin:0 auto;
     }
 
-    h1,h2,h3,p{
-      margin:0;
-    }
+    h1,h2,h3,p{margin:0}
 
     .hero{
       margin-bottom:14px;
+      padding:16px;
+      border-radius:20px;
+      background:linear-gradient(135deg,#131b25 0%, #1a2330 100%);
+      border:1px solid var(--line);
+      box-shadow:0 10px 24px rgba(0,0,0,.25);
     }
 
     .hero h1{
       font-size:34px;
       line-height:1;
+      letter-spacing:.3px;
       margin-bottom:8px;
     }
 
     .hero p{
       color:var(--muted);
-      font-size:16px;
-    }
-
-    .grid{
-      display:grid;
-      gap:12px;
+      font-size:15px;
     }
 
     .stats{
+      display:grid;
       grid-template-columns:repeat(2,1fr);
+      gap:10px;
       margin:14px 0;
     }
 
-    .card{
-      background:var(--panel);
+    .stat{
+      background:linear-gradient(180deg,#141b24,#18222d);
       border:1px solid var(--line);
       border-radius:18px;
       padding:14px;
-      margin-bottom:12px;
-      box-shadow:0 0 0 1px rgba(255,255,255,0.02) inset;
-    }
-
-    .stat{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:14px;
+      box-shadow:0 8px 18px rgba(0,0,0,.18);
     }
 
     .stat .label{
       color:var(--muted);
-      font-size:14px;
+      font-size:13px;
       margin-bottom:8px;
+      text-transform:uppercase;
+      letter-spacing:.6px;
     }
 
     .stat .value{
       font-size:34px;
-      font-weight:700;
+      font-weight:800;
+    }
+
+    .card{
+      background:linear-gradient(180deg,#141b24,#18212d);
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:14px;
+      margin-bottom:12px;
+      box-shadow:0 8px 18px rgba(0,0,0,.18);
     }
 
     .sectionTitle{
       font-size:22px;
       margin-bottom:10px;
-    }
-
-    .row{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-    }
-
-    .toolbar{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-      margin-top:10px;
-    }
-
-    .actions{
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:8px;
-      margin-top:10px;
+      font-weight:800;
     }
 
     .field{
@@ -128,36 +119,37 @@
 
     .field label{
       display:block;
-      font-size:14px;
+      font-size:13px;
       color:var(--muted);
       margin:0 0 6px 2px;
-      font-weight:700;
-      letter-spacing:.2px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.6px;
     }
 
     input, select, button{
       width:100%;
       padding:14px;
-      border-radius:14px;
+      border-radius:15px;
       border:1px solid var(--line);
       font-size:17px;
     }
 
     input, select{
-      background:#f1f3f7;
+      background:#f2f5f9;
       color:#111;
     }
 
     button{
-      background:var(--whiteBtn);
+      background:#edf0f4;
       color:#111;
-      font-weight:700;
+      font-weight:800;
       cursor:pointer;
     }
 
     .btn{
       border-width:2px;
-      box-shadow:0 0 0 1px rgba(255,255,255,0.04) inset;
+      box-shadow:0 0 0 1px rgba(255,255,255,.03) inset, 0 4px 10px rgba(0,0,0,.15);
     }
 
     .btn-gold{ border-color:var(--gold); }
@@ -168,13 +160,28 @@
     .btn-red{ border-color:var(--red); }
     .btn-violet{ border-color:var(--violet); }
 
+    .toolbar2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .toolbar4{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:8px;
+      margin-top:10px;
+    }
+
     .small{
       font-size:14px;
       color:var(--muted);
       margin-top:8px;
+      line-height:1.35;
     }
 
-    .ok{ color:#8ee0a3; }
+    .ok{ color:#8de29f; }
     .warn{ color:#ffd27a; }
     .dangerText{ color:#ff9d9d; }
 
@@ -182,53 +189,131 @@
       display:none;
       margin-top:10px;
       background:#000;
-      border-radius:12px;
+      border-radius:14px;
       overflow:hidden;
+      min-height:80px;
+    }
+
+    .inventoryGrid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
     }
 
     .product{
-      background:var(--panel2);
-      border:1px solid var(--line);
-      border-radius:16px;
+      position:relative;
+      border-radius:20px;
       padding:12px;
-      margin-top:10px;
+      min-height:250px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      border:2px solid rgba(255,255,255,.06);
+      box-shadow:0 10px 18px rgba(0,0,0,.20);
+      overflow:hidden;
     }
 
-    .productTop{
+    .product::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,0));
+      pointer-events:none;
+    }
+
+    .productHeader{
       display:flex;
       justify-content:space-between;
-      gap:12px;
+      gap:8px;
       align-items:flex-start;
     }
 
     .productName{
-      font-size:22px;
-      font-weight:700;
+      font-size:20px;
+      font-weight:800;
+      line-height:1.1;
+      margin-bottom:6px;
+    }
+
+    .productMeta{
+      font-size:13px;
+      color:#e7ebf2;
+      line-height:1.35;
     }
 
     .badge{
-      background:#121926;
-      border:1px solid var(--line);
-      color:var(--muted);
       padding:6px 10px;
       border-radius:999px;
-      font-size:13px;
+      font-size:12px;
+      font-weight:800;
+      background:rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.14);
       white-space:nowrap;
     }
 
+    .qtyBox{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:16px;
+      background:rgba(0,0,0,.16);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .qtyLabel{
+      font-size:12px;
+      color:#eef2f8;
+      opacity:.85;
+      text-transform:uppercase;
+      letter-spacing:.5px;
+    }
+
     .qtyBig{
-      font-size:28px;
-      font-weight:700;
+      font-size:30px;
+      font-weight:900;
+      margin-top:4px;
+    }
+
+    .priceTag{
       margin-top:8px;
+      display:inline-block;
+      padding:8px 10px;
+      border-radius:14px;
+      font-weight:800;
+      background:rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.10);
+    }
+
+    .productImage{
+      width:100%;
+      max-height:140px;
+      object-fit:cover;
+      border-radius:14px;
+      margin-bottom:10px;
+      border:1px solid rgba(255,255,255,.08);
+      background:#111;
     }
 
     .movement{
-      background:var(--panel2);
+      background:#1b2430;
       border:1px solid var(--line);
-      border-radius:12px;
+      border-radius:14px;
       padding:10px;
       margin-top:8px;
       font-size:15px;
+    }
+
+    .cassaItem{
+      background:#1b2430;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px;
+      margin-top:8px;
+    }
+
+    .totale{
+      font-size:30px;
+      font-weight:900;
+      margin-top:12px;
     }
 
     .hidden{
@@ -237,35 +322,24 @@
 
     .hint{
       color:var(--muted);
-      font-size:14px;
+      font-size:13px;
       margin-top:6px;
     }
 
-    .productImage{
-      width:100%;
-      max-width:180px;
-      border-radius:12px;
-      display:block;
-      margin-bottom:10px;
-      border:1px solid var(--line);
+    .emptyBox{
+      padding:16px;
+      border-radius:16px;
+      border:1px dashed var(--line);
+      color:var(--muted);
+      text-align:center;
+      background:rgba(255,255,255,.02);
     }
 
-    .cassaItem{
-      background:var(--panel2);
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:10px;
-      margin-top:8px;
-    }
-
-    .totale{
-      font-size:30px;
-      font-weight:700;
-      margin-top:10px;
-    }
-
-    @media (max-width:700px){
-      .row,.toolbar,.actions,.stats{
+    @media (max-width:820px){
+      .inventoryGrid,
+      .stats,
+      .toolbar2,
+      .toolbar4{
         grid-template-columns:1fr 1fr;
       }
     }
@@ -276,10 +350,10 @@
 
     <div class="hero">
       <h1>XA Magazzino</h1>
-      <p>Layout chiaro • colori fissi • BJCP separato • foto • cassa • statistiche</p>
+      <p>Interfaccia negozio professionale • magazzino a card colorate • BJCP separato • cassa • statistiche</p>
     </div>
 
-    <div class="stats grid">
+    <div class="stats">
       <div class="stat">
         <div class="label">Prodotti</div>
         <div class="value" id="statProdotti">0</div>
@@ -306,7 +380,7 @@
         <input id="barcode" placeholder="Scansiona o inserisci barcode" />
       </div>
 
-      <div class="toolbar">
+      <div class="toolbar2">
         <button class="btn btn-gold" onclick="startScanner()">📷 Scanner</button>
         <button class="btn btn-red" onclick="stopScanner()">■ Stop scanner</button>
       </div>
@@ -361,7 +435,7 @@
         <input type="file" id="foto" accept="image/*" />
       </div>
 
-      <div class="toolbar">
+      <div class="toolbar2">
         <button class="btn btn-green" onclick="salvaProdotto()">Salva prodotto</button>
         <button class="btn btn-cyan" onclick="svuotaCampi()">Svuota campi</button>
       </div>
@@ -371,20 +445,21 @@
 
     <div class="card">
       <div class="sectionTitle">Strumenti</div>
-      <div class="toolbar">
+      <div class="toolbar2">
         <button class="btn btn-violet" onclick="downloadBackup()">Backup JSON</button>
         <button class="btn btn-blue" onclick="document.getElementById('restoreFile').click()">Ripristina backup</button>
       </div>
       <input id="restoreFile" type="file" accept=".json,application/json" class="hidden" onchange="restoreBackup(event)" />
-      <div class="toolbar">
+      <div class="toolbar2">
         <button class="btn btn-blue" onclick="toggleMovimenti()">Mostra/Nascondi movimenti</button>
         <button class="btn btn-red" onclick="resetMagazzino()">Reset magazzino</button>
       </div>
-      <div class="hint">Il reset cancella prodotti e movimenti dal telefono.</div>
+      <div class="hint">Il reset cancella prodotti, movimenti e vendite dal telefono.</div>
     </div>
 
     <div class="card">
       <div class="sectionTitle">Ricerca e filtri</div>
+
       <div class="field">
         <label for="search">Ricerca prodotti</label>
         <input id="search" placeholder="Cerca nome, birrificio, stile, barcode" oninput="mostra()" />
@@ -410,16 +485,18 @@
 
     <div class="card">
       <div class="sectionTitle">Magazzino</div>
-      <div id="lista"></div>
+      <div id="lista" class="inventoryGrid"></div>
     </div>
 
     <div class="card">
       <div class="sectionTitle">Cassa</div>
-      <div class="toolbar">
+      <div class="toolbar2">
         <button class="btn btn-gold" onclick="aggiungiDaBarcode()">Aggiungi da barcode</button>
         <button class="btn btn-red" onclick="svuotaCassa()">Svuota cassa</button>
       </div>
+
       <div id="cassaLista"></div>
+
       <div class="totale">Totale: € <span id="totaleCassa">0.00</span></div>
 
       <div class="field">
@@ -427,16 +504,17 @@
         <input id="pagato" type="number" step="0.01" placeholder="Es. 20.00" />
       </div>
 
-      <div class="toolbar">
+      <div class="toolbar2">
         <button class="btn btn-orange" onclick="calcolaResto()">Calcola resto</button>
         <button class="btn btn-green" onclick="chiudiVendita()">Chiudi vendita</button>
       </div>
+
       <div id="restoBox" class="small"></div>
     </div>
 
     <div class="card">
       <div class="sectionTitle">Statistiche vendita</div>
-      <div class="row">
+      <div class="stats">
         <div class="stat">
           <div class="label">Incasso totale</div>
           <div class="value" id="statIncasso">0</div>
@@ -531,6 +609,16 @@
         .replaceAll("'", "&#039;");
     }
 
+    function getStyleColor(stile){
+      const s = String(stile || "").toLowerCase();
+      if(s.includes("lager") || s.includes("pils") || s.includes("helles") || s.includes("märzen")) return "var(--lager)";
+      if(s.includes("ipa") || s.includes("pale ale") || s.includes("amber ale") || s.includes("double ipa")) return "var(--ipa)";
+      if(s.includes("stout") || s.includes("porter") || s.includes("schwarzbier")) return "var(--stout)";
+      if(s.includes("sour") || s.includes("lambic") || s.includes("gueuze") || s.includes("berliner weisse") || s.includes("oud bruin") || s.includes("fruit")) return "var(--sour)";
+      if(s.includes("belgian") || s.includes("saison") || s.includes("tripel") || s.includes("dubbel") || s.includes("witbier")) return "var(--belgian)";
+      return "var(--defaultCard)";
+    }
+
     function popolaStili(lista){
       const select = document.getElementById("stile");
       const valoreAttuale = select.value;
@@ -582,9 +670,7 @@
         barcode: prodotto.barcode || "",
         quantita
       });
-      if(movimenti.length > 300){
-        movimenti = movimenti.slice(0,300);
-      }
+      if(movimenti.length > 300) movimenti = movimenti.slice(0,300);
     }
 
     function salvaProdotto(){
@@ -640,15 +726,15 @@
         setMsg("Prodotto aggiornato. Quantità aumentata.", "ok");
       } else {
         const nuovo = {
-          barcode: data.barcode,
-          nome: data.nome,
-          birrificio: data.birrificio,
-          formato: data.formato,
-          stile: data.stile,
-          qty: Number(data.qty || 0),
-          soglia: Number(data.soglia || 0),
-          prezzo: Number(data.prezzo || 0),
-          foto: data.foto || ""
+          barcode:data.barcode,
+          nome:data.nome,
+          birrificio:data.birrificio,
+          formato:data.formato,
+          stile:data.stile,
+          qty:Number(data.qty || 0),
+          soglia:Number(data.soglia || 0),
+          prezzo:Number(data.prezzo || 0),
+          foto:data.foto || ""
         };
         prodotti.push(nuovo);
         registraMovimento("NUOVO", nuovo, Number(data.qty || 0));
@@ -737,31 +823,41 @@
       }
 
       if(items.length === 0){
-        lista.innerHTML = `<div class="small">Nessun prodotto trovato.</div>`;
+        lista.innerHTML = `<div class="emptyBox">Nessun prodotto trovato.</div>`;
       } else {
         let html = "";
         items.forEach((p) => {
           const realIndex = prodotti.findIndex(x => x.barcode === p.barcode);
           const bassa = Number(p.qty||0) <= Number(p.soglia||0);
+          const color = getStyleColor(p.stile);
           html += `
-            <div class="product">
-              ${p.foto ? `<img class="productImage" src="${p.foto}" alt="${escapeHtml(p.nome)}">` : ""}
-              <div class="productTop">
-                <div>
-                  <div class="productName">${escapeHtml(p.nome || "Senza nome")}</div>
-                  <div class="small">
-                    Barcode: ${escapeHtml(p.barcode || "-")}<br>
-                    ${p.birrificio ? "Birrificio: " + escapeHtml(p.birrificio) + "<br>" : ""}
-                    ${p.stile ? "BJCP: " + escapeHtml(p.stile) + "<br>" : ""}
-                    ${p.formato ? "Formato: " + escapeHtml(p.formato) + "<br>" : ""}
-                    Prezzo: € ${Number(p.prezzo || 0).toFixed(2)}<br>
-                    Scorta minima: ${Number(p.soglia||0)}
+            <div class="product" style="background:linear-gradient(180deg, ${color} 0%, rgba(20,27,36,.96) 34%);">
+              <div>
+                ${p.foto ? `<img class="productImage" src="${p.foto}" alt="${escapeHtml(p.nome)}">` : ""}
+                <div class="productHeader">
+                  <div>
+                    <div class="productName">${escapeHtml(p.nome || "Senza nome")}</div>
+                    <div class="productMeta">
+                      Barcode: ${escapeHtml(p.barcode || "-")}<br>
+                      ${p.birrificio ? "Birrificio: " + escapeHtml(p.birrificio) + "<br>" : ""}
+                      ${p.stile ? "BJCP: " + escapeHtml(p.stile) + "<br>" : ""}
+                      ${p.formato ? "Formato: " + escapeHtml(p.formato) + "<br>" : ""}
+                      Prezzo: € ${Number(p.prezzo || 0).toFixed(2)}<br>
+                      Scorta minima: ${Number(p.soglia||0)}
+                    </div>
                   </div>
+                  <div class="badge">${bassa ? "Scorta bassa" : "OK"}</div>
                 </div>
-                <div class="badge">${bassa ? "Scorta bassa" : "OK"}</div>
+
+                <div class="qtyBox">
+                  <div class="qtyLabel">Quantità</div>
+                  <div class="qtyBig">${Number(p.qty||0)}</div>
+                </div>
+
+                <div class="priceTag">€ ${Number(p.prezzo || 0).toFixed(2)}</div>
               </div>
-              <div class="qtyBig">Quantità: ${Number(p.qty||0)}</div>
-              <div class="actions">
+
+              <div class="toolbar4">
                 <button class="btn btn-green" onclick="carico(${realIndex})">+1</button>
                 <button class="btn btn-orange" onclick="scarico(${realIndex})">-1</button>
                 <button class="btn btn-blue" onclick="modificaQty(${realIndex})">Modifica</button>
@@ -774,7 +870,7 @@
       }
 
       if(movimenti.length === 0){
-        mov.innerHTML = `<div class="small">Nessun movimento.</div>`;
+        mov.innerHTML = `<div class="emptyBox">Nessun movimento.</div>`;
       } else {
         mov.innerHTML = movimenti.map(m => `
           <div class="movement">
@@ -923,7 +1019,7 @@
       document.getElementById("totaleCassa").textContent = tot.toFixed(2);
 
       if(cassa.length === 0){
-        box.innerHTML = `<div class="small">Nessun articolo in cassa.</div>`;
+        box.innerHTML = `<div class="emptyBox">Nessun articolo in cassa.</div>`;
         return;
       }
 
@@ -975,12 +1071,7 @@
     }
 
     function downloadBackup(){
-      const data = {
-        prodotti,
-        movimenti,
-        vendite,
-        exportedAt: nowString()
-      };
+      const data = { prodotti, movimenti, vendite, exportedAt: nowString() };
       const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
