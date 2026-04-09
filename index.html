@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>XA Magazzino ULTRA PRO++</title>
+  <title>XA Magazzino ULTRA PRO ONLINE</title>
   <meta name="theme-color" content="#111111" />
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
@@ -260,6 +260,7 @@
       background:linear-gradient(180deg, rgba(255,255,255,.10) 0%, transparent 22%, rgba(0,0,0,.08) 100%);
       pointer-events:none;
     }
+
     .catalogItem.flash{
       box-shadow:0 0 0 2px rgba(67,198,109,.85),0 0 18px rgba(67,198,109,.45),0 12px 26px rgba(0,0,0,.22);
     }
@@ -521,7 +522,7 @@
 
   <div class="hero">
     <h1>XA Magazzino</h1>
-    <p>ULTRA PRO++ • ricerca approfondita • memoria prezzi • riconoscimento tedesco completo • proxy + fallback • catalogo • cassa</p>
+    <p>ULTRA PRO ONLINE • ricerca online vera • Open Food Facts + Wikipedia • memoria prezzi • riconoscimento tedesco</p>
   </div>
 
   <section id="section-home" class="section active">
@@ -547,7 +548,7 @@
 
       <div class="toolbar3">
         <button class="btn btn-gold" onclick="startScanner()">📷 Scanner</button>
-        <button class="btn btn-violet" onclick="ricercaApprofondita()">Ricerca approfondita</button>
+        <button class="btn btn-violet" onclick="ricercaApprofonditaOnline()">Ricerca approfondita</button>
         <button class="btn btn-red" onclick="stopScanner()">■ Stop scanner</button>
       </div>
 
@@ -790,7 +791,7 @@
 </nav>
 
 <script>
-  const PROXY_URL = "https://still-dawn-2dc5.lustino111.workers.dev";
+  const WIKI_LANGS = ["it", "en"];
 
   const BJCP_DATA = {
     "4A Munich Helles": { abv:"4.7–5.4", ibu:"16–22", srm:"3–5", gusto:"Maltata, pane fresco, delicatamente dolce, poco amara.", aroma:"Pane, miele leggero, cereale pulito, luppolo delicato.", corpo:"Leggero-medio", finale:"Pulito, morbido, scorrevole", abbinamenti:"Salumi, wurstel, pretzel, fritti, formaggi dolci" },
@@ -843,10 +844,10 @@
     ["#9aa3ad", "#4e5864", "#101722"]
   ];
 
-  let prodotti = JSON.parse(localStorage.getItem("prodotti_xa_ultra_plus_plus")) || [];
-  let movimenti = JSON.parse(localStorage.getItem("movimenti_xa_ultra_plus_plus")) || [];
-  let vendite = JSON.parse(localStorage.getItem("vendite_xa_ultra_plus_plus")) || [];
-  let memoryPrezzi = JSON.parse(localStorage.getItem("memory_prezzi_xa_ultra_plus_plus")) || {};
+  let prodotti = JSON.parse(localStorage.getItem("prodotti_xa_online")) || [];
+  let movimenti = JSON.parse(localStorage.getItem("movimenti_xa_online")) || [];
+  let vendite = JSON.parse(localStorage.getItem("vendite_xa_online")) || [];
+  let memoryPrezzi = JSON.parse(localStorage.getItem("memory_prezzi_xa_online")) || {};
   let cassa = [];
   let html5QrCode = null;
   let scannerAttivo = false;
@@ -861,10 +862,10 @@
   }
 
   function salvaDati(){
-    localStorage.setItem("prodotti_xa_ultra_plus_plus", JSON.stringify(prodotti));
-    localStorage.setItem("movimenti_xa_ultra_plus_plus", JSON.stringify(movimenti));
-    localStorage.setItem("vendite_xa_ultra_plus_plus", JSON.stringify(vendite));
-    localStorage.setItem("memory_prezzi_xa_ultra_plus_plus", JSON.stringify(memoryPrezzi));
+    localStorage.setItem("prodotti_xa_online", JSON.stringify(prodotti));
+    localStorage.setItem("movimenti_xa_online", JSON.stringify(movimenti));
+    localStorage.setItem("vendite_xa_online", JSON.stringify(vendite));
+    localStorage.setItem("memory_prezzi_xa_online", JSON.stringify(memoryPrezzi));
   }
 
   function setMsg(text, type=""){
@@ -914,7 +915,7 @@
       .toLowerCase()
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9]+/g, " ")
+      .replace(/[^a-z0-9%]+/g, " ")
       .trim();
   }
 
@@ -934,17 +935,6 @@
     if(fullKey && memoryPrezzi[`full:${fullKey}`] != null) return memoryPrezzi[`full:${fullKey}`];
     const nomeKey = normalizeKey(nome);
     if(nomeKey && memoryPrezzi[`nome:${nomeKey}`] != null) return memoryPrezzi[`nome:${nomeKey}`];
-
-    const tokens = nomeKey.split(" ").filter(w => w.length > 3);
-    if(tokens.length){
-      for(const k of Object.keys(memoryPrezzi)){
-        if(!k.startsWith("nome:") && !k.startsWith("full:")) continue;
-        const stored = k.split(":").slice(1).join(":");
-        let hits = 0;
-        tokens.forEach(t => { if(stored.includes(t)) hits++; });
-        if(hits >= Math.min(2, tokens.length)) return memoryPrezzi[k];
-      }
-    }
     return null;
   }
 
@@ -1035,37 +1025,17 @@
     if(t.includes("weissbier") || t.includes("weizen") || t.includes("hefeweizen") || t.includes("weiss") || t.includes("weisse")) {
       return { stile:"10A Weissbier" };
     }
-    if(t.includes("dunkel") || t.includes("dunkles")) {
-      if(t.includes("weizen")) return { stile:"10A Weissbier" };
-      return { stile:"8A Munich Dunkel" };
-    }
-    if(t.includes("helles") || t.includes("bayrisch hell") || t.includes("bavarian hell") || t.includes("hell lager") || t.includes("munich helles")) {
-      return { stile:"4A Munich Helles" };
-    }
-    if(t.includes(" hell ") || t.startsWith("hell ") || t.endsWith(" hell") || t.includes(" lager hell") || t.includes("bayrisch hell")) {
-      return { stile:"4A Munich Helles" };
-    }
-    if(t.includes("pilsner") || t.includes("pils") || t.includes(" pilsener")) {
-      return { stile:"5D German Pils" };
-    }
-    if(t.includes("keller") || t.includes("kellerbier") || t.includes("zwickl") || t.includes("landbier")) {
-      return { stile:"7C Kellerbier" };
-    }
-    if(t.includes("export") || t.includes("dortmunder")) {
-      return { stile:"7A Vienna Lager" };
-    }
-    if(t.includes("marzen") || t.includes("märzen")) {
-      return { stile:"7A Vienna Lager" };
-    }
-    if(t.includes("rauch")) {
-      return { stile:"8A Munich Dunkel" };
-    }
+    if(t.includes("dunkel") || t.includes("dunkles")) return { stile:"8A Munich Dunkel" };
+    if(t.includes("helles") || t.includes("bayrisch hell") || t.includes("bavarian hell") || t.includes("hell lager") || t.includes("munich helles")) return { stile:"4A Munich Helles" };
+    if(t.includes(" hell ") || t.startsWith("hell ") || t.endsWith(" hell")) return { stile:"4A Munich Helles" };
+    if(t.includes("pilsner") || t.includes("pils") || t.includes(" pilsener")) return { stile:"5D German Pils" };
+    if(t.includes("keller") || t.includes("kellerbier") || t.includes("zwickl") || t.includes("landbier")) return { stile:"7C Kellerbier" };
+    if(t.includes("export") || t.includes("dortmunder") || t.includes("marzen") || t.includes("märzen")) return { stile:"7A Vienna Lager" };
     return null;
   }
 
   function inferStyleFromText(nome, birrificio){
-    const raw = `${nome || ""} ${birrificio || ""}`;
-    const t = normalizeKey(raw);
+    const t = normalizeKey(`${nome || ""} ${birrificio || ""}`);
 
     for (const key in BEER_DB){
       if(t.includes(normalizeKey(key))) return BEER_DB[key];
@@ -1133,20 +1103,6 @@
     if(movimenti.length > 300) movimenti = movimenti.slice(0,300);
   }
 
-  async function lookupProxy(barcode){
-    try{
-      const res = await fetch(`${PROXY_URL}/lookup?barcode=${encodeURIComponent(barcode)}`);
-      if(!res.ok) return null;
-      const txt = await res.text();
-      let data = null;
-      try{ data = JSON.parse(txt); } catch(e){ return null; }
-      if(!data || !data.found || !data.product) return null;
-      return data.product;
-    } catch(e){
-      return null;
-    }
-  }
-
   async function lookupOpenFoodFacts(barcode){
     try{
       const url = `https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(barcode)}.json`;
@@ -1178,7 +1134,6 @@
 
   function applicaDatiDaProdottoSimile(simile){
     if(!simile) return false;
-
     if(simile.stile) document.getElementById("stile").value = simile.stile;
     if(simile.abv) document.getElementById("abv").value = simile.abv;
     if(simile.ibu) document.getElementById("ibu").value = simile.ibu;
@@ -1188,6 +1143,7 @@
     if(simile.corpo) document.getElementById("corpo").value = simile.corpo;
     if(simile.finale) document.getElementById("finale").value = simile.finale;
     if(simile.abbinamenti) document.getElementById("abbinamenti").value = simile.abbinamenti;
+    if(simile.note) document.getElementById("note").value = simile.note;
     if(simile.prezzo && Number(simile.prezzo) > 0){
       document.getElementById("prezzo").value = Number(simile.prezzo).toFixed(2);
       mostraPrezzoMemoria(simile.prezzo);
@@ -1195,23 +1151,88 @@
     return true;
   }
 
+  async function wikiSearchTitle(query, lang){
+    const url = `https://${lang}.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(query)}&limit=5&namespace=0&format=json&origin=*`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if(Array.isArray(data) && Array.isArray(data[1]) && data[1].length){
+      return data[1][0];
+    }
+    return null;
+  }
+
+  async function wikiExtract(title, lang){
+    const url = `https://${lang}.wikipedia.org/w/api.php?action=query&prop=extracts&exintro=1&explaintext=1&titles=${encodeURIComponent(title)}&format=json&origin=*`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const pages = data?.query?.pages || {};
+    const first = Object.values(pages)[0];
+    return first?.extract || "";
+  }
+
+  function extractABVFromText(text){
+    const patterns = [
+      /(\d{1,2}[.,]\d)\s*%/i,
+      /(\d{1,2})\s*%/i,
+      /(\d{1,2}[.,]\d)\s*(?:abv|alc|alcol)/i,
+      /(?:abv|alc|alcol)[^\d]{0,8}(\d{1,2}[.,]?\d?)/i
+    ];
+    for(const rx of patterns){
+      const m = text.match(rx);
+      if(m && m[1]) return m[1].replace(",", ".");
+    }
+    return "";
+  }
+
+  function enrichFromText(text){
+    const t = normalizeKey(text);
+    const out = {};
+
+    if(!document.getElementById("stile").value){
+      const styleGuess = inferStyleFromText(text, text);
+      if(styleGuess?.stile){
+        out.stile = styleGuess.stile;
+      }
+    }
+
+    const abv = extractABVFromText(text);
+    if(abv) out.abv = abv;
+
+    const gustoBits = [];
+    const aromaBits = [];
+    let corpo = "";
+    let finale = "";
+
+    if(t.includes("malt") || t.includes("maltata") || t.includes("malty")) gustoBits.push("maltata");
+    if(t.includes("pane") || t.includes("bread") || t.includes("biscuit")) gustoBits.push("pane/biscotto");
+    if(t.includes("caramel") || t.includes("caramello")) gustoBits.push("caramello");
+    if(t.includes("hop") || t.includes("luppolo")) aromaBits.push("luppolo");
+    if(t.includes("floral") || t.includes("floreale")) aromaBits.push("floreale");
+    if(t.includes("herbal") || t.includes("erbace")) aromaBits.push("erbaceo");
+    if(t.includes("citrus") || t.includes("agrum")) aromaBits.push("agrumato");
+    if(t.includes("banana")) aromaBits.push("banana");
+    if(t.includes("clove") || t.includes("garofano")) aromaBits.push("chiodo di garofano");
+    if(t.includes("toast") || t.includes("tost")) gustoBits.push("tostata");
+    if(t.includes("coffee") || t.includes("caffe")) gustoBits.push("caffè");
+    if(t.includes("chocolate") || t.includes("cioccol")) gustoBits.push("cioccolato");
+    if(t.includes("dry") || t.includes("secco")) finale = "secco";
+    if(t.includes("smooth") || t.includes("morbido")) finale = finale ? finale + ", morbido" : "morbido";
+    if(t.includes("light bodied") || t.includes("light body") || t.includes("leggero")) corpo = "leggero";
+    if(t.includes("medium body") || t.includes("medio corpo") || t.includes("medium-bodied")) corpo = "medio";
+    if(t.includes("full bodied") || t.includes("corpo pieno") || t.includes("full-bodied")) corpo = "pieno";
+
+    if(gustoBits.length) out.gusto = [...new Set(gustoBits)].join(", ");
+    if(aromaBits.length) out.aroma = [...new Set(aromaBits)].join(", ");
+    if(corpo) out.corpo = corpo;
+    if(finale) out.finale = finale;
+
+    return out;
+  }
+
   async function cercaProdottoOnline(barcode){
     setScan("Cerco prodotto...");
 
-    let product = await lookupProxy(barcode);
-    if(product){
-      document.getElementById("nome").value = product.name || "";
-      document.getElementById("birrificio").value = product.brand || "";
-      document.getElementById("formato").value = product.quantity || "";
-      document.getElementById("qty").value = "1";
-      const smart = inferStyleFromText(product.name || "", product.brand || "");
-      if(smart && smart.stile) applyBJCPStyle(smart.stile, smart);
-      applicaPrezzoMemorizzato(barcode, product.name || "", product.brand || "");
-      setScan("Prodotto trovato tramite proxy.", "ok");
-      return true;
-    }
-
-    product = await lookupOpenFoodFacts(barcode);
+    const product = await lookupOpenFoodFacts(barcode);
     if(product){
       document.getElementById("nome").value = product.name || "";
       document.getElementById("birrificio").value = product.brand || "";
@@ -1222,7 +1243,7 @@
         applyBJCPStyle(smart.stile, smart);
         setScan("Prodotto trovato e stile riconosciuto.", "ok");
       } else {
-        setScan("Prodotto trovato. Scegli lo stile BJCP.", "warn");
+        setScan("Prodotto trovato. Premi Ricerca approfondita.", "warn");
       }
       applicaPrezzoMemorizzato(barcode, product.name || "", product.brand || "");
       return true;
@@ -1233,7 +1254,7 @@
     return false;
   }
 
-  async function ricercaApprofondita(){
+  async function ricercaApprofonditaOnline(){
     const nome = document.getElementById("nome").value.trim();
     const birrificio = document.getElementById("birrificio").value.trim();
     const barcode = document.getElementById("barcode").value.trim();
@@ -1243,45 +1264,71 @@
       return;
     }
 
-    setScan("Ricerca approfondita in corso...");
+    setScan("Ricerca online vera in corso...");
 
-    // 1. prova stile migliorato
-    const smart = inferStyleFromText(nome, birrificio);
-    if(smart && smart.stile){
-      applyBJCPStyle(smart.stile, smart);
-    }
-
-    // 2. prova memoria prezzi
     applicaPrezzoMemorizzato(barcode, nome, birrificio);
 
-    // 3. prova archivio locale birre simili
     const simile = trovaProdottoSimile(nome, birrificio);
     if(simile){
       applicaDatiDaProdottoSimile(simile);
-      setScan("Ricerca approfondita: trovata birra simile nel tuo archivio.", "ok");
+    }
+
+    const smart = inferStyleFromText(nome, birrificio);
+    if(smart?.stile){
+      applyBJCPStyle(smart.stile, smart);
+    }
+
+    const queries = [
+      `${nome} ${birrificio} birra`,
+      `${nome} beer ${birrificio}`,
+      `${nome} ${birrificio}`
+    ];
+
+    let bestExtract = "";
+    let bestTitle = "";
+    let bestLang = "";
+
+    try{
+      for(const lang of WIKI_LANGS){
+        for(const q of queries){
+          const title = await wikiSearchTitle(q, lang);
+          if(title){
+            const extract = await wikiExtract(title, lang);
+            if(extract && extract.length > bestExtract.length){
+              bestExtract = extract;
+              bestTitle = title;
+              bestLang = lang;
+            }
+          }
+        }
+      }
+    } catch(e){
+      // continua comunque
+    }
+
+    if(bestExtract){
+      const enriched = enrichFromText(bestExtract);
+
+      if(enriched.stile && !document.getElementById("stile").value){
+        applyBJCPStyle(enriched.stile, enriched);
+      } else if(enriched.stile && document.getElementById("stile").value !== enriched.stile){
+        // lascia lo stile scelto, ma usa eventuali dati mancanti
+      }
+
+      if(enriched.abv && !document.getElementById("abv").value) document.getElementById("abv").value = enriched.abv;
+      if(enriched.gusto && !document.getElementById("gusto").value) document.getElementById("gusto").value = enriched.gusto;
+      if(enriched.aroma && !document.getElementById("aroma").value) document.getElementById("aroma").value = enriched.aroma;
+      if(enriched.corpo && !document.getElementById("corpo").value) document.getElementById("corpo").value = enriched.corpo;
+      if(enriched.finale && !document.getElementById("finale").value) document.getElementById("finale").value = enriched.finale;
+
+      const summary = `Fonte web: Wikipedia (${bestLang.toUpperCase()}) – ${bestTitle}\n\n${bestExtract}`;
+      document.getElementById("note").value = summary;
+
+      setScan("Ricerca online completata.", "ok");
       return;
     }
 
-    // 4. arricchimento euristico testo
-    const t = normalizeKey(`${nome} ${birrificio}`);
-
-    if(t.includes("unfiltered") || t.includes("naturtrub") || t.includes("naturtrueb")){
-      document.getElementById("note").value = "Probabile versione non filtrata / torbida.";
-    }
-
-    if(t.includes("rauch")){
-      document.getElementById("note").value = "Possibile carattere affumicato.";
-    }
-
-    if(t.includes("keller") || t.includes("zwickl")){
-      document.getElementById("note").value = "Probabile lager rustica/non filtrata.";
-    }
-
-    if(t.includes("export")){
-      document.getElementById("note").value = "Probabile lager maltata di impostazione export.";
-    }
-
-    setScan("Ricerca approfondita completata.", "ok");
+    setScan("Ricerca online fatta, ma senza dettagli utili trovati.", "warn");
   }
 
   async function gestisciBarcodeLetto(barcode){
@@ -1806,7 +1853,7 @@
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "xa-magazzino-ultra-plus-plus-backup.json";
+    a.download = "xa-magazzino-online-backup.json";
     a.click();
     URL.revokeObjectURL(url);
   }
