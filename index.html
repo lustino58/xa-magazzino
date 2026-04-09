@@ -14,7 +14,6 @@
       --line:#2b3748;
       --text:#f4f7fb;
       --muted:#a8b4c4;
-
       --gold:#d3af68;
       --green:#43c66d;
       --blue:#5aa4ff;
@@ -22,7 +21,6 @@
       --orange:#ffad3b;
       --red:#e05b5b;
       --violet:#a26cff;
-
       --lager:#b98d32;
       --ipa:#d26e2b;
       --stout:#5f6377;
@@ -30,12 +28,10 @@
       --belgian:#2f9f7d;
       --wheat:#5ea85d;
       --defaultCard:#223043;
-
       --neon:#ff3b3b;
     }
 
     *{box-sizing:border-box}
-
     body{
       margin:0;
       background:linear-gradient(180deg,var(--bg) 0%, var(--bg2) 100%);
@@ -71,18 +67,8 @@
       border:1px solid var(--line);
       box-shadow:0 10px 24px rgba(0,0,0,.25);
     }
-
-    .hero h1{
-      font-size:32px;
-      line-height:1;
-      margin-bottom:8px;
-    }
-
-    .hero p{
-      color:var(--muted);
-      font-size:14px;
-      line-height:1.4;
-    }
+    .hero h1{font-size:32px;line-height:1;margin-bottom:8px}
+    .hero p{color:var(--muted);font-size:14px;line-height:1.4}
 
     .section{display:none}
     .section.active{display:block}
@@ -96,11 +82,7 @@
       box-shadow:0 8px 18px rgba(0,0,0,.18);
     }
 
-    .sectionTitle{
-      font-size:22px;
-      margin-bottom:10px;
-      font-weight:800;
-    }
+    .sectionTitle{font-size:22px;margin-bottom:10px;font-weight:800}
 
     .stats{
       display:grid;
@@ -124,7 +106,6 @@
       letter-spacing:.8px;
       font-weight:800;
     }
-
     .stat .value{
       font-size:30px;
       font-weight:900;
@@ -172,7 +153,6 @@
       border-width:2px;
       box-shadow:0 0 0 1px rgba(255,255,255,.03) inset, 0 4px 10px rgba(0,0,0,.15);
     }
-
     .btn-gold{ border-color:var(--gold); }
     .btn-green{ border-color:var(--green); }
     .btn-blue{ border-color:var(--blue); }
@@ -267,7 +247,6 @@
     }
 
     .catalogItem:active{ transform:scale(.98); }
-
     .catalogItem.flash{
       box-shadow:0 0 0 2px rgba(67,198,109,.85), 0 0 18px rgba(67,198,109,.45);
       outline:2px solid rgba(67,198,109,.75);
@@ -295,7 +274,7 @@
       font-size:13px;
       color:var(--muted);
       line-height:1.35;
-      min-height:84px;
+      min-height:96px;
     }
 
     .quickHint{
@@ -424,8 +403,7 @@
       font-size:16px;
     }
 
-    .cassaName{ font-weight:800; }
-
+    .cassaName{font-weight:800}
     .cassaQty{
       padding:6px 10px;
       border-radius:999px;
@@ -434,7 +412,6 @@
       font-size:12px;
       font-weight:800;
     }
-
     .cassaPrice{
       font-weight:900;
       white-space:nowrap;
@@ -530,7 +507,7 @@
 
     <div class="hero">
       <h1>XA Magazzino</h1>
-      <p>BJCP AUTO PRO • scheda gusto professionale • catalogo per birrificio • vendita veloce • modifica completa</p>
+      <p>Riconoscimento birra avanzato • BJCP auto pro • scheda gusto professionale • catalogo per birrificio • modifica completa</p>
     </div>
 
     <section id="section-home" class="section active">
@@ -836,53 +813,43 @@
   <script>
     const BJCP_DATA = {
       "4A Munich Helles": {
-        abv:"4.7–5.4",
-        ibu:"16–22",
-        srm:"3–5",
+        abv:"4.7–5.4", ibu:"16–22", srm:"3–5",
         gusto:"Maltata, pane fresco, delicatamente dolce, poco amara.",
-        aroma:"Pane, miele leggero, cereale pulito, luppolo molto delicato.",
+        aroma:"Pane, miele leggero, cereale pulito, luppolo delicato.",
         corpo:"Leggero-medio",
         finale:"Pulito, morbido, scorrevole",
         abbinamenti:"Salumi, wurstel, pretzel, fritti, formaggi dolci",
         note:"Profilo elegante, bilanciato e molto beverino."
       },
       "5D German Pils": {
-        abv:"4.4–5.2",
-        ibu:"22–40",
-        srm:"2–5",
+        abv:"4.4–5.2", ibu:"22–40", srm:"2–5",
         gusto:"Secca, croccante, più amara di una Helles.",
         aroma:"Erbaceo, speziato, floreale, cereale chiaro.",
         corpo:"Leggero",
         finale:"Secco, netto, pulito",
         abbinamenti:"Fritti, pizza bianca, pesce, snack salati",
-        note:"Luppolo tedesco più evidente, grande bevibilità."
+        note:"Luppolo tedesco evidente, finale pulito."
       },
       "10A Weissbier": {
-        abv:"4.3–5.6",
-        ibu:"8–15",
-        srm:"2–6",
+        abv:"4.3–5.6", ibu:"8–15", srm:"2–6",
         gusto:"Fresca, fruttata, morbida, poco amara.",
         aroma:"Banana, chiodo di garofano, pane bianco.",
         corpo:"Medio",
         finale:"Morbido, fresco, vivace",
-        abbinamenti:"Insalate, pollo, piatti speziati leggeri, formaggi freschi",
+        abbinamenti:"Insalate, pollo, cucina speziata leggera, formaggi freschi",
         note:"Frumento in evidenza, schiuma abbondante."
       },
       "15A Irish Stout": {
-        abv:"4.0–4.5",
-        ibu:"25–45",
-        srm:"25–40",
+        abv:"4.0–4.5", ibu:"25–45", srm:"25–40",
         gusto:"Tostata, secca, caffè, cacao amaro.",
         aroma:"Orzo tostato, caffè, lieve cioccolato fondente.",
         corpo:"Leggero-medio",
         finale:"Asciutto, tostato, deciso",
         abbinamenti:"Ostriche, carni grigliate, burger, dolci al cacao",
-        note:"Scura ma non pesante, molto diretta."
+        note:"Scura ma non pesante."
       },
       "18A Blonde Ale": {
-        abv:"3.8–5.5",
-        ibu:"15–28",
-        srm:"3–6",
+        abv:"3.8–5.5", ibu:"15–28", srm:"3–6",
         gusto:"Chiara, morbida, pane leggero, facile da bere.",
         aroma:"Cereale, floreale lieve, fruttato delicato.",
         corpo:"Leggero-medio",
@@ -891,9 +858,7 @@
         note:"Ale facile e versatile."
       },
       "18B American Pale Ale": {
-        abv:"4.5–6.2",
-        ibu:"30–50",
-        srm:"5–10",
+        abv:"4.5–6.2", ibu:"30–50", srm:"5–10",
         gusto:"Agrumata, resinosa, biscotto, amaro moderato.",
         aroma:"Agrumi, resina, frutta tropicale leggera, malto biscuit.",
         corpo:"Medio-leggero",
@@ -902,42 +867,34 @@
         note:"Equilibrio tra malto e luppolo americano."
       },
       "21A American IPA": {
-        abv:"5.5–7.5",
-        ibu:"40–70",
-        srm:"6–14",
+        abv:"5.5–7.5", ibu:"40–70", srm:"6–14",
         gusto:"Amara, agrumata, resinosa, fruttata.",
         aroma:"Pompelmo, arancia, mango, resina, luppolo intenso.",
         corpo:"Medio",
         finale:"Amaro, persistente, secco",
         abbinamenti:"Cucina speziata, burger, barbecue, blue cheese",
-        note:"Luppolo protagonista, profilo molto moderno."
+        note:"Luppolo protagonista."
       },
       "22A Double IPA": {
-        abv:"7.5–10.0",
-        ibu:"60–100",
-        srm:"6–14",
+        abv:"7.5–10.0", ibu:"60–100", srm:"6–14",
         gusto:"Molto intensa, amara, fruttata, potente.",
         aroma:"Tropicale, agrumato, resinoso, alcol delicato.",
         corpo:"Medio-pieno",
         finale:"Lungo, amaro, caldo",
         abbinamenti:"Piatti molto saporiti, bbq, formaggi stagionati",
-        note:"IPA estrema, ricca e carica di luppolo."
+        note:"IPA estrema e carica di luppolo."
       },
       "24A Witbier": {
-        abv:"4.5–5.5",
-        ibu:"8–20",
-        srm:"2–4",
+        abv:"4.5–5.5", ibu:"8–20", srm:"2–4",
         gusto:"Fresca, agrumata, morbida, poco amara.",
         aroma:"Coriandolo, scorza d'arancia, frumento.",
         corpo:"Leggero-medio",
         finale:"Fresco, leggermente speziato",
         abbinamenti:"Pesce, insalate, sushi, formaggi freschi",
-        note:"Chiara e torbida, ottima d'estate."
+        note:"Chiara e torbida."
       },
       "25B Saison": {
-        abv:"5.0–7.0",
-        ibu:"20–35",
-        srm:"5–14",
+        abv:"5.0–7.0", ibu:"20–35", srm:"5–14",
         gusto:"Secca, speziata, rustica, fresca.",
         aroma:"Pepata, agrumata, erbacea, fruttata leggera.",
         corpo:"Leggero-medio",
@@ -946,30 +903,42 @@
         note:"Alta bevibilità con carattere rustico."
       },
       "26C Belgian Tripel": {
-        abv:"7.5–9.5",
-        ibu:"20–40",
-        srm:"4.5–7",
+        abv:"7.5–9.5", ibu:"20–40", srm:"4.5–7",
         gusto:"Ricca ma secca, fruttata, speziata, alcol elegante.",
         aroma:"Pera, banana lieve, pepe, miele leggero.",
         corpo:"Medio-pieno",
         finale:"Secco, caldo, raffinato",
         abbinamenti:"Carni bianche, formaggi stagionati, cucina ricca",
-        note:"Forte, elegante, complessa ma scorrevole."
+        note:"Forte, elegante, complessa."
       },
       "23A Berliner Weisse": {
-        abv:"2.8–3.8",
-        ibu:"3–8",
-        srm:"2–3",
+        abv:"2.8–3.8", ibu:"3–8", srm:"2–3",
         gusto:"Acida, citrica, leggerissima.",
-        aroma:"Limone, yogurt, cereale molto tenue.",
+        aroma:"Limone, yogurt, cereale tenue.",
         corpo:"Molto leggero",
         finale:"Secco, acidulo, pulitissimo",
         abbinamenti:"Pesce crudo, aperitivo, fritti leggeri",
-        note:"Acidità protagonista, gradazione molto bassa."
+        note:"Acidità protagonista."
       }
     };
 
     const ALL_STYLES = Object.keys(BJCP_DATA);
+
+    const BEER_DB = {
+      "birra moretti": { stile:"4A Munich Helles", abv:"4.6", ibu:"18–22", srm:"4" },
+      "moretti": { stile:"4A Munich Helles", abv:"4.6", ibu:"18–22", srm:"4" },
+      "peroni": { stile:"5D German Pils", abv:"4.7", ibu:"20–30", srm:"3" },
+      "ichnusa": { stile:"5D German Pils", abv:"4.7", ibu:"20–25", srm:"3" },
+      "menabrea": { stile:"4A Munich Helles", abv:"4.8", ibu:"18–22", srm:"4" },
+      "poretti": { stile:"5D German Pils", abv:"4.8", ibu:"22–30", srm:"3" },
+      "beck's": { stile:"5D German Pils", abv:"5.0", ibu:"24–32", srm:"3" },
+      "heineken": { stile:"5D German Pils", abv:"5.0", ibu:"20–25", srm:"3" },
+      "spaten": { stile:"4A Munich Helles", abv:"5.2", ibu:"16–22", srm:"4" },
+      "paulaner": { stile:"10A Weissbier", abv:"5.5", ibu:"10–14", srm:"4" },
+      "guinness": { stile:"15A Irish Stout", abv:"4.2", ibu:"35–45", srm:"35" },
+      "leffe blonde": { stile:"26C Belgian Tripel", abv:"6.6", ibu:"20–30", srm:"6" },
+      "hoegaarden": { stile:"24A Witbier", abv:"4.9", ibu:"12–18", srm:"3" }
+    };
 
     let prodotti = JSON.parse(localStorage.getItem("prodotti_xa_max")) || [];
     let movimenti = JSON.parse(localStorage.getItem("movimenti_xa_max")) || [];
@@ -1115,30 +1084,61 @@
       if(list.includes(attuale)) select.value = attuale;
     }
 
+    function applyBJCPStyle(stile, custom = {}){
+      const base = BJCP_DATA[stile];
+      if(!base) return false;
+
+      document.getElementById("stile").value = stile;
+      document.getElementById("abv").value = custom.abv || base.abv;
+      document.getElementById("ibu").value = custom.ibu || base.ibu;
+      document.getElementById("srm").value = custom.srm || base.srm;
+      document.getElementById("gusto").value = custom.gusto || base.gusto;
+      document.getElementById("aroma").value = custom.aroma || base.aroma;
+      document.getElementById("corpo").value = custom.corpo || base.corpo;
+      document.getElementById("finale").value = custom.finale || base.finale;
+      document.getElementById("abbinamenti").value = custom.abbinamenti || base.abbinamenti;
+
+      document.getElementById("autoAbvChip").textContent = "ABV: " + (custom.abv || base.abv);
+      document.getElementById("autoIbuChip").textContent = "IBU: " + (custom.ibu || base.ibu);
+      document.getElementById("autoSrmChip").textContent = "SRM: " + (custom.srm || base.srm);
+      document.getElementById("autoNotePreview").textContent = (custom.gusto || base.gusto) + " " + (custom.aroma || base.aroma);
+
+      return true;
+    }
+
     function autoCompilaBJCP(){
       const stile = document.getElementById("stile").value;
-      const data = BJCP_DATA[stile];
-      if(!data){
+      if(!stile){
         document.getElementById("autoAbvChip").textContent = "ABV: -";
         document.getElementById("autoIbuChip").textContent = "IBU: -";
         document.getElementById("autoSrmChip").textContent = "SRM: -";
         document.getElementById("autoNotePreview").textContent = "Seleziona uno stile BJCP per compilare automaticamente le specifiche.";
         return;
       }
+      applyBJCPStyle(stile);
+    }
 
-      document.getElementById("abv").value = data.abv;
-      document.getElementById("ibu").value = data.ibu;
-      document.getElementById("srm").value = data.srm;
-      document.getElementById("gusto").value = data.gusto;
-      document.getElementById("aroma").value = data.aroma;
-      document.getElementById("corpo").value = data.corpo;
-      document.getElementById("finale").value = data.finale;
-      document.getElementById("abbinamenti").value = data.abbinamenti;
+    function inferStyleFromText(nome, birrificio){
+      const t = `${nome || ""} ${birrificio || ""}`.toLowerCase();
 
-      document.getElementById("autoAbvChip").textContent = "ABV: " + data.abv;
-      document.getElementById("autoIbuChip").textContent = "IBU: " + data.ibu;
-      document.getElementById("autoSrmChip").textContent = "SRM: " + data.srm;
-      document.getElementById("autoNotePreview").textContent = data.gusto + " " + data.aroma;
+      for (const key in BEER_DB){
+        if(t.includes(key)) return BEER_DB[key];
+      }
+
+      if(t.includes("ipa")) return { stile:"21A American IPA" };
+      if(t.includes("double ipa") || t.includes("dipa")) return { stile:"22A Double IPA" };
+      if(t.includes("tripel")) return { stile:"26C Belgian Tripel" };
+      if(t.includes("saison")) return { stile:"25B Saison" };
+      if(t.includes("wit") || t.includes("blanche") || t.includes("hoegaarden")) return { stile:"24A Witbier" };
+      if(t.includes("weiss") || t.includes("weizen")) return { stile:"10A Weissbier" };
+      if(t.includes("stout") || t.includes("guinness")) return { stile:"15A Irish Stout" };
+      if(t.includes("pils")) return { stile:"5D German Pils" };
+      if(t.includes("helles") || t.includes("lager") || t.includes("moretti") || t.includes("menabrea") || t.includes("spaten")) return { stile:"4A Munich Helles" };
+      if(t.includes("berliner")) return { stile:"23A Berliner Weisse" };
+      if(t.includes("pale ale")) return { stile:"18B American Pale Ale" };
+      if(t.includes("blonde")) return { stile:"18A Blonde Ale" };
+
+      return null;
     }
 
     function trovaPerBarcode(barcode){
@@ -1169,7 +1169,6 @@
 
       document.getElementById("editBox").style.display = "block";
       document.getElementById("saveBtn").textContent = "Salva modifica";
-
       showSection("home", document.querySelector('.navBtn[data-section="home"]'));
       setMsg("Prodotto pronto da modificare.", "ok");
     }
@@ -1230,15 +1229,11 @@
         if(file){
           const reader = new FileReader();
           reader.onload = function(){
-            salvaModificaCompleta({
-              barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, abv, ibu, srm, gusto, aroma, corpo, finale, abbinamenti, note, foto: reader.result
-            });
+            salvaModificaCompleta({ barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, abv, ibu, srm, gusto, aroma, corpo, finale, abbinamenti, note, foto: reader.result });
           };
           reader.readAsDataURL(file);
         } else {
-          salvaModificaCompleta({
-            barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, abv, ibu, srm, gusto, aroma, corpo, finale, abbinamenti, note, foto: prodotti[editIndex].foto || ""
-          });
+          salvaModificaCompleta({ barcode, nome, birrificio, formato, stile, qty, soglia, prezzo, abv, ibu, srm, gusto, aroma, corpo, finale, abbinamenti, note, foto: prodotti[editIndex].foto || "" });
         }
         return;
       }
@@ -1543,11 +1538,13 @@
     }
 
     async function cercaProdottoOnline(barcode){
-      setScan("Cerco prodotto online...");
+      setScan("Cerco prodotto...");
+
       try{
         const url = `https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(barcode)}.json`;
         const res = await fetch(url);
         const data = await res.json();
+
         if(data && data.product){
           const nome =
             data.product.product_name_it ||
@@ -1555,23 +1552,32 @@
             data.product.generic_name_it ||
             data.product.generic_name ||
             "";
+
           const marca = data.product.brands || "";
           const qtyTxt = data.product.quantity || "";
+
           if(nome){
             document.getElementById("nome").value = nome;
             document.getElementById("birrificio").value = marca;
             document.getElementById("formato").value = qtyTxt;
             document.getElementById("qty").value = "1";
-            setScan("Prodotto trovato online.", "ok");
+
+            const smart = inferStyleFromText(nome, marca);
+
+            if(smart && smart.stile){
+              applyBJCPStyle(smart.stile, smart);
+              setScan("Birra riconosciuta automaticamente.", "ok");
+            } else {
+              setScan("Prodotto trovato. Scegli lo stile BJCP.", "warn");
+            }
             return true;
           }
         }
-        document.getElementById("qty").value = "1";
-        setScan("Prodotto non trovato online. Inseriscilo a mano.", "warn");
+
+        setScan("Prodotto non trovato online.", "warn");
         return false;
       } catch(e){
-        document.getElementById("qty").value = "1";
-        setScan("Ricerca online non riuscita. Inserisci a mano.", "warn");
+        setScan("Ricerca online non riuscita.", "dangerText");
         return false;
       }
     }
