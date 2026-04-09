@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>XA Magazzino ULTRA PRO</title>
+  <title>XA Magazzino ULTRA PRO+</title>
   <meta name="theme-color" content="#111111" />
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
@@ -283,7 +283,7 @@
       font-size:13px;
       color:#e7ecf4;
       line-height:1.35;
-      min-height:100px;
+      min-height:110px;
       position:relative;
       z-index:1;
     }
@@ -514,7 +514,7 @@
 
   <div class="hero">
     <h1>XA Magazzino</h1>
-    <p>ULTRA PRO • proxy + Open Food Facts + BJCP auto • catalogo • magazzino • cassa • luxury gradient</p>
+    <p>ULTRA PRO+ • memoria prezzi • riconoscimento tedesco completo • proxy + fallback • catalogo • cassa • luxury gradient</p>
   </div>
 
   <section id="section-home" class="section active">
@@ -548,17 +548,17 @@
 
       <div class="field">
         <label for="nome">Nome prodotto</label>
-        <input id="nome" placeholder="Es. Spaten München" />
+        <input id="nome" placeholder="Es. Mönchshof Bayrisch Hell" />
       </div>
 
       <div class="field">
         <label for="birrificio">Birrificio</label>
-        <input id="birrificio" placeholder="Es. Spaten München" />
+        <input id="birrificio" placeholder="Es. Mönchshof" />
       </div>
 
       <div class="field">
         <label for="formato">Formato</label>
-        <input id="formato" placeholder="Es. 50 cl / 0,5 l" />
+        <input id="formato" placeholder="Es. 500 ml / 50 cl / 0,5 l" />
       </div>
 
       <div class="field">
@@ -579,6 +579,7 @@
           <div class="chip" id="autoAbvChip">ABV: -</div>
           <div class="chip" id="autoIbuChip">IBU: -</div>
           <div class="chip" id="autoSrmChip">SRM: -</div>
+          <div class="chip" id="autoPrezzoChip">Prezzo memorizzato: -</div>
         </div>
         <div class="small" id="autoNotePreview">Seleziona uno stile BJCP per compilare automaticamente le specifiche.</div>
       </div>
@@ -795,7 +796,10 @@
     "24A Witbier": { abv:"4.5–5.5", ibu:"8–20", srm:"2–4", gusto:"Fresca, agrumata, morbida, poco amara.", aroma:"Coriandolo, scorza d'arancia, frumento.", corpo:"Leggero-medio", finale:"Fresco, leggermente speziato", abbinamenti:"Pesce, insalate, sushi, formaggi freschi" },
     "25B Saison": { abv:"5.0–7.0", ibu:"20–35", srm:"5–14", gusto:"Secca, speziata, rustica, fresca.", aroma:"Pepata, agrumata, erbacea, fruttata leggera.", corpo:"Leggero-medio", finale:"Molto secco, vivace", abbinamenti:"Salumi, pollo, formaggi caprini, piatti speziati" },
     "26C Belgian Tripel": { abv:"7.5–9.5", ibu:"20–40", srm:"4.5–7", gusto:"Ricca ma secca, fruttata, speziata, alcol elegante.", aroma:"Pera, banana lieve, pepe, miele leggero.", corpo:"Medio-pieno", finale:"Secco, caldo, raffinato", abbinamenti:"Carni bianche, formaggi stagionati, cucina ricca" },
-    "23A Berliner Weisse": { abv:"2.8–3.8", ibu:"3–8", srm:"2–3", gusto:"Acida, citrica, leggerissima.", aroma:"Limone, yogurt, cereale tenue.", corpo:"Molto leggero", finale:"Secco, acidulo, pulitissimo", abbinamenti:"Pesce crudo, aperitivo, fritti leggeri" }
+    "23A Berliner Weisse": { abv:"2.8–3.8", ibu:"3–8", srm:"2–3", gusto:"Acida, citrica, leggerissima.", aroma:"Limone, yogurt, cereale tenue.", corpo:"Molto leggero", finale:"Secco, acidulo, pulitissimo", abbinamenti:"Pesce crudo, aperitivo, fritti leggeri" },
+    "8A Munich Dunkel": { abv:"4.5–5.6", ibu:"18–28", srm:"14–28", gusto:"Maltata, crosta di pane, tostato lieve, amaro moderato-basso.", aroma:"Pane tostato, cacao leggero, malto ricco.", corpo:"Medio", finale:"Morbido, maltato, pulito", abbinamenti:"Arrosti, salumi, funghi, formaggi semistagionati" },
+    "7A Vienna Lager": { abv:"4.7–5.5", ibu:"18–30", srm:"9–15", gusto:"Maltata, biscottata, pulita, amaro moderato.", aroma:"Crosta di pane, toast leggero, floreale lieve.", corpo:"Medio-leggero", finale:"Pulito, leggermente secco", abbinamenti:"Salsicce, pollo, pizza, piatti rustici" },
+    "7C Kellerbier": { abv:"4.7–5.4", ibu:"20–35", srm:"3–17", gusto:"Rustica, cereale, pane, luppolo delicato-moderato.", aroma:"Malto, erbaceo, floreale, naturale.", corpo:"Medio", finale:"Pulito, fresco, appena rustico", abbinamenti:"Taglieri, würstel, cucina tedesca" }
   };
 
   const ALL_STYLES = Object.keys(BJCP_DATA);
@@ -831,9 +835,10 @@
     ["#9aa3ad", "#4e5864", "#101722"]
   ];
 
-  let prodotti = JSON.parse(localStorage.getItem("prodotti_xa_ultra")) || [];
-  let movimenti = JSON.parse(localStorage.getItem("movimenti_xa_ultra")) || [];
-  let vendite = JSON.parse(localStorage.getItem("vendite_xa_ultra")) || [];
+  let prodotti = JSON.parse(localStorage.getItem("prodotti_xa_ultra_plus")) || [];
+  let movimenti = JSON.parse(localStorage.getItem("movimenti_xa_ultra_plus")) || [];
+  let vendite = JSON.parse(localStorage.getItem("vendite_xa_ultra_plus")) || [];
+  let memoryPrezzi = JSON.parse(localStorage.getItem("memory_prezzi_xa_ultra_plus")) || {};
   let cassa = [];
   let html5QrCode = null;
   let scannerAttivo = false;
@@ -848,9 +853,10 @@
   }
 
   function salvaDati(){
-    localStorage.setItem("prodotti_xa_ultra", JSON.stringify(prodotti));
-    localStorage.setItem("movimenti_xa_ultra", JSON.stringify(movimenti));
-    localStorage.setItem("vendite_xa_ultra", JSON.stringify(vendite));
+    localStorage.setItem("prodotti_xa_ultra_plus", JSON.stringify(prodotti));
+    localStorage.setItem("movimenti_xa_ultra_plus", JSON.stringify(movimenti));
+    localStorage.setItem("vendite_xa_ultra_plus", JSON.stringify(vendite));
+    localStorage.setItem("memory_prezzi_xa_ultra_plus", JSON.stringify(memoryPrezzi));
   }
 
   function setMsg(text, type=""){
@@ -893,6 +899,55 @@
     const idx = stringHash(key) % LUXURY_GRADIENTS.length;
     const g = LUXURY_GRADIENTS[idx];
     return `linear-gradient(180deg, ${g[0]} 0%, ${g[1]} 32%, ${g[2]} 100%)`;
+  }
+
+  function normalizeKey(s){
+    return String(s || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim();
+  }
+
+  function aggiornaPrezzoMemoria(barcode, nome, birrificio, prezzo){
+    const p = Number(prezzo || 0);
+    if(p <= 0) return;
+    const nomeKey = normalizeKey(nome);
+    const fullKey = normalizeKey(`${nome} ${birrificio || ""}`);
+    if(barcode) memoryPrezzi[`barcode:${barcode}`] = p;
+    if(nomeKey) memoryPrezzi[`nome:${nomeKey}`] = p;
+    if(fullKey) memoryPrezzi[`full:${fullKey}`] = p;
+  }
+
+  function trovaPrezzoMemoria(barcode, nome, birrificio){
+    if(barcode && memoryPrezzi[`barcode:${barcode}`] != null) return memoryPrezzi[`barcode:${barcode}`];
+    const fullKey = normalizeKey(`${nome || ""} ${birrificio || ""}`);
+    if(fullKey && memoryPrezzi[`full:${fullKey}`] != null) return memoryPrezzi[`full:${fullKey}`];
+    const nomeKey = normalizeKey(nome);
+    if(nomeKey && memoryPrezzi[`nome:${nomeKey}`] != null) return memoryPrezzi[`nome:${nomeKey}`];
+
+    // fallback morbido: cerca un nome già salvato che contenga le stesse parole forti
+    const tokens = nomeKey.split(" ").filter(w => w.length > 3);
+    if(tokens.length){
+      for(const k of Object.keys(memoryPrezzi)){
+        if(!k.startsWith("nome:") && !k.startsWith("full:")) continue;
+        const stored = k.split(":").slice(1).join(":");
+        let hits = 0;
+        tokens.forEach(t => { if(stored.includes(t)) hits++; });
+        if(hits >= Math.min(2, tokens.length)) return memoryPrezzi[k];
+      }
+    }
+    return null;
+  }
+
+  function mostraPrezzoMemoria(prezzo){
+    const chip = document.getElementById("autoPrezzoChip");
+    if(prezzo != null && Number(prezzo) > 0){
+      chip.textContent = `Prezzo memorizzato: € ${Number(prezzo).toFixed(2)}`;
+    } else {
+      chip.textContent = "Prezzo memorizzato: -";
+    }
   }
 
   function popolaStili(){
@@ -967,24 +1022,70 @@
     applyBJCPStyle(stile);
   }
 
+  function inferGermanStyle(nome, birrificio){
+    const t = normalizeKey(`${nome || ""} ${birrificio || ""}`);
+
+    if(t.includes("weissbier") || t.includes("weizen") || t.includes("hefeweizen") || t.includes("weiss") || t.includes("weisse")) {
+      return { stile:"10A Weissbier" };
+    }
+
+    if(t.includes("dunkel") || t.includes("dunkles")) {
+      if(t.includes("weizen")) return { stile:"10A Weissbier" };
+      return { stile:"8A Munich Dunkel" };
+    }
+
+    if(t.includes("helles") || t.includes("bayrisch hell") || t.includes("bavarian hell") || t.includes("hell lager") || t.includes("munich helles")) {
+      return { stile:"4A Munich Helles" };
+    }
+
+    if(t.includes(" hell ") || t.startsWith("hell ") || t.endsWith(" hell") || t.includes(" lager hell") || t.includes("bayrisch hell")) {
+      return { stile:"4A Munich Helles" };
+    }
+
+    if(t.includes("pilsner") || t.includes("pils") || t.includes(" pilsener")) {
+      return { stile:"5D German Pils" };
+    }
+
+    if(t.includes("keller") || t.includes("kellerbier") || t.includes("zwickl") || t.includes("landbier")) {
+      return { stile:"7C Kellerbier" };
+    }
+
+    if(t.includes("export") || t.includes("dortmunder")) {
+      return { stile:"7A Vienna Lager" };
+    }
+
+    if(t.includes("märzen") || t.includes("marzen")) {
+      return { stile:"7A Vienna Lager" };
+    }
+
+    if(t.includes("rauch")) {
+      return { stile:"8A Munich Dunkel" };
+    }
+
+    return null;
+  }
+
   function inferStyleFromText(nome, birrificio){
-    const t = `${nome || ""} ${birrificio || ""}`.toLowerCase();
+    const raw = `${nome || ""} ${birrificio || ""}`;
+    const t = normalizeKey(raw);
 
     for (const key in BEER_DB){
-      if(t.includes(key)) return BEER_DB[key];
+      if(t.includes(normalizeKey(key))) return BEER_DB[key];
     }
+
+    const german = inferGermanStyle(nome, birrificio);
+    if(german) return german;
+
     if(t.includes("double ipa") || t.includes("dipa")) return { stile:"22A Double IPA" };
     if(t.includes("ipa")) return { stile:"21A American IPA" };
     if(t.includes("tripel")) return { stile:"26C Belgian Tripel" };
     if(t.includes("saison")) return { stile:"25B Saison" };
     if(t.includes("wit") || t.includes("blanche")) return { stile:"24A Witbier" };
-    if(t.includes("weiss") || t.includes("weizen")) return { stile:"10A Weissbier" };
     if(t.includes("stout")) return { stile:"15A Irish Stout" };
-    if(t.includes("pils")) return { stile:"5D German Pils" };
-    if(t.includes("helles") || t.includes("lager")) return { stile:"4A Munich Helles" };
     if(t.includes("berliner")) return { stile:"23A Berliner Weisse" };
     if(t.includes("pale ale")) return { stile:"18B American Pale Ale" };
     if(t.includes("blonde")) return { stile:"18A Blonde Ale" };
+    if(t.includes("lager")) return { stile:"4A Munich Helles" };
     return null;
   }
 
@@ -1035,6 +1136,17 @@
     }
   }
 
+  function applicaPrezzoMemorizzato(barcode, nome, birrificio){
+    const prezzo = trovaPrezzoMemoria(barcode, nome, birrificio);
+    if(prezzo != null){
+      document.getElementById("prezzo").value = Number(prezzo).toFixed(2);
+      mostraPrezzoMemoria(prezzo);
+      return true;
+    }
+    mostraPrezzoMemoria(null);
+    return false;
+  }
+
   async function cercaProdottoOnline(barcode){
     setScan("Cerco prodotto...");
 
@@ -1046,6 +1158,7 @@
       document.getElementById("qty").value = "1";
       const smart = inferStyleFromText(product.name || "", product.brand || "");
       if(smart && smart.stile) applyBJCPStyle(smart.stile, smart);
+      applicaPrezzoMemorizzato(barcode, product.name || "", product.brand || "");
       setScan("Prodotto trovato tramite proxy.", "ok");
       return true;
     }
@@ -1063,10 +1176,12 @@
       } else {
         setScan("Prodotto trovato. Scegli lo stile BJCP.", "warn");
       }
+      applicaPrezzoMemorizzato(barcode, product.name || "", product.brand || "");
       return true;
     }
 
     setScan("Prodotto non trovato online.", "warn");
+    mostraPrezzoMemoria(null);
     return false;
   }
 
@@ -1092,6 +1207,7 @@
       document.getElementById("finale").value = p.finale || "";
       document.getElementById("abbinamenti").value = p.abbinamenti || "";
       document.getElementById("note").value = p.note || "";
+      mostraPrezzoMemoria(p.prezzo || null);
       setScan("Prodotto già presente nel magazzino.", "ok");
       return;
     }
@@ -1160,6 +1276,7 @@
     document.getElementById("finale").value = p.finale || "";
     document.getElementById("abbinamenti").value = p.abbinamenti || "";
     document.getElementById("note").value = p.note || "";
+    mostraPrezzoMemoria(p.prezzo || null);
     document.getElementById("editBox").style.display = "block";
     document.getElementById("saveBtn").textContent = "Salva modifica";
     showSection("home", document.querySelector('.navBtn[data-section="home"]'));
@@ -1178,6 +1295,7 @@
     document.getElementById("autoAbvChip").textContent = "ABV: -";
     document.getElementById("autoIbuChip").textContent = "IBU: -";
     document.getElementById("autoSrmChip").textContent = "SRM: -";
+    document.getElementById("autoPrezzoChip").textContent = "Prezzo memorizzato: -";
     document.getElementById("autoNotePreview").textContent = "Seleziona uno stile BJCP per compilare automaticamente le specifiche.";
     setMsg("");
     setScan("");
@@ -1220,6 +1338,7 @@
           abv,ibu,srm,gusto,aroma,corpo,finale,abbinamenti,note,
           foto: fotoData || prodotti[editIndex].foto || ""
         };
+        aggiornaPrezzoMemoria(barcode, nome, birrificio, prezzo);
         registraMovimento("MODIFICA", prodotti[editIndex], 0);
         salvaDati();
         annullaModifica();
@@ -1238,6 +1357,7 @@
           foto: fotoData || prodotti[idx].foto || "",
           qty:Number(prodotti[idx].qty || 0) + Number(qty || 0)
         };
+        aggiornaPrezzoMemoria(barcode, nome, birrificio, prezzo);
         registraMovimento("CARICO", prodotti[idx], Number(qty || 0));
         setMsg("Prodotto aggiornato. Quantità aumentata.", "ok");
       } else {
@@ -1250,6 +1370,7 @@
           foto: fotoData || ""
         };
         prodotti.push(nuovo);
+        aggiornaPrezzoMemoria(barcode, nome, birrificio, prezzo);
         registraMovimento("NUOVO", nuovo, Number(qty || 0));
         setMsg("Prodotto salvato nel magazzino.", "ok");
       }
@@ -1581,12 +1702,12 @@
   }
 
   function downloadBackup(){
-    const data = { prodotti, movimenti, vendite, exportedAt: nowString() };
+    const data = { prodotti, movimenti, vendite, memoryPrezzi, exportedAt: nowString() };
     const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "xa-magazzino-ultra-backup.json";
+    a.download = "xa-magazzino-ultra-plus-backup.json";
     a.click();
     URL.revokeObjectURL(url);
   }
@@ -1601,6 +1722,7 @@
         prodotti = Array.isArray(data.prodotti) ? data.prodotti : [];
         movimenti = Array.isArray(data.movimenti) ? data.movimenti : [];
         vendite = Array.isArray(data.vendite) ? data.vendite : [];
+        memoryPrezzi = data.memoryPrezzi && typeof data.memoryPrezzi === "object" ? data.memoryPrezzi : {};
         salvaDati();
         refreshAll();
         setMsg("Backup ripristinato.", "ok");
@@ -1634,6 +1756,7 @@
     prodotti = [];
     movimenti = [];
     vendite = [];
+    memoryPrezzi = {};
     cassa = [];
     breweryFilterChip = "";
     editIndex = null;
