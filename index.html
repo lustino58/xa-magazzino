@@ -31,7 +31,7 @@
     }
     h1,h2,h3,p{margin:0}
     .app{
-      max-width:900px;
+      max-width:980px;
       margin:0 auto;
     }
     .hero{
@@ -91,7 +91,8 @@
       padding:14px;
       border-radius:12px;
       border:1px solid var(--line);
-      font-size:18px;
+      font-size:17px;
+      margin-top:8px;
     }
     input, select{
       background:#f2f3f7;
@@ -106,7 +107,6 @@
     .gold{background:var(--gold); color:var(--goldText);}
     .dark{background:var(--panel2); color:var(--text);}
     .danger{background:var(--danger); color:#fff;}
-    .ghost{background:transparent; color:var(--text);}
     .small{
       font-size:14px;
       color:var(--muted);
@@ -187,6 +187,14 @@
       font-size:14px;
       margin-top:6px;
     }
+    .productImage{
+      width:100%;
+      max-width:180px;
+      border-radius:12px;
+      display:block;
+      margin-bottom:10px;
+      border:1px solid var(--line);
+    }
     @media (max-width:700px){
       .row,.row3,.actions,.toolbar,.stats{grid-template-columns:1fr 1fr}
     }
@@ -197,7 +205,7 @@
 
     <div class="hero">
       <h1>XA Magazzino</h1>
-      <p>Scanner barcode • magazzino reale • movimenti • backup</p>
+      <p>Scanner barcode • BJCP • foto etichetta • movimenti • backup</p>
     </div>
 
     <div class="stats grid">
@@ -220,7 +228,7 @@
     </div>
 
     <div class="card">
-      <div class="sectionTitle">Scanner e inserimento</div>
+      <div class="sectionTitle">Scanner e inserimento prodotto</div>
 
       <input id="barcode" placeholder="Barcode" />
       <div class="toolbar">
@@ -230,18 +238,135 @@
       <div id="reader"></div>
       <div id="scanStatus" class="small"></div>
 
-      <div style="height:10px"></div>
-
       <input id="nome" placeholder="Nome prodotto" />
       <div class="row">
         <input id="birrificio" placeholder="Birrificio" />
-        <input id="stile" placeholder="Stile" />
-      </div>
-      <div class="row3">
         <input id="formato" placeholder="Formato" />
+      </div>
+
+      <select id="stile">
+        <option value="">Seleziona stile BJCP</option>
+        <option>1A American Light Lager</option>
+        <option>1B American Lager</option>
+        <option>1C Cream Ale</option>
+        <option>1D American Wheat Beer</option>
+        <option>2A International Pale Lager</option>
+        <option>2B International Amber Lager</option>
+        <option>2C International Dark Lager</option>
+        <option>3A Czech Pale Lager</option>
+        <option>3B Czech Premium Pale Lager</option>
+        <option>3C Czech Amber Lager</option>
+        <option>3D Czech Dark Lager</option>
+        <option>4A Munich Helles</option>
+        <option>4B Festbier</option>
+        <option>4C Helles Bock</option>
+        <option>5A German Leichtbier</option>
+        <option>5B Kölsch</option>
+        <option>5C German Helles Exportbier</option>
+        <option>5D German Pils</option>
+        <option>6A Märzen</option>
+        <option>6B Rauchbier</option>
+        <option>6C Dunkles Bock</option>
+        <option>7A Vienna Lager</option>
+        <option>7B Altbier</option>
+        <option>7C Kellerbier</option>
+        <option>8A Munich Dunkel</option>
+        <option>8B Schwarzbier</option>
+        <option>9A Doppelbock</option>
+        <option>9B Eisbock</option>
+        <option>9C Baltic Porter</option>
+        <option>10A Weissbier</option>
+        <option>10B Dunkles Weissbier</option>
+        <option>10C Weizenbock</option>
+        <option>11A Ordinary Bitter</option>
+        <option>11B Best Bitter</option>
+        <option>11C Strong Bitter</option>
+        <option>12A British Golden Ale</option>
+        <option>12B Australian Sparkling Ale</option>
+        <option>12C English IPA</option>
+        <option>13A Dark Mild</option>
+        <option>13B British Brown Ale</option>
+        <option>13C English Porter</option>
+        <option>14A Scottish Light</option>
+        <option>14B Scottish Heavy</option>
+        <option>14C Scottish Export</option>
+        <option>14D Irish Red Ale</option>
+        <option>15A Irish Stout</option>
+        <option>15B Irish Extra Stout</option>
+        <option>15C Sweet Stout</option>
+        <option>15D Oatmeal Stout</option>
+        <option>15E Tropical Stout</option>
+        <option>15F Foreign Extra Stout</option>
+        <option>16A Sweet Stout</option>
+        <option>16B Oatmeal Stout</option>
+        <option>16C Tropical Stout</option>
+        <option>16D Foreign Extra Stout</option>
+        <option>17A British Strong Ale</option>
+        <option>17B Old Ale</option>
+        <option>17C Wee Heavy</option>
+        <option>17D English Barleywine</option>
+        <option>18A Blonde Ale</option>
+        <option>18B American Pale Ale</option>
+        <option>19A American Amber Ale</option>
+        <option>19B California Common</option>
+        <option>20A American Porter</option>
+        <option>20B American Stout</option>
+        <option>20C Imperial Stout</option>
+        <option>21A American IPA</option>
+        <option>21B Specialty IPA</option>
+        <option>22A Double IPA</option>
+        <option>22B American Strong Ale</option>
+        <option>22C American Barleywine</option>
+        <option>22D Wheatwine</option>
+        <option>23A Berliner Weisse</option>
+        <option>23B Flanders Red Ale</option>
+        <option>23C Oud Bruin</option>
+        <option>23D Lambic</option>
+        <option>23E Gueuze</option>
+        <option>23F Fruit Lambic</option>
+        <option>24A Witbier</option>
+        <option>24B Belgian Pale Ale</option>
+        <option>24C Bière de Garde</option>
+        <option>25A Belgian Blond Ale</option>
+        <option>25B Saison</option>
+        <option>25C Belgian Golden Strong Ale</option>
+        <option>26A Belgian Single</option>
+        <option>26B Belgian Dubbel</option>
+        <option>26C Belgian Tripel</option>
+        <option>26D Belgian Dark Strong Ale</option>
+        <option>27A Historical Beer</option>
+        <option>27B Kentucky Common</option>
+        <option>27C Kellerbier</option>
+        <option>27D Pre-Prohibition Lager</option>
+        <option>27E Pre-Prohibition Porter</option>
+        <option>28A Brett Beer</option>
+        <option>28B Mixed-Fermentation Sour Beer</option>
+        <option>28C Wild Specialty Beer</option>
+        <option>29A Fruit Beer</option>
+        <option>29B Fruit and Spice Beer</option>
+        <option>29C Specialty Fruit Beer</option>
+        <option>30A Spice, Herb, or Vegetable Beer</option>
+        <option>30B Autumn Seasonal Beer</option>
+        <option>30C Winter Seasonal Beer</option>
+        <option>31A Alternative Grain Beer</option>
+        <option>31B Alternative Sugar Beer</option>
+        <option>31C Classic Style Smoked Beer</option>
+        <option>31D Specialty Smoked Beer</option>
+        <option>32A Wood-Aged Beer</option>
+        <option>32B Specialty Wood-Aged Beer</option>
+        <option>33A Specialty Beer</option>
+        <option>34A Clone Beer</option>
+        <option>34B Mixed-Style Beer</option>
+        <option>34C Experimental Beer</option>
+      </select>
+
+      <div class="row3">
         <input id="qty" type="number" placeholder="Quantità" />
         <input id="soglia" type="number" placeholder="Scorta minima" />
+        <input id="searchStyle" placeholder="Cerca stile BJCP" oninput="filtraStili()" />
       </div>
+
+      <input type="file" id="foto" accept="image/*" />
 
       <div class="toolbar">
         <button onclick="salvaProdotto()">Salva prodotto</button>
@@ -294,6 +419,43 @@
   </div>
 
   <script>
+    const stiliBJCP = [
+      "1A American Light Lager","1B American Lager","1C Cream Ale","1D American Wheat Beer",
+      "2A International Pale Lager","2B International Amber Lager","2C International Dark Lager",
+      "3A Czech Pale Lager","3B Czech Premium Pale Lager","3C Czech Amber Lager","3D Czech Dark Lager",
+      "4A Munich Helles","4B Festbier","4C Helles Bock",
+      "5A German Leichtbier","5B Kölsch","5C German Helles Exportbier","5D German Pils",
+      "6A Märzen","6B Rauchbier","6C Dunkles Bock",
+      "7A Vienna Lager","7B Altbier","7C Kellerbier",
+      "8A Munich Dunkel","8B Schwarzbier",
+      "9A Doppelbock","9B Eisbock","9C Baltic Porter",
+      "10A Weissbier","10B Dunkles Weissbier","10C Weizenbock",
+      "11A Ordinary Bitter","11B Best Bitter","11C Strong Bitter",
+      "12A British Golden Ale","12B Australian Sparkling Ale","12C English IPA",
+      "13A Dark Mild","13B British Brown Ale","13C English Porter",
+      "14A Scottish Light","14B Scottish Heavy","14C Scottish Export","14D Irish Red Ale",
+      "15A Irish Stout","15B Irish Extra Stout","15C Sweet Stout","15D Oatmeal Stout","15E Tropical Stout","15F Foreign Extra Stout",
+      "16A Sweet Stout","16B Oatmeal Stout","16C Tropical Stout","16D Foreign Extra Stout",
+      "17A British Strong Ale","17B Old Ale","17C Wee Heavy","17D English Barleywine",
+      "18A Blonde Ale","18B American Pale Ale",
+      "19A American Amber Ale","19B California Common",
+      "20A American Porter","20B American Stout","20C Imperial Stout",
+      "21A American IPA","21B Specialty IPA",
+      "22A Double IPA","22B American Strong Ale","22C American Barleywine","22D Wheatwine",
+      "23A Berliner Weisse","23B Flanders Red Ale","23C Oud Bruin","23D Lambic","23E Gueuze","23F Fruit Lambic",
+      "24A Witbier","24B Belgian Pale Ale","24C Bière de Garde",
+      "25A Belgian Blond Ale","25B Saison","25C Belgian Golden Strong Ale",
+      "26A Belgian Single","26B Belgian Dubbel","26C Belgian Tripel","26D Belgian Dark Strong Ale",
+      "27A Historical Beer","27B Kentucky Common","27C Kellerbier","27D Pre-Prohibition Lager","27E Pre-Prohibition Porter",
+      "28A Brett Beer","28B Mixed-Fermentation Sour Beer","28C Wild Specialty Beer",
+      "29A Fruit Beer","29B Fruit and Spice Beer","29C Specialty Fruit Beer",
+      "30A Spice, Herb, or Vegetable Beer","30B Autumn Seasonal Beer","30C Winter Seasonal Beer",
+      "31A Alternative Grain Beer","31B Alternative Sugar Beer","31C Classic Style Smoked Beer","31D Specialty Smoked Beer",
+      "32A Wood-Aged Beer","32B Specialty Wood-Aged Beer",
+      "33A Specialty Beer",
+      "34A Clone Beer","34B Mixed-Style Beer","34C Experimental Beer"
+    ];
+
     let prodotti = JSON.parse(localStorage.getItem("prodotti_xa_max")) || [];
     let movimenti = JSON.parse(localStorage.getItem("movimenti_xa_max")) || [];
     let html5QrCode = null;
@@ -329,6 +491,29 @@
         .replaceAll("'", "&#039;");
     }
 
+    function popolaStili(lista){
+      const select = document.getElementById("stile");
+      const valoreAttuale = select.value;
+      select.innerHTML = `<option value="">Seleziona stile BJCP</option>`;
+      lista.forEach(stile => {
+        const option = document.createElement("option");
+        option.value = stile;
+        option.textContent = stile;
+        select.appendChild(option);
+      });
+      if(lista.includes(valoreAttuale)) select.value = valoreAttuale;
+    }
+
+    function filtraStili(){
+      const q = document.getElementById("searchStyle").value.trim().toLowerCase();
+      if(!q){
+        popolaStili(stiliBJCP);
+        return;
+      }
+      const filtrati = stiliBJCP.filter(s => s.toLowerCase().includes(q));
+      popolaStili(filtrati);
+    }
+
     function trovaPerBarcode(barcode){
       return prodotti.findIndex(p => String(p.barcode || "").trim() === String(barcode || "").trim());
     }
@@ -337,10 +522,13 @@
       document.getElementById("barcode").value = "";
       document.getElementById("nome").value = "";
       document.getElementById("birrificio").value = "";
-      document.getElementById("stile").value = "";
       document.getElementById("formato").value = "";
+      document.getElementById("stile").value = "";
       document.getElementById("qty").value = "";
       document.getElementById("soglia").value = "";
+      document.getElementById("foto").value = "";
+      document.getElementById("searchStyle").value = "";
+      popolaStili(stiliBJCP);
       setMsg("");
       setScan("");
     }
@@ -362,10 +550,11 @@
       const barcode = document.getElementById("barcode").value.trim();
       const nome = document.getElementById("nome").value.trim();
       const birrificio = document.getElementById("birrificio").value.trim();
-      const stile = document.getElementById("stile").value.trim();
       const formato = document.getElementById("formato").value.trim();
+      const stile = document.getElementById("stile").value.trim();
       const qty = parseInt(document.getElementById("qty").value || "0", 10);
       const soglia = parseInt(document.getElementById("soglia").value || "0", 10);
+      const file = document.getElementById("foto").files[0];
 
       if(!barcode){
         setMsg("Inserisci o scansiona un barcode.", "warn");
@@ -378,27 +567,47 @@
 
       const idx = trovaPerBarcode(barcode);
 
+      if(file){
+        const reader = new FileReader();
+        reader.onload = function(){
+          completaSalvataggio(idx, {
+            barcode, nome, birrificio, formato, stile, qty, soglia, foto: reader.result
+          });
+        };
+        reader.readAsDataURL(file);
+      } else {
+        let fotoEsistente = "";
+        if(idx >= 0) fotoEsistente = prodotti[idx].foto || "";
+        completaSalvataggio(idx, {
+          barcode, nome, birrificio, formato, stile, qty, soglia, foto: fotoEsistente
+        });
+      }
+    }
+
+    function completaSalvataggio(idx, data){
       if(idx >= 0){
-        prodotti[idx].nome = nome;
-        prodotti[idx].birrificio = birrificio;
-        prodotti[idx].stile = stile;
-        prodotti[idx].formato = formato;
-        prodotti[idx].soglia = soglia;
-        prodotti[idx].qty = Number(prodotti[idx].qty || 0) + Number(qty || 0);
-        registraMovimento("CARICO", prodotti[idx], Number(qty || 0));
+        prodotti[idx].nome = data.nome;
+        prodotti[idx].birrificio = data.birrificio;
+        prodotti[idx].formato = data.formato;
+        prodotti[idx].stile = data.stile;
+        prodotti[idx].soglia = data.soglia;
+        prodotti[idx].foto = data.foto || prodotti[idx].foto || "";
+        prodotti[idx].qty = Number(prodotti[idx].qty || 0) + Number(data.qty || 0);
+        registraMovimento("CARICO", prodotti[idx], Number(data.qty || 0));
         setMsg("Prodotto aggiornato. Quantità aumentata.", "ok");
       } else {
         const nuovo = {
-          barcode,
-          nome,
-          birrificio,
-          stile,
-          formato,
-          qty: Number(qty || 0),
-          soglia: Number(soglia || 0)
+          barcode: data.barcode,
+          nome: data.nome,
+          birrificio: data.birrificio,
+          formato: data.formato,
+          stile: data.stile,
+          qty: Number(data.qty || 0),
+          soglia: Number(data.soglia || 0),
+          foto: data.foto || ""
         };
         prodotti.push(nuovo);
-        registraMovimento("NUOVO", nuovo, Number(qty || 0));
+        registraMovimento("NUOVO", nuovo, Number(data.qty || 0));
         setMsg("Prodotto salvato nel magazzino.", "ok");
       }
 
@@ -441,7 +650,7 @@
       mostra();
     }
 
-    function updateStats(filteredList = prodotti){
+    function updateStats(){
       document.getElementById("statProdotti").textContent = prodotti.length;
       document.getElementById("statPezzi").textContent = prodotti.reduce((a,p)=>a+Number(p.qty||0),0);
       document.getElementById("statScorte").textContent = prodotti.filter(p => Number(p.qty||0) <= Number(p.soglia||0)).length;
@@ -487,13 +696,14 @@
           const bassa = Number(p.qty||0) <= Number(p.soglia||0);
           html += `
             <div class="product">
+              ${p.foto ? `<img class="productImage" src="${p.foto}" alt="${escapeHtml(p.nome)}">` : ""}
               <div class="productTop">
                 <div>
                   <div class="productName">${escapeHtml(p.nome || "Senza nome")}</div>
                   <div class="small">
                     Barcode: ${escapeHtml(p.barcode || "-")}<br>
                     ${p.birrificio ? "Birrificio: " + escapeHtml(p.birrificio) + "<br>" : ""}
-                    ${p.stile ? "Stile: " + escapeHtml(p.stile) + "<br>" : ""}
+                    ${p.stile ? "BJCP: " + escapeHtml(p.stile) + "<br>" : ""}
                     ${p.formato ? "Formato: " + escapeHtml(p.formato) + "<br>" : ""}
                     Scorta minima: ${Number(p.soglia||0)}
                   </div>
@@ -526,7 +736,7 @@
         `).join("");
       }
 
-      updateStats(items);
+      updateStats();
     }
 
     async function cercaProdottoOnline(barcode){
@@ -544,11 +754,8 @@
             data.product.generic_name ||
             "";
 
-          const marca =
-            data.product.brands || "";
-
-          const qtyTxt =
-            data.product.quantity || "";
+          const marca = data.product.brands || "";
+          const qtyTxt = data.product.quantity || "";
 
           if(nome){
             document.getElementById("nome").value = nome;
@@ -579,8 +786,8 @@
         const p = prodotti[idx];
         document.getElementById("nome").value = p.nome || "";
         document.getElementById("birrificio").value = p.birrificio || "";
-        document.getElementById("stile").value = p.stile || "";
         document.getElementById("formato").value = p.formato || "";
+        document.getElementById("stile").value = p.stile || "";
         document.getElementById("qty").value = "1";
         document.getElementById("soglia").value = p.soglia || 0;
         setScan("Prodotto già presente nel tuo magazzino.", "ok");
@@ -682,6 +889,7 @@
       setMsg("Magazzino azzerato.", "warn");
     }
 
+    popolaStili(stiliBJCP);
     mostra();
   </script>
 </body>
