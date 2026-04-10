@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>XA Magazzino ULTRA BIRRIFICIO PRO</title>
+  <title>XA Magazzino ULTRA immagini ovunque</title>
   <meta name="theme-color" content="#111111" />
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
@@ -56,7 +56,7 @@
       box-shadow:0 0 8px var(--neonR),0 0 18px rgba(59,130,255,.45);
     }
 
-    .app{max-width:1200px;margin:0 auto}
+    .app{max-width:1250px;margin:0 auto}
     h1,h2,h3,p{margin:0}
 
     .hero{
@@ -174,13 +174,6 @@
       margin-top:10px;
     }
 
-    .toolbar3{
-      display:grid;
-      grid-template-columns:1fr 1fr 1fr;
-      gap:10px;
-      margin-top:10px;
-    }
-
     .small{
       font-size:14px;
       color:var(--muted);
@@ -267,7 +260,7 @@
       box-shadow:0 0 0 2px rgba(67,198,109,.85),0 0 18px rgba(67,198,109,.45),0 12px 26px rgba(0,0,0,.22);
     }
 
-    .catalogItem img,.productImage{
+    .catalogImage,.productImage,.breweryMainImage{
       width:100%;
       object-fit:cover;
       border-radius:16px;
@@ -277,14 +270,72 @@
       z-index:1;
     }
 
-    .catalogItem img{
-      height:110px;
-      margin-bottom:8px;
+    .catalogImage{
+      height:180px;
+      margin-bottom:10px;
     }
 
     .productImage{
-      max-height:220px;
+      max-height:240px;
       margin-bottom:12px;
+    }
+
+    .breweryMainImage{
+      height:180px;
+      margin-bottom:12px;
+    }
+
+    .placeholderImage{
+      width:100%;
+      height:180px;
+      border-radius:16px;
+      margin-bottom:10px;
+      border:1px solid rgba(255,255,255,.10);
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.18), transparent 20%),
+        linear-gradient(135deg, rgba(211,175,104,.35), rgba(90,164,255,.20), rgba(16,23,34,.95));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:12px;
+      font-size:14px;
+      font-weight:800;
+      color:#f7fbff;
+      position:relative;
+      z-index:1;
+    }
+
+    .miniThumbRow{
+      display:flex;
+      gap:8px;
+      overflow-x:auto;
+      padding-bottom:4px;
+      position:relative;
+      z-index:1;
+      margin-top:12px;
+    }
+
+    .miniThumb,.miniThumbPlaceholder{
+      width:64px;
+      height:64px;
+      border-radius:12px;
+      flex:0 0 auto;
+      border:1px solid rgba(255,255,255,.10);
+      background:#111;
+      object-fit:cover;
+    }
+
+    .miniThumbPlaceholder{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:10px;
+      text-align:center;
+      padding:6px;
+      color:#fff;
+      background:
+        linear-gradient(135deg, rgba(211,175,104,.35), rgba(90,164,255,.20), rgba(16,23,34,.95));
     }
 
     .catalogName,.breweryName,.productName{
@@ -495,7 +546,7 @@
 
   <div class="hero">
     <h1>XA Magazzino</h1>
-    <p>Ultra Birrificio Pro • schede birrificio • valore stock • catalogo e magazzino filtrati</p>
+    <p>Immagini ovunque • birrifici pro • catalogo visivo • magazzino con foto • placeholder elegante</p>
   </div>
 
   <section id="section-home" class="section active">
@@ -656,7 +707,7 @@
       </div>
 
       <div class="field">
-        <label for="foto">Foto etichetta</label>
+        <label for="foto">Foto etichetta / lattina / bottiglia</label>
         <input type="file" id="foto" accept="image/*" />
       </div>
 
@@ -886,10 +937,10 @@
     ["#9aa3ad", "#4e5864", "#101722"]
   ];
 
-  let prodotti = JSON.parse(localStorage.getItem("prodotti_xa_ultra_birrificio_pro")) || [];
-  let movimenti = JSON.parse(localStorage.getItem("movimenti_xa_ultra_birrificio_pro")) || [];
-  let vendite = JSON.parse(localStorage.getItem("vendite_xa_ultra_birrificio_pro")) || [];
-  let memoryPrezzi = JSON.parse(localStorage.getItem("memory_prezzi_xa_ultra_birrificio_pro")) || {};
+  let prodotti = JSON.parse(localStorage.getItem("prodotti_xa_immagini_ovunque")) || [];
+  let movimenti = JSON.parse(localStorage.getItem("movimenti_xa_immagini_ovunque")) || [];
+  let vendite = JSON.parse(localStorage.getItem("vendite_xa_immagini_ovunque")) || [];
+  let memoryPrezzi = JSON.parse(localStorage.getItem("memory_prezzi_xa_immagini_ovunque")) || {};
   let cassa = [];
   let html5QrCode = null;
   let scannerAttivo = false;
@@ -919,10 +970,10 @@
   }
 
   function salvaDati(){
-    localStorage.setItem("prodotti_xa_ultra_birrificio_pro", JSON.stringify(prodotti));
-    localStorage.setItem("movimenti_xa_ultra_birrificio_pro", JSON.stringify(movimenti));
-    localStorage.setItem("vendite_xa_ultra_birrificio_pro", JSON.stringify(vendite));
-    localStorage.setItem("memory_prezzi_xa_ultra_birrificio_pro", JSON.stringify(memoryPrezzi));
+    localStorage.setItem("prodotti_xa_immagini_ovunque", JSON.stringify(prodotti));
+    localStorage.setItem("movimenti_xa_immagini_ovunque", JSON.stringify(movimenti));
+    localStorage.setItem("vendite_xa_immagini_ovunque", JSON.stringify(vendite));
+    localStorage.setItem("memory_prezzi_xa_immagini_ovunque", JSON.stringify(memoryPrezzi));
   }
 
   function setMsg(text, type=""){
@@ -1147,8 +1198,7 @@
       return {
         name: p.product_name_it || p.product_name || p.generic_name_it || p.generic_name || "",
         brand: p.brands || "",
-        quantity: p.quantity || "",
-        image: p.image_front_url || p.image_url || ""
+        quantity: p.quantity || ""
       };
     } catch(e){
       return null;
@@ -1258,6 +1308,20 @@
     }
     scannerAttivo = false;
     reader.style.display = "none";
+  }
+
+  function getImageHtml(prod, className="catalogImage"){
+    if(prod.foto){
+      return `<img class="${className}" src="${prod.foto}" alt="${escapeHtml(prod.nome || "birra")}">`;
+    }
+    return `<div class="placeholderImage">${escapeHtml(prod.nome || "Birra")}<br><span style="opacity:.8;font-size:12px;">foto non caricata</span></div>`;
+  }
+
+  function getMiniThumbHtml(prod){
+    if(prod.foto){
+      return `<img class="miniThumb" src="${prod.foto}" alt="${escapeHtml(prod.nome || "birra")}">`;
+    }
+    return `<div class="miniThumbPlaceholder">${escapeHtml((prod.nome || "birra").slice(0,18))}</div>`;
   }
 
   function entraInModalitaModifica(i){
@@ -1423,7 +1487,8 @@
       const totaleReferenze = items.length;
       const totalePezzi = items.reduce((a,p)=>a+Number(p.qty||0),0);
       const valoreStock = items.reduce((a,p)=>a + (Number(p.qty||0) * Number(p.prezzo||0)), 0);
-      return { nome, totaleReferenze, totalePezzi, valoreStock };
+      const immagine = items.find(p => p.foto)?.foto || "";
+      return { nome, items, totaleReferenze, totalePezzi, valoreStock, immagine };
     });
   }
 
@@ -1479,15 +1544,21 @@
     }
 
     box.innerHTML = items.map(b => {
-      const bg = getLuxuryGradient({ nome:b.nome, birrificio:b.nome, stile:"birrificio-pro" });
+      const bg = getLuxuryGradient({ nome:b.nome, birrificio:b.nome, stile:"birrificio-img" });
       return `
         <div class="breweryCard" style="background:${bg}">
+          ${b.immagine ? `<img class="breweryMainImage" src="${b.immagine}" alt="${escapeHtml(b.nome)}">` : `<div class="placeholderImage">${escapeHtml(b.nome)}<br><span style="opacity:.8;font-size:12px;">nessuna immagine</span></div>`}
           <div class="breweryName">${escapeHtml(b.nome)}</div>
           <div class="breweryMeta">
             Referenze: <b>${b.totaleReferenze}</b><br>
             Pezzi totali: <b>${b.totalePezzi}</b><br>
             Valore stock: <b>€ ${b.valoreStock.toFixed(2)}</b>
           </div>
+
+          <div class="miniThumbRow">
+            ${b.items.slice(0,8).map(p => getMiniThumbHtml(p)).join("")}
+          </div>
+
           <div class="toolbar2" style="position:relative;z-index:1;margin-top:12px;">
             <button class="btn btn-blue" onclick="event.stopPropagation(); openCatalogForBrewery('${escapeHtml(b.nome)}')">Apri catalogo</button>
             <button class="btn btn-green" onclick="event.stopPropagation(); openMagazzinoForBrewery('${escapeHtml(b.nome)}')">Apri magazzino</button>
@@ -1583,7 +1654,7 @@
       const bg = getLuxuryGradient(p);
       return `
         <div id="catalog-item-${i}" class="catalogItem" onclick="addToCassaHardcore(${i})" style="background:${bg}">
-          ${p.foto ? `<img src="${p.foto}" alt="${escapeHtml(p.nome)}">` : ""}
+          ${getImageHtml(p,"catalogImage")}
           <div class="catalogName">${escapeHtml(p.nome || "Senza nome")}</div>
           <div class="catalogMeta">
             ${p.birrificio ? "<b>" + escapeHtml(p.birrificio) + "</b><br>" : ""}
@@ -1648,7 +1719,7 @@
       const bg = getLuxuryGradient(p);
       return `
         <div class="product" style="background:${bg}">
-          ${p.foto ? `<img class="productImage" src="${p.foto}" alt="${escapeHtml(p.nome)}">` : ""}
+          ${getImageHtml(p,"productImage")}
           <div class="productHeader">
             <div style="flex:1;">
               <div class="productName">${escapeHtml(p.nome || "Senza nome")}</div>
@@ -1798,7 +1869,7 @@
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "xa-ultra-birrificio-pro-backup.json";
+    a.download = "xa-immagini-ovunque-backup.json";
     a.click();
     URL.revokeObjectURL(url);
   }
