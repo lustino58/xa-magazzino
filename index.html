@@ -174,13 +174,6 @@
       margin-top:10px;
     }
 
-    .toolbar3{
-      display:grid;
-      grid-template-columns:1fr 1fr 1fr;
-      gap:10px;
-      margin-top:10px;
-    }
-
     .toolbar4{
       display:grid;
       grid-template-columns:1fr 1fr;
@@ -251,7 +244,7 @@
       margin-top:10px;
     }
 
-    .catalogItem,.product,.breweryCard{
+    .catalogItem,.product,.breweryCard,.backupCard{
       position:relative;
       border-radius:24px;
       padding:14px;
@@ -262,7 +255,7 @@
 
     .catalogItem,.breweryCard{ cursor:pointer; }
 
-    .catalogItem::after,.product::after,.breweryCard::after{
+    .catalogItem::after,.product::after,.breweryCard::after,.backupCard::after{
       content:"";
       position:absolute;
       inset:0;
@@ -369,7 +362,7 @@
     .breweryName{ font-size:26px; margin-bottom:10px; }
     .productName{ font-size:26px; margin-bottom:8px; }
 
-    .catalogMeta,.breweryMeta,.productMeta{
+    .catalogMeta,.breweryMeta,.productMeta,.backupMeta{
       position:relative;
       z-index:1;
       font-size:15px;
@@ -444,7 +437,7 @@
       line-height:1.1;
     }
 
-    .productActions{
+    .productActions,.backupActions{
       display:grid;
       grid-template-columns:1fr 1fr;
       gap:10px;
@@ -566,7 +559,7 @@
 
   <div class="hero">
     <h1>XA Magazzino</h1>
-    <p>Immagini ovunque • birrifici pro • catalogo visivo • magazzino con foto • AI foto locale</p>
+    <p>Immagini ovunque • birrifici pro • catalogo visivo • magazzino con foto • backup pro</p>
   </div>
 
   <section id="section-home" class="section active">
@@ -734,10 +727,10 @@
       <div id="previewBox"></div>
 
       <div class="toolbar4">
-        <button class="btn btn-violet" onclick="aiFotoAssist()">AI FOTO</button>
         <button id="saveBtn" class="btn btn-green" onclick="salvaProdotto()">Salva prodotto</button>
         <button class="btn btn-cyan" onclick="annullaModifica()">Svuota campi</button>
         <button id="deleteBtn" class="btn btn-red" onclick="eliminaProdottoInModifica()" style="display:none;">Elimina prodotto</button>
+        <button class="btn btn-violet" onclick="creaBackupManuale()">Crea backup</button>
       </div>
 
       <div id="messageBox" class="small"></div>
@@ -892,6 +885,12 @@
       <div class="small">Il reset cancella prodotti, movimenti e vendite dal telefono.</div>
     </div>
 
+    <div class="card">
+      <div class="sectionTitle">Backup Pro automatici</div>
+      <div class="small">L'app conserva automaticamente le ultime 5 copie locali del magazzino.</div>
+      <div id="backupList"></div>
+    </div>
+
     <div class="card" id="movimentiCard" style="display:none">
       <div class="sectionTitle">Storico movimenti</div>
       <div id="movimentiLista"></div>
@@ -946,11 +945,6 @@
     "hoegaarden": { stile:"24A Witbier", abv:"4.9", ibu:"12–18", srm:"3" }
   };
 
-  const KNOWN_BREWERIES = [
-    "Moretti","Peroni","Ichnusa","Menabrea","Poretti","Beck's","Heineken","Spaten","Paulaner","Guinness","Leffe","Hoegaarden",
-    "Mönchshof","Ayinger","Augustiner","Weihenstephan","Franziskaner","Erdinger","Warsteiner","Bitburger","Krombacher","HB"
-  ];
-
   const LUXURY_GRADIENTS = [
     ["#d4af37", "#6f5620", "#101722"],
     ["#c78b2d", "#7a4f17", "#101722"],
@@ -970,6 +964,7 @@
   let movimenti = JSON.parse(localStorage.getItem("movimenti_xa_immagini_ovunque")) || [];
   let vendite = JSON.parse(localStorage.getItem("vendite_xa_immagini_ovunque")) || [];
   let memoryPrezzi = JSON.parse(localStorage.getItem("memory_prezzi_xa_immagini_ovunque")) || {};
+  let autoBackups = JSON.parse(localStorage.getItem("auto_backups_xa_immagini_ovunque")) || [];
   let cassa = [];
   let html5QrCode = null;
   let scannerAttivo = false;
@@ -1003,6 +998,7 @@
     localStorage.setItem("movimenti_xa_immagini_ovunque", JSON.stringify(movimenti));
     localStorage.setItem("vendite_xa_immagini_ovunque", JSON.stringify(vendite));
     localStorage.setItem("memory_prezzi_xa_immagini_ovunque", JSON.stringify(memoryPrezzi));
+    localStorage.setItem("auto_backups_xa_immagini_ovunque", JSON.stringify(autoBackups));
   }
 
   function setMsg(text, type=""){
@@ -1019,6 +1015,10 @@
 
   function nowString(){
     return new Date().toLocaleString("it-IT");
+  }
+
+  function nowISO(){
+    return new Date().toISOString();
   }
 
   function escapeHtml(text){
@@ -1427,52 +1427,78 @@
     });
   }
 
-  function filenameToCleanText(name){
-    return String(name || "")
-      .replace(/\.[^/.]+$/, "")
-      .replace(/[_\-]+/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
+  function buildSnapshot(label = "AUTO"){
+    return {
+      id: "bk-" + Date.now() + "-" + Math.floor(Math.random() * 10000),
+      label,
+      createdAt: nowISO(),
+      createdAtView: nowString(),
+      prodotti,
+      movimenti,
+      vendite,
+      memoryPrezzi
+    };
   }
 
-  function findKnownBrewery(text){
-    const low = normalizeKey(text);
-    return KNOWN_BREWERIES.find(b => low.includes(normalizeKey(b))) || "";
+  function saveAutoBackup(label = "AUTO"){
+    const snapshot = buildSnapshot(label);
+    autoBackups.unshift(snapshot);
+    autoBackups = autoBackups.slice(0,5);
+    salvaDati();
   }
 
-  function aiFotoAssist(){
-    const file = document.getElementById("foto").files?.[0];
-    if(!file){
-      setMsg("Carica prima una foto, poi premi AI FOTO.", "warn");
+  function creaBackupManuale(){
+    saveAutoBackup("MANUALE");
+    renderAutoBackups();
+    setMsg("Backup Pro creato.", "ok");
+  }
+
+  function renderAutoBackups(){
+    const box = document.getElementById("backupList");
+    if(!autoBackups.length){
+      box.innerHTML = `<div class="emptyBox">Nessun backup automatico disponibile.</div>`;
       return;
     }
 
-    const cleaned = filenameToCleanText(file.name);
-    const currentNome = document.getElementById("nome").value.trim();
-    const currentBirrificio = document.getElementById("birrificio").value.trim();
+    box.innerHTML = autoBackups.map((b, i) => `
+      <div class="backupCard" style="background:${getLuxuryGradient({nome:b.label, barcode:b.id, stile:'backup'})}">
+        <div class="backupMeta">
+          <b>${escapeHtml(b.label)}</b><br>
+          Data: ${escapeHtml(b.createdAtView || "-")}<br>
+          Prodotti: <b>${Array.isArray(b.prodotti) ? b.prodotti.length : 0}</b><br>
+          Movimenti: <b>${Array.isArray(b.movimenti) ? b.movimenti.length : 0}</b><br>
+          Vendite: <b>${Array.isArray(b.vendite) ? b.vendite.length : 0}</b>
+        </div>
+        <div class="backupActions">
+          <button class="btn btn-green" onclick="ripristinaAutoBackup(${i})">Ripristina</button>
+          <button class="btn btn-red" onclick="eliminaAutoBackup(${i})">Elimina</button>
+        </div>
+      </div>
+    `).join("");
+  }
 
-    if(!currentNome && cleaned){
-      document.getElementById("nome").value = cleaned;
-    }
+  function ripristinaAutoBackup(i){
+    const b = autoBackups[i];
+    if(!b) return;
+    if(!confirm("Ripristinare questo backup?")) return;
 
-    const breweryGuess = findKnownBrewery(cleaned);
-    if(!currentBirrificio && breweryGuess){
-      document.getElementById("birrificio").value = breweryGuess;
-    }
+    prodotti = Array.isArray(b.prodotti) ? b.prodotti : [];
+    movimenti = Array.isArray(b.movimenti) ? b.movimenti : [];
+    vendite = Array.isArray(b.vendite) ? b.vendite : [];
+    memoryPrezzi = b.memoryPrezzi && typeof b.memoryPrezzi === "object" ? b.memoryPrezzi : {};
 
-    const nome = document.getElementById("nome").value.trim();
-    const birrificio = document.getElementById("birrificio").value.trim();
+    salvaDati();
+    refreshAll();
+    annullaModifica();
+    setMsg("Backup ripristinato correttamente.", "ok");
+  }
 
-    const smart = inferStyleFromText(nome || cleaned, birrificio || cleaned);
-
-    if(smart && smart.stile){
-      applyBJCPStyle(smart.stile, smart);
-      setMsg("AI FOTO: ho usato il nome del file per suggerire prodotto, birrificio e stile BJCP.", "ok");
-    } else {
-      setMsg("AI FOTO: ho letto il nome del file e preparato i campi, ma non ho riconosciuto con sicurezza lo stile.", "warn");
-    }
-
-    applicaPrezzoMemorizzato(document.getElementById("barcode").value.trim(), nome, birrificio);
+  function eliminaAutoBackup(i){
+    if(!confirm("Eliminare questo backup?")) return;
+    autoBackups.splice(i,1);
+    salvaDati();
+    renderAutoBackups();
+    setMsg("Backup eliminato.", "warn");
   }
 
   function entraInModalitaModifica(i){
@@ -1578,6 +1604,8 @@
 
     try{
       if(editIndex !== null){
+        saveAutoBackup("PRE-MODIFICA");
+
         prodotti[editIndex] = {
           ...prodotti[editIndex],
           barcode, nome, birrificio, formato, stile,
@@ -1597,6 +1625,8 @@
       }
 
       if(idx >= 0){
+        saveAutoBackup("PRE-CARICO");
+
         prodotti[idx] = {
           ...prodotti[idx],
           nome, birrificio, formato, stile,
@@ -1612,6 +1642,8 @@
         refreshAll();
         setMsg("Prodotto aggiornato. Quantità aumentata.", "ok");
       } else {
+        saveAutoBackup("PRE-NUOVO");
+
         const nuovo = {
           barcode, nome, birrificio, formato, stile,
           qty:Number(qty || 0),
@@ -1633,6 +1665,7 @@
   }
 
   function carico(i){
+    saveAutoBackup("PRE-CARICO+1");
     prodotti[i].qty = Number(prodotti[i].qty || 0) + 1;
     registraMovimento("CARICO", prodotti[i], 1);
     salvaDati();
@@ -1640,6 +1673,7 @@
   }
 
   function scarico(i){
+    saveAutoBackup("PRE-SCARICO-1");
     prodotti[i].qty = Math.max(0, Number(prodotti[i].qty || 0) - 1);
     registraMovimento("SCARICO", prodotti[i], 1);
     salvaDati();
@@ -1649,6 +1683,7 @@
   function eliminaProdotto(i){
     const p = prodotti[i];
     if(!confirm("Eliminare " + p.nome + "?")) return;
+    saveAutoBackup("PRE-ELIMINA");
     registraMovimento("ELIMINATO", p, Number(p.qty || 0));
     prodotti.splice(i,1);
     salvaDati();
@@ -2005,6 +2040,8 @@
       return;
     }
 
+    saveAutoBackup("PRE-VENDITA");
+
     let totale = 0;
     let pezzi = 0;
 
@@ -2039,7 +2076,7 @@
   }
 
   function downloadBackup(){
-    const data = { prodotti, movimenti, vendite, memoryPrezzi, exportedAt: nowString() };
+    const data = { prodotti, movimenti, vendite, memoryPrezzi, autoBackups, exportedAt: nowString() };
     const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -2060,6 +2097,7 @@
         movimenti = Array.isArray(data.movimenti) ? data.movimenti : [];
         vendite = Array.isArray(data.vendite) ? data.vendite : [];
         memoryPrezzi = data.memoryPrezzi && typeof data.memoryPrezzi === "object" ? data.memoryPrezzi : {};
+        autoBackups = Array.isArray(data.autoBackups) ? data.autoBackups : autoBackups;
         salvaDati();
         refreshAll();
         setMsg("Backup ripristinato.", "ok");
@@ -2090,6 +2128,7 @@
 
   function resetMagazzino(){
     if(!confirm("Vuoi cancellare tutto il magazzino?")) return;
+    saveAutoBackup("PRE-RESET");
     prodotti = [];
     movimenti = [];
     vendite = [];
@@ -2111,6 +2150,7 @@
     renderCatalogo();
     renderMagazzino();
     renderCassa();
+    renderAutoBackups();
   }
 
   popolaStili();
