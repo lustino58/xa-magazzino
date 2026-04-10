@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>XA Magazzino PRO Birrifici+</title>
+  <title>XA Magazzino ULTRA BIRRIFICIO PRO</title>
   <meta name="theme-color" content="#111111" />
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
@@ -56,7 +56,7 @@
       box-shadow:0 0 8px var(--neonR),0 0 18px rgba(59,130,255,.45);
     }
 
-    .app{max-width:1100px;margin:0 auto}
+    .app{max-width:1200px;margin:0 auto}
     h1,h2,h3,p{margin:0}
 
     .hero{
@@ -68,7 +68,7 @@
       box-shadow:0 14px 30px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.05);
     }
 
-    .hero h1{font-size:32px;line-height:1;margin-bottom:8px}
+    .hero h1{font-size:30px;line-height:1;margin-bottom:8px}
     .hero p{color:var(--muted);font-size:14px;line-height:1.4}
 
     .section{display:none}
@@ -113,7 +113,7 @@
     }
 
     .stat .value{
-      font-size:30px;
+      font-size:28px;
       font-weight:900;
       line-height:1;
     }
@@ -174,6 +174,13 @@
       margin-top:10px;
     }
 
+    .toolbar3{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+
     .small{
       font-size:14px;
       color:var(--muted);
@@ -230,24 +237,24 @@
       cursor:pointer;
     }
 
-    .catalogGrid{
+    .catalogGrid,.inventoryGrid,.breweryGrid{
       display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:12px;
+      grid-template-columns:1fr;
+      gap:14px;
       margin-top:10px;
     }
 
-    .catalogItem{
-      border-radius:22px;
-      padding:10px;
-      border:1px solid rgba(255,255,255,.09);
-      box-shadow:0 10px 20px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.08);
-      cursor:pointer;
+    .catalogItem,.product,.breweryCard{
       position:relative;
+      border-radius:24px;
+      padding:14px;
+      border:1px solid rgba(255,255,255,.10);
       overflow:hidden;
-      transition:transform .08s ease;
+      box-shadow:0 14px 26px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.08);
     }
-    .catalogItem:active{ transform:scale(.985); }
+
+    .catalogItem,.breweryCard{ cursor:pointer; }
+
     .catalogItem::after,.product::after,.breweryCard::after{
       content:"";
       position:absolute;
@@ -260,77 +267,39 @@
       box-shadow:0 0 0 2px rgba(67,198,109,.85),0 0 18px rgba(67,198,109,.45),0 12px 26px rgba(0,0,0,.22);
     }
 
-    .catalogItem img{
+    .catalogItem img,.productImage{
       width:100%;
-      height:110px;
       object-fit:cover;
-      border-radius:14px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
       background:#111;
-      border:1px solid rgba(255,255,255,.10);
+      position:relative;
+      z-index:1;
+    }
+
+    .catalogItem img{
+      height:110px;
       margin-bottom:8px;
+    }
+
+    .productImage{
+      max-height:220px;
+      margin-bottom:12px;
+    }
+
+    .catalogName,.breweryName,.productName{
       position:relative;
       z-index:1;
-    }
-
-    .catalogName{
-      font-size:18px;
-      font-weight:800;
-      line-height:1.1;
-      margin-bottom:6px;
-      word-break:break-word;
-      position:relative;
-      z-index:1;
-    }
-
-    .catalogMeta{
-      font-size:13px;
-      color:#e7ecf4;
-      line-height:1.35;
-      min-height:110px;
-      position:relative;
-      z-index:1;
-    }
-
-    .quickHint{
-      margin-top:8px;
-      padding:8px 10px;
-      border-radius:12px;
-      font-size:12px;
-      font-weight:800;
-      color:#dff7e6;
-      background:rgba(67,198,109,.14);
-      border:1px solid rgba(67,198,109,.35);
-      text-align:center;
-      position:relative;
-      z-index:1;
-    }
-
-    .inventoryGrid, .breweryGrid{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:14px;
-    }
-
-    .breweryCard{
-      position:relative;
-      border-radius:24px;
-      padding:16px;
-      border:1px solid rgba(255,255,255,.10);
-      overflow:hidden;
-      box-shadow:0 14px 26px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.08);
-      cursor:pointer;
-    }
-
-    .breweryName{
-      position:relative;
-      z-index:1;
-      font-size:26px;
       font-weight:900;
       line-height:1.05;
-      margin-bottom:10px;
+      word-break:break-word;
     }
 
-    .breweryMeta{
+    .catalogName{ font-size:18px; margin-bottom:6px; }
+    .breweryName{ font-size:26px; margin-bottom:10px; }
+    .productName{ font-size:26px; margin-bottom:8px; }
+
+    .catalogMeta,.breweryMeta,.productMeta{
       position:relative;
       z-index:1;
       font-size:15px;
@@ -338,7 +307,9 @@
       color:#f3f6fb;
     }
 
-    .breweryHint{
+    .catalogMeta{ font-size:13px; min-height:110px; color:#e7ecf4; }
+
+    .quickHint,.breweryHint{
       position:relative;
       z-index:1;
       margin-top:10px;
@@ -349,16 +320,8 @@
       color:#dff7e6;
       background:rgba(67,198,109,.14);
       border:1px solid rgba(67,198,109,.35);
+      text-align:center;
       display:inline-block;
-    }
-
-    .product{
-      position:relative;
-      border-radius:24px;
-      padding:14px;
-      border:1px solid rgba(255,255,255,.10);
-      overflow:hidden;
-      box-shadow:0 14px 26px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.08);
     }
 
     .productHeader{
@@ -368,20 +331,6 @@
       align-items:flex-start;
       position:relative;
       z-index:1;
-    }
-
-    .productName{
-      font-size:26px;
-      font-weight:900;
-      line-height:1.05;
-      margin-bottom:8px;
-      word-break:break-word;
-    }
-
-    .productMeta{
-      font-size:15px;
-      color:#f3f6fb;
-      line-height:1.45;
     }
 
     .badge{
@@ -423,18 +372,6 @@
       font-size:28px;
       font-weight:900;
       line-height:1.1;
-    }
-
-    .productImage{
-      width:100%;
-      max-height:220px;
-      object-fit:cover;
-      border-radius:16px;
-      margin-bottom:12px;
-      border:1px solid rgba(255,255,255,.10);
-      background:#111;
-      position:relative;
-      z-index:1;
     }
 
     .productActions{
@@ -558,7 +495,7 @@
 
   <div class="hero">
     <h1>XA Magazzino</h1>
-    <p>Pagina Birrifici dedicata • filtro automatico • chip rapidi • catalogo e magazzino avanzati</p>
+    <p>Ultra Birrificio Pro • schede birrificio • valore stock • catalogo e magazzino filtrati</p>
   </div>
 
   <section id="section-home" class="section active">
@@ -739,6 +676,16 @@
       <div class="field">
         <label for="breweryPageSearch">Cerca birrificio</label>
         <input id="breweryPageSearch" placeholder="Scrivi il nome del birrificio" oninput="renderBirrifici()" />
+      </div>
+
+      <div class="field">
+        <label for="brewerySort">Ordina birrifici</label>
+        <select id="brewerySort" onchange="renderBirrifici()">
+          <option value="nome">Ordina: nome</option>
+          <option value="referenze">Ordina: referenze</option>
+          <option value="pezzi">Ordina: pezzi totali</option>
+          <option value="valore">Ordina: valore stock</option>
+        </select>
       </div>
 
       <div id="breweryGrid" class="breweryGrid"></div>
@@ -939,10 +886,10 @@
     ["#9aa3ad", "#4e5864", "#101722"]
   ];
 
-  let prodotti = JSON.parse(localStorage.getItem("prodotti_xa_pro_birrifici_plus")) || [];
-  let movimenti = JSON.parse(localStorage.getItem("movimenti_xa_pro_birrifici_plus")) || [];
-  let vendite = JSON.parse(localStorage.getItem("vendite_xa_pro_birrifici_plus")) || [];
-  let memoryPrezzi = JSON.parse(localStorage.getItem("memory_prezzi_xa_pro_birrifici_plus")) || {};
+  let prodotti = JSON.parse(localStorage.getItem("prodotti_xa_ultra_birrificio_pro")) || [];
+  let movimenti = JSON.parse(localStorage.getItem("movimenti_xa_ultra_birrificio_pro")) || [];
+  let vendite = JSON.parse(localStorage.getItem("vendite_xa_ultra_birrificio_pro")) || [];
+  let memoryPrezzi = JSON.parse(localStorage.getItem("memory_prezzi_xa_ultra_birrificio_pro")) || {};
   let cassa = [];
   let html5QrCode = null;
   let scannerAttivo = false;
@@ -964,11 +911,18 @@
     showSection("catalogo", document.querySelector('.navBtn[data-section="catalogo"]'));
   }
 
+  function openMagazzinoForBrewery(name){
+    document.getElementById("filterBreweryMagazzino").value = name;
+    document.getElementById("brewerySearchMagazzino").value = name;
+    renderMagazzino();
+    showSection("magazzino", document.querySelector('.navBtn[data-section="magazzino"]'));
+  }
+
   function salvaDati(){
-    localStorage.setItem("prodotti_xa_pro_birrifici_plus", JSON.stringify(prodotti));
-    localStorage.setItem("movimenti_xa_pro_birrifici_plus", JSON.stringify(movimenti));
-    localStorage.setItem("vendite_xa_pro_birrifici_plus", JSON.stringify(vendite));
-    localStorage.setItem("memory_prezzi_xa_pro_birrifici_plus", JSON.stringify(memoryPrezzi));
+    localStorage.setItem("prodotti_xa_ultra_birrificio_pro", JSON.stringify(prodotti));
+    localStorage.setItem("movimenti_xa_ultra_birrificio_pro", JSON.stringify(movimenti));
+    localStorage.setItem("vendite_xa_ultra_birrificio_pro", JSON.stringify(vendite));
+    localStorage.setItem("memory_prezzi_xa_ultra_birrificio_pro", JSON.stringify(memoryPrezzi));
   }
 
   function setMsg(text, type=""){
@@ -1468,7 +1422,8 @@
       const items = prodotti.filter(p => String(p.birrificio || "").trim() === nome);
       const totaleReferenze = items.length;
       const totalePezzi = items.reduce((a,p)=>a+Number(p.qty||0),0);
-      return { nome, totaleReferenze, totalePezzi };
+      const valoreStock = items.reduce((a,p)=>a + (Number(p.qty||0) * Number(p.prezzo||0)), 0);
+      return { nome, totaleReferenze, totalePezzi, valoreStock };
     });
   }
 
@@ -1501,10 +1456,21 @@
   function renderBirrifici(){
     const box = document.getElementById("breweryGrid");
     const q = document.getElementById("breweryPageSearch").value.trim().toLowerCase();
+    const sort = document.getElementById("brewerySort").value;
     let items = getBirrificiData();
 
     if(q){
       items = items.filter(b => b.nome.toLowerCase().includes(q));
+    }
+
+    if(sort === "nome"){
+      items.sort((a,b)=>a.nome.localeCompare(b.nome,"it"));
+    } else if(sort === "referenze"){
+      items.sort((a,b)=>b.totaleReferenze - a.totaleReferenze);
+    } else if(sort === "pezzi"){
+      items.sort((a,b)=>b.totalePezzi - a.totalePezzi);
+    } else if(sort === "valore"){
+      items.sort((a,b)=>b.valoreStock - a.valoreStock);
     }
 
     if(items.length === 0){
@@ -1513,15 +1479,19 @@
     }
 
     box.innerHTML = items.map(b => {
-      const bg = getLuxuryGradient({ nome:b.nome, birrificio:b.nome, stile:"birrificio" });
+      const bg = getLuxuryGradient({ nome:b.nome, birrificio:b.nome, stile:"birrificio-pro" });
       return `
-        <div class="breweryCard" style="background:${bg}" onclick="openCatalogForBrewery('${escapeHtml(b.nome)}')">
+        <div class="breweryCard" style="background:${bg}">
           <div class="breweryName">${escapeHtml(b.nome)}</div>
           <div class="breweryMeta">
             Referenze: <b>${b.totaleReferenze}</b><br>
-            Pezzi totali: <b>${b.totalePezzi}</b>
+            Pezzi totali: <b>${b.totalePezzi}</b><br>
+            Valore stock: <b>€ ${b.valoreStock.toFixed(2)}</b>
           </div>
-          <div class="breweryHint">Tocca per aprire il catalogo del birrificio</div>
+          <div class="toolbar2" style="position:relative;z-index:1;margin-top:12px;">
+            <button class="btn btn-blue" onclick="event.stopPropagation(); openCatalogForBrewery('${escapeHtml(b.nome)}')">Apri catalogo</button>
+            <button class="btn btn-green" onclick="event.stopPropagation(); openMagazzinoForBrewery('${escapeHtml(b.nome)}')">Apri magazzino</button>
+          </div>
         </div>
       `;
     }).join("");
@@ -1828,7 +1798,7 @@
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "xa-magazzino-pro-birrifici-plus-backup.json";
+    a.download = "xa-ultra-birrificio-pro-backup.json";
     a.click();
     URL.revokeObjectURL(url);
   }
