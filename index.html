@@ -174,6 +174,13 @@
       margin-top:10px;
     }
 
+    .toolbar3{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+
     .small{
       font-size:14px;
       color:var(--muted);
@@ -260,7 +267,7 @@
       box-shadow:0 0 0 2px rgba(67,198,109,.85),0 0 18px rgba(67,198,109,.45),0 12px 26px rgba(0,0,0,.22);
     }
 
-    .catalogImage,.productImage,.breweryMainImage{
+    .catalogImage,.productImage,.breweryMainImage,.previewImage{
       width:100%;
       object-fit:cover;
       border-radius:16px;
@@ -283,6 +290,11 @@
     .breweryMainImage{
       height:180px;
       margin-bottom:12px;
+    }
+
+    .previewImage{
+      max-height:220px;
+      margin-top:10px;
     }
 
     .placeholderImage{
@@ -708,12 +720,15 @@
 
       <div class="field">
         <label for="foto">Foto etichetta / lattina / bottiglia</label>
-        <input type="file" id="foto" accept="image/*" />
+        <input type="file" id="foto" accept="image/*" onchange="previewSelectedImage(event)" />
       </div>
 
-      <div class="toolbar2">
+      <div id="previewBox"></div>
+
+      <div class="toolbar3">
         <button id="saveBtn" class="btn btn-green" onclick="salvaProdotto()">Salva prodotto</button>
         <button class="btn btn-cyan" onclick="annullaModifica()">Svuota campi</button>
+        <button id="deleteBtn" class="btn btn-red" onclick="eliminaProdottoInModifica()" style="display:none;">Elimina prodotto</button>
       </div>
 
       <div id="messageBox" class="small"></div>
@@ -1266,6 +1281,7 @@
       document.getElementById("abbinamenti").value = p.abbinamenti || "";
       document.getElementById("note").value = p.note || "";
       mostraPrezzoMemoria(p.prezzo || null);
+      setPreviewBox(p.foto || "");
       setScan("Prodotto già presente nel magazzino.", "ok");
       return;
     }
@@ -1328,6 +1344,65 @@
     return `<div class="miniThumbPlaceholder">${escapeHtml((prod.nome || "birra").slice(0,18))}</div>`;
   }
 
+  function setPreviewBox(src){
+    const box = document.getElementById("previewBox");
+    if(src){
+      box.innerHTML = `<img class="previewImage" src="${src}" alt="Anteprima foto">`;
+    } else {
+      box.innerHTML = "";
+    }
+  }
+
+  function previewSelectedImage(event){
+    const file = event.target.files?.[0];
+    if(!file){
+      setPreviewBox("");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = e => setPreviewBox(e.target.result);
+    reader.readAsDataURL(file);
+  }
+
+  function comprimiImmagine(file, maxW = 1200, quality = 0.82){
+    return new Promise((resolve, reject) => {
+      const fr = new FileReader();
+      fr.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          let w = img.width;
+          let h = img.height;
+
+          if(w > maxW){
+            h = Math.round(h * (maxW / w));
+            w = maxW;
+          }
+
+          const canvas = document.createElement("canvas");
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, w, h);
+
+          let data = canvas.toDataURL("image/jpeg", quality);
+
+          if(data.length > 1800000){
+            data = canvas.toDataURL("image/jpeg", 0.7);
+          }
+          if(data.length > 1300000){
+            data = canvas.toDataURL("image/jpeg", 0.6);
+          }
+
+          resolve(data);
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
+      fr.onerror = reject;
+      fr.readAsDataURL(file);
+    });
+  }
+
   function entraInModalitaModifica(i){
     const p = prodotti[i];
     editIndex = i;
@@ -1349,7 +1424,9 @@
     document.getElementById("abbinamenti").value = p.abbinamenti || "";
     document.getElementById("note").value = p.note || "";
     mostraPrezzoMemoria(p.prezzo || null);
+    setPreviewBox(p.foto || "");
     document.getElementById("editBox").style.display = "block";
+    document.getElementById("deleteBtn").style.display = "block";
     document.getElementById("saveBtn").textContent = "Salva modifica";
     showSection("home", document.querySelector('.navBtn[data-section="home"]'));
     setMsg("Prodotto pronto da modificare.", "ok");
@@ -1364,18 +1441,26 @@
     document.getElementById("stile").value = "";
     document.getElementById("foto").value = "";
     document.getElementById("editBox").style.display = "none";
+    document.getElementById("deleteBtn").style.display = "none";
     document.getElementById("saveBtn").textContent = "Salva prodotto";
     document.getElementById("autoAbvChip").textContent = "ABV: -";
     document.getElementById("autoIbuChip").textContent = "IBU: -";
     document.getElementById("autoSrmChip").textContent = "SRM: -";
     document.getElementById("autoPrezzoChip").textContent = "Prezzo memorizzato: -";
     document.getElementById("autoNotePreview").textContent = "Seleziona uno stile BJCP per compilare automaticamente le specifiche.";
+    setPreviewBox("");
     setMsg("");
     setScan("");
     popolaStili();
   }
 
-  function salvaProdotto(){
+  function eliminaProdottoInModifica(){
+    if(editIndex === null) return;
+    eliminaProdotto(editIndex);
+    annullaModifica();
+  }
+
+  async function salvaProdotto(){
     let barcode = document.getElementById("barcode").value.trim();
     const nome = document.getElementById("nome").value.trim();
     const birrificio = document.getElementById("birrificio").value.trim();
@@ -1405,9 +1490,21 @@
       document.getElementById("barcode").value = barcode;
     }
 
-    const salvaConFoto = (fotoData) => {
-      const idx = trovaPerBarcode(barcode);
+    let fotoData = "";
 
+    try{
+      if(file){
+        setMsg("Sto preparando la foto...", "warn");
+        fotoData = await comprimiImmagine(file);
+      }
+    } catch(e){
+      setMsg("Errore nella lettura della foto.", "dangerText");
+      return;
+    }
+
+    const idx = trovaPerBarcode(barcode);
+
+    try{
       if(editIndex !== null){
         prodotti[editIndex] = {
           ...prodotti[editIndex],
@@ -1439,6 +1536,8 @@
         };
         aggiornaPrezzoMemoria(barcode, nome, birrificio, prezzo);
         registraMovimento("CARICO", prodotti[idx], Number(qty || 0));
+        salvaDati();
+        refreshAll();
         setMsg("Prodotto aggiornato. Quantità aumentata.", "ok");
       } else {
         const nuovo = {
@@ -1452,19 +1551,12 @@
         prodotti.push(nuovo);
         aggiornaPrezzoMemoria(barcode, nome, birrificio, prezzo);
         registraMovimento("NUOVO", nuovo, Number(qty || 0));
+        salvaDati();
+        refreshAll();
         setMsg("Prodotto salvato nel magazzino.", "ok");
       }
-
-      salvaDati();
-      refreshAll();
-    };
-
-    if(file){
-      const reader = new FileReader();
-      reader.onload = () => salvaConFoto(reader.result);
-      reader.readAsDataURL(file);
-    } else {
-      salvaConFoto("");
+    } catch(err){
+      setMsg("Salvataggio fallito. Foto troppo pesante o memoria piena.", "dangerText");
     }
   }
 
