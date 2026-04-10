@@ -181,6 +181,13 @@
       margin-top:10px;
     }
 
+    .toolbar4{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+
     .small{
       font-size:14px;
       color:var(--muted);
@@ -293,7 +300,7 @@
     }
 
     .previewImage{
-      max-height:220px;
+      max-height:240px;
       margin-top:10px;
     }
 
@@ -550,6 +557,7 @@
 
     @media (min-width:900px){
       .inventoryGrid,.catalogGrid,.breweryGrid{ grid-template-columns:1fr 1fr; }
+      .toolbar4{ grid-template-columns:1fr 1fr 1fr 1fr; }
     }
   </style>
 </head>
@@ -558,7 +566,7 @@
 
   <div class="hero">
     <h1>XA Magazzino</h1>
-    <p>Immagini ovunque • birrifici pro • catalogo visivo • magazzino con foto • placeholder elegante</p>
+    <p>Immagini ovunque • birrifici pro • catalogo visivo • magazzino con foto • AI foto locale</p>
   </div>
 
   <section id="section-home" class="section active">
@@ -720,12 +728,13 @@
 
       <div class="field">
         <label for="foto">Foto etichetta / lattina / bottiglia</label>
-        <input type="file" id="foto" accept="image/*" onchange="previewSelectedImage(event)" />
+        <input type="file" id="foto" accept="image/*" capture="environment" onchange="previewSelectedImage(event)" />
       </div>
 
       <div id="previewBox"></div>
 
-      <div class="toolbar3">
+      <div class="toolbar4">
+        <button class="btn btn-violet" onclick="aiFotoAssist()">AI FOTO</button>
         <button id="saveBtn" class="btn btn-green" onclick="salvaProdotto()">Salva prodotto</button>
         <button class="btn btn-cyan" onclick="annullaModifica()">Svuota campi</button>
         <button id="deleteBtn" class="btn btn-red" onclick="eliminaProdottoInModifica()" style="display:none;">Elimina prodotto</button>
@@ -936,6 +945,11 @@
     "leffe blonde": { stile:"26C Belgian Tripel", abv:"6.6", ibu:"20–30", srm:"6" },
     "hoegaarden": { stile:"24A Witbier", abv:"4.9", ibu:"12–18", srm:"3" }
   };
+
+  const KNOWN_BREWERIES = [
+    "Moretti","Peroni","Ichnusa","Menabrea","Poretti","Beck's","Heineken","Spaten","Paulaner","Guinness","Leffe","Hoegaarden",
+    "Mönchshof","Ayinger","Augustiner","Weihenstephan","Franziskaner","Erdinger","Warsteiner","Bitburger","Krombacher","HB"
+  ];
 
   const LUXURY_GRADIENTS = [
     ["#d4af37", "#6f5620", "#101722"],
@@ -1361,46 +1375,104 @@
     }
     const reader = new FileReader();
     reader.onload = e => setPreviewBox(e.target.result);
+    reader.onerror = () => setMsg("Errore nella lettura della foto.", "dangerText");
     reader.readAsDataURL(file);
   }
 
-  function comprimiImmagine(file, maxW = 1200, quality = 0.82){
+  function comprimiImmagine(file, maxW = 900, quality = 0.72){
     return new Promise((resolve, reject) => {
       const fr = new FileReader();
+
       fr.onload = e => {
         const img = new Image();
+
         img.onload = () => {
-          let w = img.width;
-          let h = img.height;
+          try{
+            let w = img.width;
+            let h = img.height;
 
-          if(w > maxW){
-            h = Math.round(h * (maxW / w));
-            w = maxW;
+            if(w > maxW){
+              h = Math.round(h * (maxW / w));
+              w = maxW;
+            }
+
+            const canvas = document.createElement("canvas");
+            canvas.width = w;
+            canvas.height = h;
+
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, w, h);
+
+            let data = canvas.toDataURL("image/jpeg", quality);
+
+            if(data.length > 1400000){
+              data = canvas.toDataURL("image/jpeg", 0.60);
+            }
+            if(data.length > 1000000){
+              data = canvas.toDataURL("image/jpeg", 0.50);
+            }
+
+            resolve(data);
+          } catch(err){
+            reject(err);
           }
-
-          const canvas = document.createElement("canvas");
-          canvas.width = w;
-          canvas.height = h;
-          const ctx = canvas.getContext("2d");
-          ctx.drawImage(img, 0, 0, w, h);
-
-          let data = canvas.toDataURL("image/jpeg", quality);
-
-          if(data.length > 1800000){
-            data = canvas.toDataURL("image/jpeg", 0.7);
-          }
-          if(data.length > 1300000){
-            data = canvas.toDataURL("image/jpeg", 0.6);
-          }
-
-          resolve(data);
         };
-        img.onerror = reject;
+
+        img.onerror = () => reject(new Error("img load error"));
         img.src = e.target.result;
       };
-      fr.onerror = reject;
+
+      fr.onerror = () => reject(new Error("file read error"));
       fr.readAsDataURL(file);
     });
+  }
+
+  function filenameToCleanText(name){
+    return String(name || "")
+      .replace(/\.[^/.]+$/, "")
+      .replace(/[_\-]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function findKnownBrewery(text){
+    const low = normalizeKey(text);
+    return KNOWN_BREWERIES.find(b => low.includes(normalizeKey(b))) || "";
+  }
+
+  function aiFotoAssist(){
+    const file = document.getElementById("foto").files?.[0];
+    if(!file){
+      setMsg("Carica prima una foto, poi premi AI FOTO.", "warn");
+      return;
+    }
+
+    const cleaned = filenameToCleanText(file.name);
+    const currentNome = document.getElementById("nome").value.trim();
+    const currentBirrificio = document.getElementById("birrificio").value.trim();
+
+    if(!currentNome && cleaned){
+      document.getElementById("nome").value = cleaned;
+    }
+
+    const breweryGuess = findKnownBrewery(cleaned);
+    if(!currentBirrificio && breweryGuess){
+      document.getElementById("birrificio").value = breweryGuess;
+    }
+
+    const nome = document.getElementById("nome").value.trim();
+    const birrificio = document.getElementById("birrificio").value.trim();
+
+    const smart = inferStyleFromText(nome || cleaned, birrificio || cleaned);
+
+    if(smart && smart.stile){
+      applyBJCPStyle(smart.stile, smart);
+      setMsg("AI FOTO: ho usato il nome del file per suggerire prodotto, birrificio e stile BJCP.", "ok");
+    } else {
+      setMsg("AI FOTO: ho letto il nome del file e preparato i campi, ma non ho riconosciuto con sicurezza lo stile.", "warn");
+    }
+
+    applicaPrezzoMemorizzato(document.getElementById("barcode").value.trim(), nome, birrificio);
   }
 
   function entraInModalitaModifica(i){
